@@ -107,7 +107,53 @@
                         </Canvas>
                     </GroupBox> -->
                 </Grid>
-            </TabItem>            
+            </TabItem>
+            <TabItem Header="OPCData">
+                <Grid Background="#FFE5E5E5">
+                    <GroupBox x:Name="OPCDataFilePath_groupBox" Header="OutPutFilePath" HorizontalAlignment="Left" Height="63" Margin="10,64,0,0" VerticalAlignment="Top" Width="654" >
+                        <Canvas HorizontalAlignment="Left" Height="54" Margin="0,-10,-2.8,-2.4" VerticalAlignment="Top" Width="654">
+                            <Button x:Name="OPCDataOutputbutton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="50" Canvas.Top="22" Click="OPCDataOutputbutton_Click"/>
+                            <TextBox x:Name="OPCDataOutPutFilePathteBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding MyString, Mode=TwoWay}" VerticalAlignment="Top" Width="578" Canvas.Left="66" Canvas.Top="24"/>
+                        </Canvas>
+                    </GroupBox>
+                    <GroupBox x:Name="OPCDataOutText_groupBox" Header="OutPutDatas" HorizontalAlignment="Left" Height="205" Margin="10,129,0,0" VerticalAlignment="Top" Width="654">
+                        <Canvas HorizontalAlignment="Left" Height="205" Margin="-2,-16,-0.6,-6.6" VerticalAlignment="Top" Width="645">
+                            <TextBox x:Name="OPCDataOutPutDatasteBox" HorizontalAlignment="Left" Height="168" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" VerticalAlignment="Top" Width="634" Canvas.Top="24" Canvas.Left="6" />
+                        </Canvas>
+                    </GroupBox>
+                    <StackPanel Height="40" Margin="10,19,259,0" VerticalAlignment="Top" Orientation="Horizontal" >
+                        <CheckBox x:Name="SinglecheckBox" Content="SingleAddress" HorizontalAlignment="Left" Margin="10,10,0,10" Width="120" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
+                        <CheckBox x:Name="CommandcheckBox" Content="CommandAddress" HorizontalAlignment="Left" Margin="10,10,0,10" Width="120" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
+                        <CheckBox x:Name="HourcheckBox" Content="HourAddress" HorizontalAlignment="Left" Margin="10,10,0,10" Width="120" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <!--<GroupBox x:Name="DataTemplate_groupBox" Header="Template" HorizontalAlignment="Left" Height="63" Margin="10,-1,0,0" VerticalAlignment="Top" Width="654" >
+                        <Canvas HorizontalAlignment="Left" Height="54" Margin="0,-10,-2.8,-2.4" VerticalAlignment="Top" Width="654">
+                            <Button x:Name="Level1DataTemplateButton" Content="Load" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Top="22" Click="Level1DataTemplateButton_Click"/>
+                            <TextBox x:Name="Level1DataTemplateteBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding MyString, Mode=TwoWay}" VerticalAlignment="Top" Width="578" Canvas.Left="66" Canvas.Top="24"/>
+                        </Canvas>
+                    </GroupBox> -->
+                </Grid>
+            </TabItem>
+            <TabItem Header="AlarmLinkConf" Margin="-2,-2,-2,-1">
+                <Grid Background="#FFE5E5E5">
+                    <GroupBox x:Name="ConfFilePath_groupBox" Header="OutPutFilePath" HorizontalAlignment="Left" Height="63" Margin="10,66,0,0" VerticalAlignment="Top" Width="654" >
+                        <Canvas HorizontalAlignment="Left" Height="54" Margin="0,-10,-1.6,-2.4" VerticalAlignment="Top" Width="644">
+                            <Button x:Name="ConfOutputbutton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="50" Canvas.Top="22" Click="ConfOutputbutton_Click"/>
+                            <TextBox x:Name="ConfOutPutFilePathteBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding MyString, Mode=TwoWay}" VerticalAlignment="Top" Width="578" Canvas.Left="66" Canvas.Top="24"/>
+                        </Canvas>
+                    </GroupBox>
+                    <GroupBox x:Name="ConfOutText_groupBox" Header="OutPutDatas" HorizontalAlignment="Left" Height="205" Margin="10,129,0,0" VerticalAlignment="Top" Width="654">
+                        <Canvas HorizontalAlignment="Left" Height="205" Margin="-2,-16,-0.6,-6.6" VerticalAlignment="Top" Width="645">
+                            <TextBox x:Name="ConfOutPutDatasteBox" HorizontalAlignment="Left" Height="168" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" VerticalAlignment="Top" Width="634" Canvas.Top="24" Canvas.Left="6" />
+                        </Canvas>
+                    </GroupBox>
+                    <StackPanel HorizontalAlignment="Left" Height="36.6" Margin="13,10,0,0" VerticalAlignment="Top" Width="94">
+                        <RadioButton x:Name="OPCInforaButton" Content="OPCInfo" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
+                        <RadioButton x:Name="AlarmListradioButton" Content="AlarmList" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
         </TabControl>
         <!--TextBlock x:Name="InPuttextBlock" HorizontalAlignment="Left" Height="22" Margin="70,72,0,0" TextWrapping="Wrap" Text="FilePath:" VerticalAlignment="Top" Width="68"/-->
     </Grid>

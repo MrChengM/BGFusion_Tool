@@ -74,11 +74,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CsvFunction.cs" />
+    <Compile Include="DaTableToConfig.cs" />
     <Compile Include="DaTableToLevel1Data.cs" />
-    <Compile Include="ExcelToDaTable.cs" />
-    <Compile Include="ListToString.cs" />
-    <Compile Include="WriteExcel.cs" />
+    <Compile Include="DaTableToOPCData.cs" />
+    <Compile Include="ExcelFunction.cs" />
+    <Compile Include="DataConvert.cs" />
     <Compile Include="XmlElementCode.cs" />
+    <Compile Include="XmlFuction.cs" />
     <Compile Include="XmlTestBlockCode.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

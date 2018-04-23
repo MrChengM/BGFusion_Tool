@@ -11,7 +11,7 @@ namespace BGFusion_TextBlockCopy
     {
         private string mystring;
         private bool mybool;
-     public string MyString
+        public string MyString
         {
             get { return mystring; }
             set

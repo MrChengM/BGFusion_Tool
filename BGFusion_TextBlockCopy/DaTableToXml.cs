@@ -84,7 +84,8 @@ namespace BGFusion_TextBlockCopy
                                         List<string> lElements = new List<string>();
                                         lElements.Add(string.Format("teblock_{0}_{1}_{2}_{3}", sSystem, sPlcLink, sEquipmentLine, sEquipmentElement));//Name
                                         lElements.Add(string.Format("{0},{1},0,0", x, y));//Margin
-                                        sMarginChange(ref x, ref y, 129, 70);
+                                        //sMarginChange(ref x, ref y, 129, 70);
+                                        sMarginChange(ref x, ref y, 0, 0);
                                     if (sEquipmentLine == "MCC01")
                                     {
                                         lElements.Add(string.Format("{0}.{1}.{2}", sPlcLink, sEquipmentLine, sEquipmentElement));//Text
@@ -129,7 +130,7 @@ namespace BGFusion_TextBlockCopy
                                         xmlElementFirst.sLineElements.Add("30");//sWidth
                                         xmlElementFirst.sLineElements.Add("20");//iHeight
                                         xmlElementFirst.sLineElements.Add(string.Format("{0}_{1}_{2}", sSystem, sPlcLink, sEquipmentLine));//sElementName
-                                        xmlElementFirst.sLineElements.Add(string.Format("={0}", sEquipmentLine));//sDisplayName
+                                        xmlElementFirst.sLineElements.Add(string.Format("{0}", sEquipmentLine));//sDisplayName
                                         xmlElementFirst.sLineElements.Add("LEVEL1");//sScadaLevel
                                         xmlElementFirst.sLineElements.Add(sSingleMapping1);//sControlObject
                                         xmlElementFirst.sLineElements.Add(sPowrBoxc);//sPowrBox
@@ -179,8 +180,8 @@ namespace BGFusion_TextBlockCopy
                                         xmlElementFirst.sLineElements.Add("Legend_Conveyor_Straight");//sLegendStyleName
                                         xmlElementFirst.sLineElements.Add("30");//sWidth
                                         xmlElementFirst.sLineElements.Add("20");//iHeight
-                                        xmlElementFirst.sLineElements.Add(string.Format("{0}_{1}_{2}", sSystem, sPlcLink, sEquipmentLine, sEquipmentElement));//sElementName
-                                        xmlElementFirst.sLineElements.Add(string.Format("={0}", sDisplayNamec));//sDisplayName
+                                        xmlElementFirst.sLineElements.Add(string.Format("{0}_{1}_{2}_{3}", sSystem, sPlcLink, sEquipmentLine, sEquipmentElement));//sElementName
+                                        xmlElementFirst.sLineElements.Add(string.Format("{0}", sDisplayNamec));//sDisplayName
                                         xmlElementFirst.sLineElements.Add("LEVEL2");//sScadaLevel
                                         xmlElementFirst.sLineElements.Add(sSingleMapping1);//sControlObject
                                         xmlElementFirst.sLineElements.Add(sPowrBoxc);//sPowrBox
@@ -192,20 +193,34 @@ namespace BGFusion_TextBlockCopy
                                         xmlElementFirst.sLineElements.Add(sCommandMapping);//CommandMappingType
                                         xmlElementFirst.sLineElements.Add(sEquipmentElementtype);//sTypeDescription
                                                                                                  //line2
-                                                                                                 //line3
-                                        for (int i = 1; i <= iCounts; i++)
+                                        if (iCounts == 0)
                                         {
                                             xmlElementThird = new XmlElementThird();
-                                            xmlElementThird.sLineElements.Add(string.Format("Signal{0}", i));//sId
+                                            xmlElementThird.sLineElements.Add(string.Format("Signal{0}", 1));//sId
                                             xmlElementThird.sLineElements.Add("True");//sUsePostfix
-                                            xmlElementThird.sLineElements.Add(string.Format("_SIGNAL_{0}", i));//sPostfix
+                                            xmlElementThird.sLineElements.Add(string.Format("_SIGNAL_{0}", 1));//sPostfix
                                             xmlElementThird.sLineElements.Add("False");//sUsePrefix
                                             xmlElementThird.sLineElements.Add("");//sPrefix
                                             xmlElementThird.sLineElements.Add("Constant");//sKeepAliveType
                                             xmlElementThird.sLineElements.Add(string.Format("{0}_{1}_SYSTEM_KAL_MAIN_ACTIVE", sSystem, sPlcLink));//KeepAliveSignal
                                             xmlElementThirds.Add(xmlElementThird);
                                         }
-                                        //line4
+                                        else
+                                        { 
+                                            for (int i = 1; i <= iCounts; i++)
+                                            {
+                                                xmlElementThird = new XmlElementThird();
+                                                xmlElementThird.sLineElements.Add(string.Format("Signal{0}", i));//sId
+                                                xmlElementThird.sLineElements.Add("True");//sUsePostfix
+                                                xmlElementThird.sLineElements.Add(string.Format("_SIGNAL_{0}", i));//sPostfix
+                                                xmlElementThird.sLineElements.Add("False");//sUsePrefix
+                                                xmlElementThird.sLineElements.Add("");//sPrefix
+                                                xmlElementThird.sLineElements.Add("Constant");//sKeepAliveType
+                                                xmlElementThird.sLineElements.Add(string.Format("{0}_{1}_SYSTEM_KAL_MAIN_ACTIVE", sSystem, sPlcLink));//KeepAliveSignal
+                                                xmlElementThirds.Add(xmlElementThird);
+                                            }
+                                    }
+                                           //line4
                                         //line5
                                         //line6
                                         xmlElementSix.sLineElements.Add(string.Format("{0} StaticResource BG_COLOR_EDGE_{1}{2}", "{", sEquipmentLine, "}"));//Color
@@ -233,7 +248,7 @@ namespace BGFusion_TextBlockCopy
                     }
 
                 }
-                sOutPutXmlDatas = ListToString.OutPutString(lOutPutXmlDatas);
+                sOutPutXmlDatas = DataConvert.ToString(lOutPutXmlDatas);
             }
             catch (Exception ex)
             {

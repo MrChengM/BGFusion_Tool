@@ -19,8 +19,6 @@ using System.Reflection;
 using System.IO;
 using System.Configuration;
 
-
-
 namespace BGFusion_TextBlockCopy
 {
     /// <summary>
@@ -70,6 +68,11 @@ namespace BGFusion_TextBlockCopy
         public string sXmlElement;
         public string sXmlTextBlock;
 
+        //OPC输出模板
+        public string sOPCDaSingleTemplate;
+        public string sOPCDaCommandTemplate;
+        public string sOPCDaHourTemplate;
+
         public MainWindow()
         {
             try
@@ -82,12 +85,22 @@ namespace BGFusion_TextBlockCopy
                 {
                     dBinding[i] = new DataString();
                 }
+                //默认View为Level2，值为PVG_BHS_S1_LA_0002_0003，
                 dBinding[0].MyString = "PVG_BHS_S1_LA_0002_0003";
                 dBinding[4].Mybool = false;
                 dBinding[5].Mybool = true;
 
+                //默认生成的XML为Textblack
                 dBinding[10].Mybool = true;
                 dBinding[11].Mybool = false;
+
+                //默认生成OPC数据包含：Single/Commad/Hour
+                dBinding[52].Mybool = true;
+                dBinding[53].Mybool = true;
+                dBinding[54].Mybool = true;
+                //默认生成AlarmCofig数据包含：OPCInfo
+                dBinding[60].Mybool = true;
+
                 //Genenarl
                 ViewNameteBox.DataContext = dBinding[0];
                 InPutFilePathteBox.DataContext = dBinding[1];
@@ -113,11 +126,23 @@ namespace BGFusion_TextBlockCopy
                 Level1DataOutPutFilePathteBox.DataContext = dBinding[41];
                 Level1DataOutPutDatasteBox.DataContext = dBinding[42];
 
+                //OPCData
+                OPCDataOutPutFilePathteBox.DataContext = dBinding[50];
+                OPCDataOutPutDatasteBox.DataContext = dBinding[51];
+                SinglecheckBox.DataContext = dBinding[52];
+                CommandcheckBox.DataContext = dBinding[53];
+                HourcheckBox.DataContext = dBinding[54];
+
+                //AlarmLinkConf
+                OPCInforaButton.DataContext = dBinding[60];
+                AlarmListradioButton.DataContext = dBinding[61];
+                ConfOutPutFilePathteBox.DataContext = dBinding[62];
+                ConfOutPutDatasteBox.DataContext = dBinding[63];
                 //配置参数初始化
                 DataSet dConfigTable = new DataSet();
                 string sConFilePath =ConfigurationSettings.AppSettings["Config.FilePath"];
                 //ConveyorSheetName初始化
-                dConfigTable =ExcelToDaTable.ToDataTable(sConFilePath);
+                dConfigTable =ExcelFunction.ExcelRead(sConFilePath);
                 //Conveyor Sheet Name & Conveyor Column Name初始化
                 sTableToStringArrary(dConfigTable.Tables["Conveyor$"], out sConveyorSheetName, out sConveyorColName);
                 //BaseList Sheet Name & Conveyor Column Name初始化
@@ -132,8 +157,13 @@ namespace BGFusion_TextBlockCopy
                 sXmlTextBlock = (string)dConfigTable.Tables["XmlTemplate$"].Rows[0][0];
                 sXmlElement = (string)dConfigTable.Tables["XmlTemplate$"].Rows[1][0];
 
-                //L1AlarmDataTemple
+                //L1AlarmDataTemplate
                 Level1DataExcelData = dConfigTable.Tables["L1AlarmDataTemple$"];
+
+                //OPCDataTemplate
+                sOPCDaSingleTemplate = (string)dConfigTable.Tables["OPCDataTemplate$"].Rows[0][0];
+                sOPCDaCommandTemplate = (string)dConfigTable.Tables["OPCDataTemplate$"].Rows[1][0];
+                sOPCDaHourTemplate = (string)dConfigTable.Tables["OPCDataTemplate$"].Rows[2][0];
 
                 //dConfigTable.Clear();
 
@@ -141,8 +171,8 @@ namespace BGFusion_TextBlockCopy
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Config Error,Initialize fail： " + ex.Message);
-                Application.Current.Shutdown();
+                //MessageBox.Show("Config Error,Initialize fail： " + ex.Message);
+                //Application.Current.Shutdown();
             }
 
         }
@@ -200,7 +230,7 @@ namespace BGFusion_TextBlockCopy
             }
             if (sPath != null)
             {
-                dExcelDataSet =ExcelToDaTable.ToDataTable(sPath);
+                dExcelDataSet =ExcelFunction.ExcelRead(sPath);
                 //DataTableToOutPutList();
             }
             return dExcelDataSet;
@@ -220,10 +250,6 @@ namespace BGFusion_TextBlockCopy
                 if (dBinding[4].Mybool == true)
                 {
                     sSelectConveyorColName = sConveyorColName[1, 15];
-                }
-                else if (dBinding[5].Mybool == true)
-                {
-                    sSelectConveyorColName = sConveyorColName[1, 16];
                 }
                 else
                 {
@@ -272,11 +298,6 @@ namespace BGFusion_TextBlockCopy
             }
      
         }
-
-
- 
-
-
         /// <summary>
         /// TagList表格输入（PVG_SCADA_CNV_...）
         /// </summary>
@@ -287,7 +308,7 @@ namespace BGFusion_TextBlockCopy
             string sFilePath = dBinding[1].MyString;
             ConveyorExcelData = dDataLoad(ref sFilePath);
             dBinding[1].MyString = sFilePath;
-            if (ConveyorExcelData != null) { SelectConRows = LinqToTable(); }
+            if (ConveyorExcelData != null)  SelectConRows = LinqToTable(); 
       
          }
         /// <summary>
@@ -344,7 +365,7 @@ namespace BGFusion_TextBlockCopy
             {
                 MessageBox.Show("Build XML Data Error: " + ex.Message);
             }
-            
+            GC.Collect();
 
         }
         /// <summary>
@@ -381,6 +402,8 @@ namespace BGFusion_TextBlockCopy
             {
                 MessageBox.Show("Build Test data Error： " + ex.Message);
             }
+            GC.Collect();
+
         }
         /// <summary>
         /// 测试记录表格输出
@@ -423,13 +446,14 @@ namespace BGFusion_TextBlockCopy
                         }
                     }
                     dBinding[32].MyString = sOutPutLiData;
-                    WriteExcel.WriteToExcel(dBinding[30].MyString,sFilePath, TeListDatas);
+                    ExcelFunction.ExcelWrite(dBinding[30].MyString,sFilePath, TeListDatas);
                 }
             }
             catch(Exception ex)
             {
                 MessageBox.Show("Build Test List Error： " + ex.Message);
             }
+            GC.Collect();
 
         }
         /// <summary>
@@ -471,7 +495,101 @@ namespace BGFusion_TextBlockCopy
             {
                 MessageBox.Show("Build Level1 Data Error: " + ex.Message);
             }
+            GC.Collect();
 
+        }
+
+
+        private void OPCDataOutputbutton_Click(object sender, RoutedEventArgs e)
+        {
+            //string sFileStyle = "Excel(.xlsx) | *.xlsx|Excel(.xls) | *.xls";
+            string sFileStyle = "Excel(.csv) | *.csv";
+            string sFilePath = dBinding[50].MyString;
+            bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
+            try
+            {
+                if (bOpenEnable)
+                {
+                    DaTableToOPCData OPCData = new DaTableToOPCData(ConveyorExcelData.Tables[sConveyorSheetName[1]],
+                        BaseListExceLData.Tables[sBaseListSheetName[1]], BaseListExceLData.Tables[sBaseListSheetName[2]],
+                        sConveyorColName, sBaseListColName, sOPCDaSingleTemplate, sOPCDaCommandTemplate, sOPCDaHourTemplate,
+                        dBinding[52].Mybool, dBinding[53].Mybool, dBinding[54].Mybool);
+                    DataTable dt = OPCData.dOutData();
+                    dBinding[50].MyString = sFilePath;
+                    //ExcelFunction.ExcelWrite(sFilePath, dt);
+                    CsvFunction.CsvWirte(sFilePath, dt);
+                    dBinding[51].MyString = DataConvert.ToString(dt);
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Build OPC Data Error: " + ex.Message);
+            }
+            GC.Collect();
+
+        }
+
+        private void ConfOutputbutton_Click(object sender, RoutedEventArgs e)
+        {
+            string sFileStyle = "Excel(.xml) | *.xml";
+            string sFilePath = dBinding[62].MyString;
+            bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
+            List<string> lListColName = new List<string>();
+            if (dBinding[60].Mybool )
+            {
+                lListColName.Add("Tag Name");
+                lListColName.Add("Type");
+                lListColName.Add("Channel");
+                lListColName.Add("Device");
+                lListColName.Add("DataType");
+            }
+            if (dBinding[61].Mybool)
+            {
+                lListColName.Add("SignalName");
+                lListColName.Add("AckType");
+                lListColName.Add("AlarmTag");
+                lListColName.Add("PartName");
+                lListColName.Add("Alarm Description");
+                lListColName.Add("AlarmGroup");
+                lListColName.Add("AlarmType");
+                lListColName.Add("AlarmCategory");
+                lListColName.Add("Delayed");
+                lListColName.Add("ConditionName");
+                lListColName.Add("Priority");
+                lListColName.Add("GeneralComment");
+                lListColName.Add("Level1View");
+                lListColName.Add("Level2View");
+                lListColName.Add("Resetable");
+                lListColName.Add("ResetBit");
+                lListColName.Add("ALNumber");
+                lListColName.Add("CCTVRecording");
+                lListColName.Add("ElementID");
+                lListColName.Add("ResetSignal");
+                lListColName.Add("ExtraTagList");
+                lListColName.Add("CISData");
+                lListColName.Add("Technical");
+            }
+            try
+            {
+                if (bOpenEnable)
+                {
+                    DaTableToConfig dConfigData = new DaTableToConfig(ConveyorExcelData.Tables[sConveyorSheetName[1]],
+                        BaseListExceLData.Tables[sBaseListSheetName[1]], BaseListExceLData.Tables[sBaseListSheetName[2]],
+                        sConveyorColName, sBaseListColName,dBinding[60].Mybool,dBinding[61].Mybool, sOPCDaSingleTemplate, 
+                        sOPCDaCommandTemplate, lListColName);
+                    List<List<string>> dt = dConfigData.dOutData();
+                    dBinding[62].MyString = sFilePath;
+                    //ExcelFunction.ExcelWrite(sFilePath, dt);
+                    XmlFuction xmlFuction = new XmlFuction();
+                    xmlFuction.XmlWrite(sFilePath, dt);
+                    //dBinding[63].MyString = DataConvert.ToString(dt);
+                }
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Build OPC Data Error: " + ex.Message);
+            }
+            GC.Collect();
 
         }
     }

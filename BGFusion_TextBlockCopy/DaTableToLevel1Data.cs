@@ -143,7 +143,7 @@ namespace BGFusion_TextBlockCopy
                     sLinesSingleGroup= sLinesSingle + " = "+ sLinesSingleValue +"\r\n";
                     sOutPutSingleData.Add(sLinesSingleGroup);
                 }
-                sOutPutSingleDatas = ListToString.OutPutString(sOutPutSingleData);
+                sOutPutSingleDatas = DataConvert.ToString(sOutPutSingleData);
             }
 
             catch (Exception ex)

@@ -73,7 +73,7 @@ namespace BGFusion_TextBlockCopy
 
                 lLines.Add(sLines[9]);
                 lLines.Add(sLines[10]);
-                sOutPutXmlElement = ListToString.OutPutString(lLines);
+                sOutPutXmlElement = DataConvert.ToString(lLines);
             }
             catch(Exception ex)
             {
