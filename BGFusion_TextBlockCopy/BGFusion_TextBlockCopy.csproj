@@ -74,6 +74,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BaseFactory.cs" />
+    <Compile Include="BaseTableConvert.cs" />
     <Compile Include="CsvFunction.cs" />
     <Compile Include="DaTableToConfig.cs" />
     <Compile Include="DaTableToLevel1Data.cs" />

@@ -10,7 +10,16 @@ namespace BGFusion_TextBlockCopy
     public class DataString :INotifyPropertyChanged
     {
         private string mystring;
-        private bool mybool;
+        private bool? mybool;
+        public DataString()
+        {
+
+        }
+        public DataString(string sString,bool? bBool)
+        {
+            this.mystring=sString;
+            this.mybool = bBool;
+        }
         public string MyString
         {
             get { return mystring; }
@@ -24,7 +33,7 @@ namespace BGFusion_TextBlockCopy
             }
 
         }
-        public bool Mybool
+        public bool? Mybool
         {
             get { return mybool; }
             set

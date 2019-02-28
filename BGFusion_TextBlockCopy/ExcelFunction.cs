@@ -81,7 +81,7 @@ namespace BGFusion_TextBlockCopy
         /// </summary>
         /// <param name="filename"></param>
         /// <param name="outputstring"></param>
-        public static void ExcelWrite(string infilename, string outfilename, List<ListData> listdatas)
+        public static void ExcelWrite(string infilename, string outfilename, Dictionary<string,string> listdatas)
         {
             //新建输出Excel
             Excel.Application xapps = new Excel.Application();
@@ -121,18 +121,18 @@ namespace BGFusion_TextBlockCopy
                 //EXCEL 数据导入
                 int icounts = 0;
 
-                foreach (ListData listdata in listdatas)
+                foreach (KeyValuePair<string,string> listdata in listdatas)
                 {
                     //int icounts= 0;
                     icounts = icounts + 1;
                     string sACell = "A" + (icounts + 1);
                     String sBCell = "B" + (icounts + 1);
                     xrng = xsheet.get_Range(sACell, Missing.Value);
-                    xrng.Value = listdata.sColName;
+                    xrng.Value = listdata.Key;
                     //xrng.Borders.Color = "Black";
                     //xrng.Borders.LineStyle = 1;
                     xrng = xsheet.get_Range(sBCell, Missing.Value);
-                    xrng.Value = listdata.sColGroup;
+                    xrng.Value = listdata.Value;
                 }
                 //单元格式
                 string sCell1 = "A1";

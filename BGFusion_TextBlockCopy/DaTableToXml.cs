@@ -8,42 +8,21 @@ using System.Windows;
 
 namespace BGFusion_TextBlockCopy
 {
-    class DaTableToTeXml
+    class DaTableToTeXml:BaseTableConvert
     {
-        //public EnumerableRowCollection<DataRow> MainRows { get; set; }
-        private EnumerableRowCollection<DataRow> MainRows;
-        //public string[,] MainColName{ get; set; }
-        private string[,] MainColName;
-        //public int ViewNum { get; set; }
-        private int ViewNum;
         private int XmlTypes;
-        //public string sTemp0 { get; set; }
-        private string sTemp0;
-        //public string sTemp1 { get; set; }
-        private string sTemp1;
-        //public string sTemp2 { get; set; }
-        //private string sTemp2;
-        //public DataTable SecondTable { get; set; }
-        private DataTable SecondTable;
-        //public string[,] SecondColName { get; set; }
-        private string[,] SecondColName;
-        public DaTableToTeXml(EnumerableRowCollection<DataRow> mainRows,string[,] mainColName, int ViewNum,int XmlTypes, string temp0,string temp1,DataTable secondTable,string[,] secondColName)
+
+        public DaTableToTeXml(DaTableConverParameter ConverParameter, int XmlTypes)
         {
-            this.MainRows = mainRows;
-            this.MainColName = mainColName;
-            this.ViewNum = ViewNum;
+            this.baseTableConverParameter = ConverParameter;
             this.XmlTypes = XmlTypes;
-            this.sTemp0 = temp0;
-            this.sTemp1 = temp1;
-            //this.sTemp2 = temp2;
-            this.SecondTable = secondTable;
-            this.SecondColName = secondColName;
         }
-        public string sOutData()
+        public override string sOutData()
         {
             string sOutPutXmlData = null;
             string sOutPutXmlDatas = null;
             List<string> lOutPutXmlDatas = new List<string>();
+            EnumerableRowCollection<DataRow> MainRows = LinqToTable();
             try
             {
                 int x = 0; int y = 0;
@@ -64,14 +43,14 @@ namespace BGFusion_TextBlockCopy
                     string sAreaLevel2view = selectConRow[16].ToString();
                     string sDrawonViews = selectConRow[17].ToString();
                     string sLeftClick = selectConRow[18].ToString();
-                    var SingleCounts = SecondTable.AsEnumerable().Count(p => p.Field<string>(SecondColName[1, 0]) == sSingleMapping1);
+                    var SingleCounts = baseTableConverParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseTableConverParameter.BasefileColName[1, 0]) == sSingleMapping1);
                     iCounts = SingleCounts / 32;
                     switch (XmlTypes)
                     {
                         case 0:
                             break;
                         case 1:
-                            switch (ViewNum)
+                            switch (baseTableConverParameter.ViewNum)
                             {
                                 case 0:
                                     break;
@@ -94,7 +73,7 @@ namespace BGFusion_TextBlockCopy
                                     {
                                         lElements.Add(string.Format("{0}.{1}", sEquipmentLine, sEquipmentElement));//Text
                                     }
-                                    xmlTestBlockCode.sTemple = sTemp0;
+                                    xmlTestBlockCode.sTemple = baseTableConverParameter.Stemp3;
                                         xmlTestBlockCode.sElements = lElements;
                                         sOutPutXmlData = xmlTestBlockCode.sOutPutXmlTestBlockCode();
                                         lOutPutXmlDatas.Add(sOutPutXmlData);
@@ -114,7 +93,7 @@ namespace BGFusion_TextBlockCopy
                             List<XmlElementThird> xmlElementThirds = new List<XmlElementThird>();
                             XmlElementSix xmlElementSix = new XmlElementSix();
                             XmlElementnine xmlElementnine = new XmlElementnine();
-                            switch (ViewNum)
+                            switch (baseTableConverParameter.ViewNum)
                             {
                                 case 0:
                                     break;
@@ -237,7 +216,7 @@ namespace BGFusion_TextBlockCopy
                                 }
                                     break;
                             }
-                            xmlElementCode.sTemplate = sTemp1;
+                            xmlElementCode.sTemplate = baseTableConverParameter.Stemp4;
                             xmlElementCode.xmlElementFirst = xmlElementFirst;
                             xmlElementCode.xmlElementThirds = xmlElementThirds;
                             xmlElementCode.xmlElementSix = xmlElementSix;
@@ -271,6 +250,31 @@ namespace BGFusion_TextBlockCopy
             {
                 x = x + iColWidth;
             }
+        }
+
+        public override int iOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override List<List<string>> lOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override DataTable dOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Dictionary<string, string> diOutData()
+        {
+            throw new NotImplementedException();
         }
     }
 }

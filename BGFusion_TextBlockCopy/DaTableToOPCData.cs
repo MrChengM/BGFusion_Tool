@@ -8,27 +8,8 @@ using System.Windows;
 
 namespace BGFusion_TextBlockCopy
 {
-    public class DaTableToOPCData
+    public class DaTableToOPCData:BaseTableConvert
     {
-        private DataTable MainTable;
-        //public string[,] MainColName{ get; set; }
-        private string[,] MainColName;
-        //public int ViewNum { get; set; }
-        //private int ViewNum;
-        //public string sTemp0 { get; set; }
-        private string sTemp0;
-        //public string sTemp1 { get; set; }
-        private string sTemp1;
-        //public string sTemp2 { get; set; }
-        private string sTemp2;
-        //public string sTemp3 { get; set; }
-        //private string sTemp3;
-        //public DataTable SecondTable { get; set; }
-        private DataTable SecondTable0;
-        //public DataTable SecondTable1 { get; set; }
-        private DataTable SecondTable1;
-        //public string[,] SecondColName { get; set; }
-        private string[,] SecondColName;
 
         private bool bSingle;
         private bool bCommand;
@@ -52,63 +33,55 @@ namespace BGFusion_TextBlockCopy
 
 
         //初始化函数
-        public DaTableToOPCData(DataTable mainTable,DataTable secondtable0, DataTable secondtable1,
-            string[,]mainColName,string[,]secondColName,string stemp0,string stemp1,string stemp2,
-            bool bsingle ,bool bcommand,bool bhour )
+        public DaTableToOPCData(DaTableConverParameter ConverParameter, bool bsingle ,bool bcommand,bool bhour )
         {
-            this.MainTable = mainTable;
-            this.MainColName = mainColName;
-            this.SecondTable0 = secondtable0;
-            this.SecondTable1 = secondtable1;
-            this.SecondColName = secondColName;
-            this.sTemp0 = stemp0;
-            this.sTemp1 = stemp1;
-            this.sTemp2 = stemp2;
+
+            this.baseTableConverParameter = ConverParameter;
             this.bSingle = bsingle;
             this.bCommand = bcommand;
             this.bHour = bhour;
         }
 
         //生成DataTable数据
-        public DataTable dOutData()
+        public override DataTable dOutData()
         {
 
             try
             {
                 foreach (string sColumName in sOPCListColName)
                     dOPCdataTable.Columns.AddRange(new DataColumn[] { new DataColumn(sColumName) });
-                foreach (DataRow selectConRow in MainTable.Rows)
+                foreach (DataRow selectConRow in baseTableConverParameter.TaglistTable.Rows)
                 {
-                    if (selectConRow[MainColName[1, 0]].ToString() == "")
+                    if (selectConRow[baseTableConverParameter.TaglistColName[1, 0]].ToString() == "")
                         break;
-                    string sSystem = selectConRow[MainColName[1, 0]].ToString();
-                    string sPlcLink = selectConRow[MainColName[1, 1]].ToString();
-                    string sEquipmentLine = selectConRow[MainColName[1, 3]].ToString();
-                    string sEquipmentElement = selectConRow[MainColName[1, 4]].ToString();
-                    string sEquipmentElementtype = selectConRow[MainColName[1, 5]].ToString();
-                    string sSingleMapping1 = selectConRow[MainColName[1, 6]].ToString();
-                    string sSignalAddress1 = selectConRow[MainColName[1, 7]].ToString();
-                    string sCommandMapping = selectConRow[MainColName[1, 8]].ToString();
-                    string sCommandAddress = selectConRow[MainColName[1, 9]].ToString();
-                    string sRunningHours = selectConRow[MainColName[1, 10]].ToString();
+                    string sSystem = selectConRow[baseTableConverParameter.TaglistColName[1, 0]].ToString();
+                    string sPlcLink = selectConRow[baseTableConverParameter.TaglistColName[1, 1]].ToString();
+                    string sEquipmentLine = selectConRow[baseTableConverParameter.TaglistColName[1, 3]].ToString();
+                    string sEquipmentElement = selectConRow[baseTableConverParameter.TaglistColName[1, 4]].ToString();
+                    string sEquipmentElementtype = selectConRow[baseTableConverParameter.TaglistColName[1, 5]].ToString();
+                    string sSingleMapping1 = selectConRow[baseTableConverParameter.TaglistColName[1, 6]].ToString();
+                    string sSignalAddress1 = selectConRow[baseTableConverParameter.TaglistColName[1, 7]].ToString();
+                    string sCommandMapping = selectConRow[baseTableConverParameter.TaglistColName[1, 8]].ToString();
+                    string sCommandAddress = selectConRow[baseTableConverParameter.TaglistColName[1, 9]].ToString();
+                    string sRunningHours = selectConRow[baseTableConverParameter.TaglistColName[1, 10]].ToString();
                     if (bSingle && (sSignalAddress1 != ""))
                     {
-                        var SingleCounts = SecondTable0.AsEnumerable().Count(p => p.Field<string>(SecondColName[1, 0]) == sSingleMapping1);
-                        DataRow[] OPCDataRows = OPCDataRow(SingleCounts, sTemp0, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sSignalAddress1);
+                        var SingleCounts = baseTableConverParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseTableConverParameter.BasefileColName[1, 0]) == sSingleMapping1);
+                        DataRow[] OPCDataRows = OPCDataRow(SingleCounts,baseTableConverParameter.Stemp5, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sSignalAddress1);
                         foreach (DataRow dr in OPCDataRows)
                             dOPCdataTable.Rows.Add(dr);
                     }
                     if (bCommand && (sCommandAddress != ""))
                     {
-                        var CommandCounts = SecondTable1.AsEnumerable().Count(p => p.Field<string>(SecondColName[2, 0]) == sCommandMapping);
-                        DataRow[] OPCDataRows = OPCDataRow(CommandCounts, sTemp1, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sCommandAddress);
+                        var CommandCounts = baseTableConverParameter.CommandMappingTable.AsEnumerable().Count(p => p.Field<string>(baseTableConverParameter.BasefileColName[2, 0]) == sCommandMapping);
+                        DataRow[] OPCDataRows = OPCDataRow(CommandCounts, baseTableConverParameter.Stemp6, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sCommandAddress);
                         foreach (DataRow dr in OPCDataRows)
                             dOPCdataTable.Rows.Add(dr);
                     }
                     if (bHour && (sRunningHours != ""))
                     {
                         int iHourCounts = 32;
-                        DataRow[] OPCDataRows = OPCDataRow(iHourCounts, sTemp2, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sRunningHours);
+                        DataRow[] OPCDataRows = OPCDataRow(iHourCounts, baseTableConverParameter.Stemp7, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sRunningHours);
                         foreach (DataRow dr in OPCDataRows)
                             dOPCdataTable.Rows.Add(dr);
                     }
@@ -125,7 +98,7 @@ namespace BGFusion_TextBlockCopy
             return dOPCdataTable;
         }
 
-        //根据Mapping判断需要的数据地址条数，生成对应的DataRow.
+        //生成对应的OPCData行数组
         private DataRow[] OPCDataRow(int iByteCounts,string sTemp, string sSystem,string sPlcLink,string sEquipmentLine,
             string sEquipmentElement,string sAddress)
         {
@@ -186,19 +159,28 @@ namespace BGFusion_TextBlockCopy
             return drs;
         }
 
-        //计算地址偏移
-        private string soffsetAddress(string sAddress,int bOffset)
+        public override string sOutData()
         {
-            int iEndAddress;
-            int iposition = sAddress.IndexOf("DBD") != -1 ? 
-                sAddress.IndexOf("DBD") : sAddress.IndexOf("DBB") != -1 ? 
-                sAddress.IndexOf("DBB") : sAddress.IndexOf("DBW") != -1 ? 
-                sAddress.IndexOf("DBW") :-1;
-            string sUpAddress = sAddress.Substring(0, iposition +3);
-            bool res  = Int32.TryParse(sAddress.Substring(iposition +3),out iEndAddress);
-            iEndAddress = iEndAddress + bOffset;
-            string sNewAddr = sUpAddress + iEndAddress;
-            return sNewAddr;
+            throw new NotImplementedException();
+        }
+
+        public override int iOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override List<List<string>> lOutData()
+        {
+            throw new NotImplementedException();
+        }
+        public override void OutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Dictionary<string, string> diOutData()
+        {
+            throw new NotImplementedException();
         }
     }
 }

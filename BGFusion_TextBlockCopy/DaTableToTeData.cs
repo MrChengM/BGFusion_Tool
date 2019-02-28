@@ -9,48 +9,27 @@ using System.Windows;
 
 namespace BGFusion_TextBlockCopy
 {
-    public class DaTableToTeData //数据表转换为测试singlename；
+    public class DaTableToTeData:BaseTableConvert //数据表转换为测试singlename；
     {
-        //public EnumerableRowCollection<DataRow> MainRows { get; set; }
-        private EnumerableRowCollection<DataRow> MainRows;
-        //public string[,] MainColName{ get; set; }
-        private string[,] MainColName;
-        //public int ViewNum { get; set; }
-        private int ViewNum;
-        //public string sTemp0 { get; set; }
-        private string sTemp0;
-        //public string sTemp1 { get; set; }
-        private string sTemp1;
-        //public string sTemp2 { get; set; }
-        private string sTemp2;
-        //public DataTable SecondTable { get; set; }
-        private DataTable SecondTable;
-        //public string[,] SecondColName { get; set; }
-        private string[,] SecondColName;
-        public DaTableToTeData(EnumerableRowCollection<DataRow> mainRows, string[,] mainColName, int ViewNum, string temp0, string temp1, string temp2, DataTable secondTable, string[,] secondColName)
+        public DaTableToTeData(DaTableConverParameter ConverParameter)
         {
-            this.MainRows = mainRows;
-            this.MainColName = mainColName;
-            this.ViewNum = ViewNum;
-            this.sTemp0 = temp0;
-            this.sTemp1 = temp1;
-            this.sTemp2 = temp2;
-            this.SecondTable = secondTable;
-            this.SecondColName = secondColName;
+            this.baseTableConverParameter = ConverParameter;
+
         }
-        public string sOutData()
+        public override string sOutData()
         {
             string sOutPutSingleDatas = null;
             List<string> sOutPutSingleData = new List<string>();
             string sAtiveSingle = null; //使能信号
             string sLinesSingle = null;//线信号
             string sElementSingle = null;//设备信号
+            EnumerableRowCollection<DataRow> MainRows = LinqToTable();
             try
             {
                 var PlcGroups = from p in MainRows
-                                group p by new { system = p.Field<string>(MainColName[1, 0]), plc = p.Field<string>(MainColName[1, 1]) } into pp
+                                group p by new { system = p.Field<string>(baseTableConverParameter.TaglistColName[1, 0]), plc = p.Field<string>(baseTableConverParameter.TaglistColName[1, 1]) } into pp
                                 select pp;
-                switch (ViewNum)
+                switch (baseTableConverParameter.ViewNum)
                 {
                     case 0:
                         break;
@@ -59,11 +38,11 @@ namespace BGFusion_TextBlockCopy
                         {
                             string sSystem = plcGroup.Key.system;
                             string sPlcLink = plcGroup.Key.plc;
-                            sAtiveSingle = string.Format(sTemp0, sSystem, sPlcLink);
+                            sAtiveSingle = string.Format(baseTableConverParameter.Stemp0, sSystem, sPlcLink);
                             sOutPutSingleData.Add(sAtiveSingle);
                         }
                         var ELementLineGroups = from p in MainRows
-                                                group p by new { system = p.Field<string>(MainColName[1, 0]), plc = p.Field<string>(MainColName[1, 1]), line = p.Field<string>(MainColName[1, 3]), view = p.Field<string>(MainColName[1, 16]) } into pp
+                                                group p by new { system = p.Field<string>(baseTableConverParameter.TaglistColName[1, 0]), plc = p.Field<string>(baseTableConverParameter.TaglistColName[1, 1]), line = p.Field<string>(baseTableConverParameter.TaglistColName[1, 3]), view = p.Field<string>(baseTableConverParameter.TaglistColName[1, 16]) } into pp
                                                 select pp;
                         foreach (var ELementLineGroup in ELementLineGroups)
                         {
@@ -71,21 +50,21 @@ namespace BGFusion_TextBlockCopy
                             string sPlcLink = ELementLineGroup.Key.plc;
                             string sEquipmentLine = ELementLineGroup.Key.line;
                             string sAreaLevel2view = ELementLineGroup.Key.view;
-                            //sAtiveSingle = string.Format(sTemp0, sSystem, sPlcLink);
+                            //sAtiveSingle = string.Format(baseTableConverParameter.Stemp0, sSystem, sPlcLink);
                             //sOutPutSingleData.Add(sAtiveSingle);
-                            sLinesSingle = string.Format(sTemp1, sSystem, sPlcLink, sEquipmentLine, sPlcLink, sAreaLevel2view);
+                            sLinesSingle = string.Format(baseTableConverParameter.Stemp1, sSystem, sPlcLink, sEquipmentLine, sPlcLink, sAreaLevel2view);
                             sOutPutSingleData.Add(sLinesSingle);
                             foreach (DataRow selectConRow in ELementLineGroup)
                             {
                                 int iCounts;
                                 string sEquipmentElement = selectConRow[4].ToString();
                                 string sSingleMapping1 = selectConRow[6].ToString();
-                                var SingleCounts = SecondTable.AsEnumerable().Count(p => p.Field<string>(SecondColName[1, 0]) == sSingleMapping1);
+                                var SingleCounts = baseTableConverParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseTableConverParameter.BasefileColName[1, 0]) == sSingleMapping1);
                                 //float  dCounts = (float)SingleCounts /32;
                                 iCounts = (int)Math.Ceiling((float)SingleCounts / 32);
                                 for (int i = 1; i <= iCounts; i++)
                                 {
-                                    sElementSingle = string.Format(sTemp2, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i);
+                                    sElementSingle = string.Format(baseTableConverParameter.Stemp2, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i);
                                     sOutPutSingleData.Add(sElementSingle);
                                 }
                             }
@@ -96,7 +75,7 @@ namespace BGFusion_TextBlockCopy
                         {
                             string sSystem = plcGroup.Key.system;
                             string sPlcLink = plcGroup.Key.plc;
-                            sAtiveSingle = string.Format(sTemp0, sSystem, sPlcLink);
+                            sAtiveSingle = string.Format(baseTableConverParameter.Stemp0, sSystem, sPlcLink);
                             sOutPutSingleData.Add(sAtiveSingle);
                             foreach (DataRow selectConRow in plcGroup)
                             {
@@ -106,12 +85,12 @@ namespace BGFusion_TextBlockCopy
                                 string sEquipmentElement = selectConRow[4].ToString();
                                 string sSingleMapping1 = selectConRow[6].ToString();
                                 string sAreaLevel2view = selectConRow[16].ToString();
-                                var SingleCounts = SecondTable.AsEnumerable().Count(p => p.Field<string>(SecondColName[1, 0]) == sSingleMapping1);
+                                var SingleCounts = baseTableConverParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseTableConverParameter.BasefileColName[1, 0]) == sSingleMapping1);
                                 //float dCounts = SingleCounts / 32;
                                 iCounts = (int)Math.Ceiling((float)SingleCounts / 32);
                                 for (int i = 1; i <= iCounts; i++)
                                 {
-                                    sElementSingle = string.Format(sTemp2, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i);
+                                    sElementSingle = string.Format(baseTableConverParameter.Stemp2, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i);
                                     sOutPutSingleData.Add(sElementSingle);
                                 }
                             }
@@ -140,6 +119,31 @@ namespace BGFusion_TextBlockCopy
                 MessageBox.Show("数据处理错误：" + ex.Message);
             }
             return sOutPutSingleDatas;
+        }
+
+        public override int iOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override List<List<string>> lOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override DataTable dOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Dictionary<string, string> diOutData()
+        {
+            throw new NotImplementedException();
         }
     }
 

@@ -27,13 +27,12 @@ namespace BGFusion_TextBlockCopy
     public partial class MainWindow : Window
     {
         //public static string sInPutText;
-        public static string[] sInPutList;
+        //public static string[] sInPutList;
         //public static string sOutPutText;
-        public static string[] sOutPutlist;
+        //public static string[] sOutPutlist;
         //Binding实例定义
-        public static  DataString[] dBinding = new DataString[100];
-       
-       //Excel 数据表处理
+        Dictionary<string, DataString> UIdictionary = new Dictionary<string, DataString>();
+        //Excel 数据表处理
         public string sPath;
         ///public DataSet MyExcelData;
         public DataSet ConveyorExcelData;
@@ -55,9 +54,9 @@ namespace BGFusion_TextBlockCopy
         public string[,] sBaseListColName ;
 
         //输出变量定义
-        public string  sEquipmentElement="";
-        public string  sPLCLink = "";
-        public string sEquipmentLine = "";
+        //public string  sEquipmentElement="";
+        //public string  sPLCLink = "";
+        //public string sEquipmentLine = "";
 
         //TestData输出模板
         public string sTestDaActive;
@@ -75,107 +74,175 @@ namespace BGFusion_TextBlockCopy
 
         public MainWindow()
         {
+            InitializeComponent();
+            InitializeViewBinding();
+            InitializeParametr();
+
+        }
+        void InitializeViewBinding()
+        {
+            //Gui对应的画面名
+            string UIKey = "ViewNameteBox";
+            string sString = "PVG_BHS_S1_LA_0002_0003";
+            bool? bBool=null ;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            ViewNameteBox.DataContext = UIdictionary[UIKey];
+
+            //输入的taglist
+            UIKey = "InPutFilePathteBox";
+            sString = null;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            InPutFilePathteBox.DataContext = UIdictionary[UIKey];
+
+            //输入的BaseList
+            UIKey = "BaseListFilePathTeBox";
+            sString = null;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            BaseListFilePathTeBox.DataContext = UIdictionary[UIKey];
+
+            //L1 L2画面选择
+            //L0raButton.DataContext = dBinding[3];
+            UIKey = "L1raButton";
+            sString = null;
+            bBool = false;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            L1raButton.DataContext = UIdictionary[UIKey];
+            UIKey = "L2raButton";
+            bBool = true;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            L2raButton.DataContext = UIdictionary[UIKey];
+
+            //XAML代码生成
+            UIKey = "TeBlackraButton";
+            bBool = true;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            TeBlackraButton.DataContext = UIdictionary[UIKey];
+            UIKey = "ElementradioButton";
+            bBool = false;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            ElementradioButton.DataContext = UIdictionary[UIKey];
+            UIKey = "XMLOutPutFilePathteBox";
+            bBool = null;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            XMLOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
+            UIKey = "XMLOutPutDatasteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            XMLOutPutDatasteBox.DataContext = UIdictionary[UIKey];
+
+            //TestData测试数据生成画面
+            UIKey = "TestdataOutPutFilePathteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            TestdataOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
+            UIKey = "TestDataOutPutDatasteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            TestDataOutPutDatasteBox.DataContext = UIdictionary[UIKey];
+
+            //TestList测试表格生成画面
+            UIKey = "TestListTemplateteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            TestListTemplateteBox.DataContext = UIdictionary[UIKey];
+            UIKey = "TestListOutPutFilePathteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            TestListOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
+            UIKey = "TestListOutPutDatasteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            TestListOutPutDatasteBox.DataContext = UIdictionary[UIKey];
+
+            //Level1Data生成L1画面点数据
+            //Level1DataTemplateteBox.DataContext = dBinding[40];
+            UIKey = "Level1DataOutPutFilePathteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            Level1DataOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
+            UIKey = "Level1DataOutPutDatasteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            Level1DataOutPutDatasteBox.DataContext = UIdictionary[UIKey];
+
+            //OPC配置文件生成
+            UIKey = "OPCDataOutPutFilePathteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            OPCDataOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
+            UIKey = "OPCDataOutPutDatasteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            OPCDataOutPutDatasteBox.DataContext = UIdictionary[UIKey];
+            UIKey = "SinglecheckBox";
+            bBool = true;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            SinglecheckBox.DataContext = UIdictionary[UIKey];
+            UIKey = "CommandcheckBox";
+            bBool = true;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            CommandcheckBox.DataContext = UIdictionary[UIKey];
+            UIKey = "HourcheckBox";
+            bBool = false;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            HourcheckBox.DataContext = UIdictionary[UIKey];
+
+            //AlarmLinkConf AlarmList配置表生成
+            UIKey = "OPCInforaButton";
+            bBool = true;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            OPCInforaButton.DataContext = UIdictionary[UIKey];
+            UIKey = "AlarmListradioButton";
+            bBool = false;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            AlarmListradioButton.DataContext = UIdictionary[UIKey];
+            UIKey = "ConfOutPutFilePathteBox";
+            bBool = null;
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            ConfOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
+            UIKey = "ConfOutPutDatasteBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            ConfOutPutDatasteBox.DataContext = UIdictionary[UIKey];
+
+        }
+        void InitializeParametr()
+        {        
+
             try
             {
-                InitializeComponent();
-
-                //ViewsBinding
-                //WPF初始化
-                for (int i = 0; i < 100; i++)
-                {
-                    dBinding[i] = new DataString();
-                }
-                //默认View为Level2，值为PVG_BHS_S1_LA_0002_0003，
-                dBinding[0].MyString = "PVG_BHS_S1_LA_0002_0003";
-                dBinding[4].Mybool = false;
-                dBinding[5].Mybool = true;
-
-                //默认生成的XML为Textblack
-                dBinding[10].Mybool = true;
-                dBinding[11].Mybool = false;
-
-                //默认生成OPC数据包含：Single/Commad/Hour
-                dBinding[52].Mybool = true;
-                dBinding[53].Mybool = true;
-                dBinding[54].Mybool = true;
-                //默认生成AlarmCofig数据包含：OPCInfo
-                dBinding[60].Mybool = true;
-
-                //Genenarl
-                ViewNameteBox.DataContext = dBinding[0];
-                InPutFilePathteBox.DataContext = dBinding[1];
-                BaseListFilePathTeBox.DataContext = dBinding[2];
-                //L0raButton.DataContext = dBinding[3];
-                L1raButton.DataContext = dBinding[4];
-                L2raButton.DataContext = dBinding[5];
-                //XML
-                TeBlackraButton.DataContext = dBinding[10];
-                ElementradioButton.DataContext = dBinding[11];
-                XMLOutPutFilePathteBox.DataContext = dBinding[12];
-                XMLOutPutDatasteBox.DataContext = dBinding[13];
-                //TestData
-                TestdataOutPutFilePathteBox.DataContext = dBinding[20];
-                TestDataOutPutDatasteBox.DataContext = dBinding[21];
-                //TestList
-                TestListTemplateteBox.DataContext = dBinding[30];
-                TestListOutPutFilePathteBox.DataContext = dBinding[31];
-                TestListOutPutDatasteBox.DataContext = dBinding[32];
-
-                //Level1Data
-                //Level1DataTemplateteBox.DataContext = dBinding[40];
-                Level1DataOutPutFilePathteBox.DataContext = dBinding[41];
-                Level1DataOutPutDatasteBox.DataContext = dBinding[42];
-
-                //OPCData
-                OPCDataOutPutFilePathteBox.DataContext = dBinding[50];
-                OPCDataOutPutDatasteBox.DataContext = dBinding[51];
-                SinglecheckBox.DataContext = dBinding[52];
-                CommandcheckBox.DataContext = dBinding[53];
-                HourcheckBox.DataContext = dBinding[54];
-
-                //AlarmLinkConf
-                OPCInforaButton.DataContext = dBinding[60];
-                AlarmListradioButton.DataContext = dBinding[61];
-                ConfOutPutFilePathteBox.DataContext = dBinding[62];
-                ConfOutPutDatasteBox.DataContext = dBinding[63];
+                string sTableName;
                 //配置参数初始化
                 DataSet dConfigTable = new DataSet();
-                string sConFilePath =ConfigurationSettings.AppSettings["Config.FilePath"];
+                string sConFilePath = ConfigurationSettings.AppSettings["Config.FilePath"];
                 //ConveyorSheetName初始化
-                dConfigTable =ExcelFunction.ExcelRead(sConFilePath);
+                dConfigTable = ExcelFunction.ExcelRead(sConFilePath);
                 //Conveyor Sheet Name & Conveyor Column Name初始化
-                sTableToStringArrary(dConfigTable.Tables["Conveyor$"], out sConveyorSheetName, out sConveyorColName);
+                sTableName = ConfigurationSettings.AppSettings["ConveyorTaName"];
+                sTableToStringArrary(dConfigTable.Tables[sTableName], out sConveyorSheetName, out sConveyorColName);
                 //BaseList Sheet Name & Conveyor Column Name初始化
-                sTableToStringArrary(dConfigTable.Tables["BaseList$"], out sBaseListSheetName, out sBaseListColName);
+                sTableName = ConfigurationSettings.AppSettings["BaseTaName"]; 
+                sTableToStringArrary(dConfigTable.Tables[sTableName], out sBaseListSheetName, out sBaseListColName);
 
                 //TestDataTemplate
-                sTestDaActive = (string)dConfigTable.Tables["TestDataTemplate$"].Rows[0][0];
-                sTestDaTemplateL1 = (string)dConfigTable.Tables["TestDataTemplate$"].Rows[1][0];
-                sTestDaTemplateL2 = (string)dConfigTable.Tables["TestDataTemplate$"].Rows[2][0];
+                sTableName = ConfigurationSettings.AppSettings["TestDaTeTaName"] ;
+                sTestDaActive = (string)dConfigTable.Tables[sTableName].Rows[0][0];
+                sTestDaTemplateL1 = (string)dConfigTable.Tables[sTableName].Rows[1][0];
+                sTestDaTemplateL2 = (string)dConfigTable.Tables[sTableName].Rows[2][0];
 
                 //XmlTemplate
-                sXmlTextBlock = (string)dConfigTable.Tables["XmlTemplate$"].Rows[0][0];
-                sXmlElement = (string)dConfigTable.Tables["XmlTemplate$"].Rows[1][0];
+                sTableName = ConfigurationSettings.AppSettings["XmlTeTaName"]; 
+                sXmlTextBlock = (string)dConfigTable.Tables[sTableName].Rows[0][0];
+                sXmlElement = (string)dConfigTable.Tables[sTableName].Rows[1][0];
 
                 //L1AlarmDataTemplate
-                Level1DataExcelData = dConfigTable.Tables["L1AlarmDataTemple$"];
+                sTableName = ConfigurationSettings.AppSettings["L1AlmDaTeTaName"]; 
+                Level1DataExcelData = dConfigTable.Tables[sTableName];
 
                 //OPCDataTemplate
-                sOPCDaSingleTemplate = (string)dConfigTable.Tables["OPCDataTemplate$"].Rows[0][0];
-                sOPCDaCommandTemplate = (string)dConfigTable.Tables["OPCDataTemplate$"].Rows[1][0];
-                sOPCDaHourTemplate = (string)dConfigTable.Tables["OPCDataTemplate$"].Rows[2][0];
+                sTableName = ConfigurationSettings.AppSettings["OpcDaTeTaName"]; 
+                sOPCDaSingleTemplate = (string)dConfigTable.Tables[sTableName].Rows[0][0];
+                sOPCDaCommandTemplate = (string)dConfigTable.Tables[sTableName].Rows[1][0];
+                sOPCDaHourTemplate = (string)dConfigTable.Tables[sTableName].Rows[2][0];
 
                 //dConfigTable.Clear();
 
-
             }
-            catch (Exception ex)
+            catch
             {
-                //MessageBox.Show("Config Error,Initialize fail： " + ex.Message);
-                //Application.Current.Shutdown();
-            }
 
+            }
         }
+
         /// <summary>
         /// DataTable提取例表名及数据二维数组
         /// </summary>
@@ -235,43 +302,7 @@ namespace BGFusion_TextBlockCopy
             }
             return dExcelDataSet;
         }
-        /// <summary>
-        ///Table数据筛选
-        /// </summary>
-        private EnumerableRowCollection <DataRow> LinqToTable()
-        {
 
-            //ConveyorRow筛选
-            
-            try
-            {
-                string sSelectConveyorColName;
-                string sSelectColVal;
-                if (dBinding[4].Mybool == true)
-                {
-                    sSelectConveyorColName = sConveyorColName[1, 15];
-                }
-                else
-                {
-                    sSelectConveyorColName = sConveyorColName[1, 16];
-                }
-                sSelectColVal = dBinding[0].MyString;
-
-                var ConveyorRows = from p in ConveyorExcelData.Tables[sConveyorSheetName[1]].AsEnumerable()
-                                   where p.Field<string>(sSelectConveyorColName) == sSelectColVal
-                                   select p;
-                
-                return ConveyorRows;
-
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show("Query the Conveyor Excel error: " + ex.Message);
-                return null;
-            }
-            
-          
-        }
         /// <summary>
         /// 数据输出保存
         /// </summary>
@@ -305,10 +336,11 @@ namespace BGFusion_TextBlockCopy
         /// <param name="e"></param>
         private void Inputbutton_Click(object sender, RoutedEventArgs e)
         {
-            string sFilePath = dBinding[1].MyString;
+            string UIKey = "InPutFilePathteBox";
+            string sFilePath = UIdictionary[UIKey].MyString;
             ConveyorExcelData = dDataLoad(ref sFilePath);
-            dBinding[1].MyString = sFilePath;
-            if (ConveyorExcelData != null)  SelectConRows = LinqToTable(); 
+            UIdictionary[UIKey].MyString = sFilePath;
+            //if (ConveyorExcelData != null)  SelectConRows = LinqToTable(); 
       
          }
         /// <summary>
@@ -318,9 +350,10 @@ namespace BGFusion_TextBlockCopy
         /// <param name="e"></param>
         private void BaseListbutton_Click(object sender, RoutedEventArgs e)
         {
-            string sFilePath = dBinding[2].MyString;
+            string UIKey = "BaseListFilePathTeBox";
+            string sFilePath = UIdictionary[UIKey].MyString;
             BaseListExceLData = dDataLoad(ref sFilePath);
-            dBinding[2].MyString = sFilePath;
+            UIdictionary[UIKey].MyString = sFilePath;
         }
         /// <summary>
         /// WPF XML数据输出
@@ -330,36 +363,33 @@ namespace BGFusion_TextBlockCopy
         private void XMLOutputbutton_Click(object sender, RoutedEventArgs e)
         {
             string sFileStyle = "Text documents (.txt)|*.txt";
-            string sFilePath = dBinding[12].MyString;
-            int ViewNumber = 0;
-            int XmlChange = 0;
+
+            string UIKey = "XMLOutPutFilePathteBox";
+            string UIKey1 = "XMLOutPutDatasteBox";
+            string UIKey4= "TeBlackraButton";
+            string UIKey5= "ElementradioButton";
+            string sFilePath = UIdictionary[UIKey].MyString;
+
+            BaseFactory factory = new BaseFactory();
+            factory.BaseFactoryParameter = CreateConvertParameter();
+            if (UIdictionary[UIKey4].Mybool == true)
+            {
+                factory.iXmlType = 1;
+            }
+            else if (UIdictionary[UIKey5].Mybool == true)
+            {
+                factory.iXmlType = 2;
+            }
             try
             {
-                if (dBinding[4].Mybool == true)
-                {
-                    ViewNumber = 1;
-                }
-                else if (dBinding[5].Mybool == true)
-                {
-                    ViewNumber = 2;
-                }
-                if (dBinding[10].Mybool == true)
-                {
-                    XmlChange = 1;
-                }
-                else if (dBinding[11].Mybool == true)
-                {
-                    XmlChange = 2;
-                }
                 bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
-                    DaTableToTeXml XmlData = new DaTableToTeXml(SelectConRows, sConveyorColName, ViewNumber, XmlChange, sXmlTextBlock, sXmlElement, BaseListExceLData.Tables[sBaseListSheetName[1]], sBaseListColName);
-                    dBinding[12].MyString = sFilePath;
-                    dBinding[13].MyString = XmlData.sOutData();
-                    System.IO.File.WriteAllText(@sFilePath, dBinding[13].MyString, Encoding.UTF8);
+                    BaseTableConvert XmlData = factory.CreatTableConvert("ToXml");
+                    UIdictionary[UIKey].MyString = sFilePath;
+                    UIdictionary[UIKey1].MyString = XmlData.sOutData();
+                    System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
-
             }
             catch(Exception ex)
             {
@@ -375,27 +405,22 @@ namespace BGFusion_TextBlockCopy
         /// <param name="e"></param>
         private void TestDataOutputbutton_Click(object sender, RoutedEventArgs e)
         {
+            string sFileStyle = "SIG File(.signaltester) | *.signaltester";
+            string UIKey = "TestdataOutPutFilePathteBox";
+            string UIKey1 = "TestDataOutPutDatasteBox";
+            string sFilePath = UIdictionary[UIKey].MyString;
+            BaseFactory factory = new BaseFactory();
+            factory.BaseFactoryParameter = CreateConvertParameter();
             try
             {
-                string sFileStyle = "SIG File(.signaltester) | *.signaltester";
-                string sFilePath = dBinding[20].MyString;
-                int ViewNumber = 0;
 
-                if (dBinding[4].Mybool == true)
-                {
-                    ViewNumber = 1;
-                }
-                else if (dBinding[5].Mybool == true)
-                {
-                    ViewNumber = 2;
-                }
                 bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
-                    DaTableToTeData TestData = new DaTableToTeData(SelectConRows, sConveyorColName, ViewNumber, sTestDaActive, sTestDaTemplateL1, sTestDaTemplateL2, BaseListExceLData.Tables[sBaseListSheetName[1]], sBaseListColName);
-                    dBinding[20].MyString = sFilePath;
-                    dBinding[21].MyString = TestData.sOutData();
-                    System.IO.File.WriteAllText(@sFilePath, dBinding[21].MyString, Encoding.UTF8);
+                    BaseTableConvert TestData =  factory.CreatTableConvert("ToTeData");
+                    UIdictionary[UIKey].MyString = sFilePath;
+                    UIdictionary[UIKey1].MyString = TestData.sOutData();
+                    System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
             }
             catch(Exception ex)
@@ -412,41 +437,36 @@ namespace BGFusion_TextBlockCopy
         /// <param name="e"></param>
         private void TestListOutputbutton_Click(object sender, RoutedEventArgs e)
         {
+            string sFileStyle = "Excel(.xlsx) | *.xlsx|Excel(.xls) | *.xls";
+            string UIKey = "TestListOutPutFilePathteBox";
+            string UIKey1 = "TestListOutPutDatasteBox";
+            string sFilePath = UIdictionary[UIKey].MyString;
+            BaseFactory factory = new BaseFactory();
+            factory.BaseFactoryParameter = CreateConvertParameter();
+
             try
             {
-                string sFileStyle = "Excel(.xlsx) | *.xlsx|Excel(.xls) | *.xls";
-                string sFilePath = dBinding[31].MyString;
-                int ViewNumber = 0;
 
-                if (dBinding[4].Mybool == true)
-                {
-                    ViewNumber = 1;
-                }
-                else if (dBinding[5].Mybool == true)
-                {
-                    ViewNumber = 2;
-                }
              bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
-                    DaTableToTeList ListData = new DaTableToTeList(SelectConRows, sConveyorColName, ViewNumber, BaseListExceLData.Tables[sBaseListSheetName[1]], sBaseListColName);
-                    dBinding[31].MyString = sFilePath;
+                    BaseTableConvert ListData = factory.CreatTableConvert("ToTeList");
+                    UIdictionary[UIKey].MyString = sFilePath;
                     string sOutPutLiData = null;
-                    List<ListData> TeListDatas = new List<ListData>();
-                    ListData.OutLiData(out TeListDatas);
-                    foreach (ListData listdata in TeListDatas)
+                    Dictionary<string, string> telistDictionary = ListData.diOutData();
+                    foreach ( KeyValuePair<string,string> listdata in telistDictionary)
                     {
                         if (sOutPutLiData == null)
                         {
-                            sOutPutLiData = listdata.sColName + " " + listdata.sColGroup;
+                            sOutPutLiData = listdata.Key + " " + listdata.Value;
                         }
                         else
                         {
-                            sOutPutLiData = sOutPutLiData + "\r" + listdata.sColName + " " + listdata.sColGroup;
+                            sOutPutLiData = sOutPutLiData + "\r" + listdata.Key + " " + listdata.Value;
                         }
                     }
-                    dBinding[32].MyString = sOutPutLiData;
-                    ExcelFunction.ExcelWrite(dBinding[30].MyString,sFilePath, TeListDatas);
+                    UIdictionary[UIKey1].MyString= sOutPutLiData;
+                    ExcelFunction.ExcelWrite(UIdictionary[UIKey1].MyString, sFilePath, telistDictionary);
                 }
             }
             catch(Exception ex)
@@ -463,9 +483,10 @@ namespace BGFusion_TextBlockCopy
         /// <param name="e"></param>
         private void TestListTemplateButton_Click(object sender, RoutedEventArgs e)
         {
-            string sFilePath = dBinding[30].MyString;
+            string UIKey = "TestListTemplateteBox";
+            string sFilePath = UIdictionary[UIKey].MyString;
             TemlateExcelData = dDataLoad(ref sFilePath);
-            dBinding[30].MyString = sFilePath;
+            UIdictionary[UIKey].MyString = sFilePath;
         }
 
         private void Level1DataTemplateButton_Click(object sender, RoutedEventArgs e)
@@ -478,16 +499,21 @@ namespace BGFusion_TextBlockCopy
         private void Level1DataOutputbutton_Click(object sender, RoutedEventArgs e)
         {
             string sFileStyle = "Text documents (.txt)|*.txt";
-            string sFilePath = dBinding[41].MyString;
+            string UIKey = "Level1DataOutPutFilePathteBox";
+            string UIKey1 = "Level1DataOutPutDatasteBox";
+            string sFilePath = UIdictionary[UIKey].MyString;
+            BaseFactory factory = new BaseFactory();
+            factory.BaseFactoryParameter = CreateConvertParameter();
+            factory.TempTable = Level1DataExcelData;
             try
             {
                 bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
-                    DaTableToLevel1Data Level1Data = new DaTableToLevel1Data(SelectConRows, sConveyorColName, BaseListExceLData.Tables[sBaseListSheetName[1]], sBaseListColName, Level1DataExcelData);
-                    dBinding[41].MyString = sFilePath;
-                    dBinding[42].MyString = Level1Data.sOutData();
-                    System.IO.File.WriteAllText(@sFilePath, dBinding[42].MyString, Encoding.UTF8);
+                    BaseTableConvert Level1Data =  factory.CreatTableConvert("ToLevel1Data");
+                    UIdictionary[UIKey].MyString = sFilePath;
+                    UIdictionary[UIKey1].MyString = Level1Data.sOutData();
+                    System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
 
             }
@@ -504,21 +530,30 @@ namespace BGFusion_TextBlockCopy
         {
             //string sFileStyle = "Excel(.xlsx) | *.xlsx|Excel(.xls) | *.xls";
             string sFileStyle = "Excel(.csv) | *.csv";
-            string sFilePath = dBinding[50].MyString;
+            string UIKey = "OPCDataOutPutFilePathteBox";
+            string UIKey1 = "OPCDataOutPutDatasteBox";
+            string UIKey2 = "SinglecheckBox";
+            string UIKey3 = "CommandcheckBox";
+            string UIKey4 = "HourcheckBox";
+            string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
+
+            BaseFactory factory = new BaseFactory();
+            factory.BaseFactoryParameter = CreateConvertParameter();
+            factory.bSingle = (bool)UIdictionary[UIKey2].Mybool;
+            factory.bCommand = (bool)UIdictionary[UIKey3].Mybool;
+            factory.bHours = (bool)UIdictionary[UIKey4].Mybool;
+
             try
             {
                 if (bOpenEnable)
                 {
-                    DaTableToOPCData OPCData = new DaTableToOPCData(ConveyorExcelData.Tables[sConveyorSheetName[1]],
-                        BaseListExceLData.Tables[sBaseListSheetName[1]], BaseListExceLData.Tables[sBaseListSheetName[2]],
-                        sConveyorColName, sBaseListColName, sOPCDaSingleTemplate, sOPCDaCommandTemplate, sOPCDaHourTemplate,
-                        dBinding[52].Mybool, dBinding[53].Mybool, dBinding[54].Mybool);
+                    BaseTableConvert OPCData = factory.CreatTableConvert("ToOPCData");
                     DataTable dt = OPCData.dOutData();
-                    dBinding[50].MyString = sFilePath;
+                    UIdictionary[UIKey].MyString = sFilePath;
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
                     CsvFunction.CsvWirte(sFilePath, dt);
-                    dBinding[51].MyString = DataConvert.ToString(dt);
+                    UIdictionary[UIKey1].MyString = DataConvert.ToString(dt);
                 }
             }
             catch(Exception ex)
@@ -532,57 +567,42 @@ namespace BGFusion_TextBlockCopy
         private void ConfOutputbutton_Click(object sender, RoutedEventArgs e)
         {
             string sFileStyle = "Excel(.xml) | *.xml";
-            string sFilePath = dBinding[62].MyString;
+            string UIKey = "ConfOutPutFilePathteBox";
+            string UIKey1 = "ConfOutPutDatasteBox";
+            string UIKey2 = "OPCInforaButton";
+            string UIKey3 = "AlarmListradioButton";
+            string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
-            List<string> lListColName = new List<string>();
-            if (dBinding[60].Mybool )
+
+            BaseFactory factory = new BaseFactory();
+            factory.BaseFactoryParameter = CreateConvertParameter();
+            factory.bOPCIfo=(bool)UIdictionary[UIKey2].Mybool;
+            factory.bConvAlarm = (bool)UIdictionary[UIKey3].Mybool;
+            if (UIdictionary[UIKey2].Mybool==true )
             {
-                lListColName.Add("Tag Name");
-                lListColName.Add("Type");
-                lListColName.Add("Channel");
-                lListColName.Add("Device");
-                lListColName.Add("DataType");
+                string[] sListColName = { "Tag Name", "Type", "Channel", "Device", "DataType" };
+                factory.sListColName = sListColName.ToList<string>();
             }
-            if (dBinding[61].Mybool)
+            if (UIdictionary[UIKey3].Mybool==true)
             {
-                lListColName.Add("SignalName");
-                lListColName.Add("AckType");
-                lListColName.Add("AlarmTag");
-                lListColName.Add("PartName");
-                lListColName.Add("Alarm Description");
-                lListColName.Add("AlarmGroup");
-                lListColName.Add("AlarmType");
-                lListColName.Add("AlarmCategory");
-                lListColName.Add("Delayed");
-                lListColName.Add("ConditionName");
-                lListColName.Add("Priority");
-                lListColName.Add("GeneralComment");
-                lListColName.Add("Level1View");
-                lListColName.Add("Level2View");
-                lListColName.Add("Resetable");
-                lListColName.Add("ResetBit");
-                lListColName.Add("ALNumber");
-                lListColName.Add("CCTVRecording");
-                lListColName.Add("ElementID");
-                lListColName.Add("ResetSignal");
-                lListColName.Add("ExtraTagList");
-                lListColName.Add("CISData");
-                lListColName.Add("Technical");
+                string[] sListColName = { "SignalName", "AckType", "AlarmTag", "PartName",
+                    "Alarm Description", "AlarmGroup", "AlarmType", "AlarmCategory",
+                    "Delayed","ConditionName","Priority","GeneralComment","Level1View",
+                    "Level2View","Resetable","ResetBit","ALNumber","CCTVRecording",
+                    "ElementID","ResetSignal","ExtraTagList","CISData","Technical"};
+                factory.sListColName = sListColName.ToList<string>();
             }
             try
             {
                 if (bOpenEnable)
                 {
-                    DaTableToConfig dConfigData = new DaTableToConfig(ConveyorExcelData.Tables[sConveyorSheetName[1]],
-                        BaseListExceLData.Tables[sBaseListSheetName[1]], BaseListExceLData.Tables[sBaseListSheetName[2]],
-                        sConveyorColName, sBaseListColName,dBinding[60].Mybool,dBinding[61].Mybool, sOPCDaSingleTemplate, 
-                        sOPCDaCommandTemplate, lListColName);
-                    List<List<string>> dt = dConfigData.dOutData();
-                    dBinding[62].MyString = sFilePath;
+                    BaseTableConvert dConfigData = factory.CreatTableConvert("ToConfig");
+                    List<List<string>> dt = dConfigData.lOutData();
+                    UIdictionary[UIKey].MyString = sFilePath;
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
                     XmlFuction xmlFuction = new XmlFuction();
                     xmlFuction.XmlWrite(sFilePath, dt);
-                    //dBinding[63].MyString = DataConvert.ToString(dt);
+                    //UIdictionary[UIKey1].MyString = DataConvert.ToString(dt);
                 }
             }
             catch (Exception ex)
@@ -591,6 +611,39 @@ namespace BGFusion_TextBlockCopy
             }
             GC.Collect();
 
+        }
+        private DaTableConverParameter CreateConvertParameter()
+        {
+            DaTableConverParameter convertParameter = new DaTableConverParameter();
+            convertParameter.TaglistTable = ConveyorExcelData.Tables[sConveyorSheetName[1]];
+            convertParameter.TaglistColName = sConveyorColName;
+            convertParameter.SingleMappingTable = BaseListExceLData.Tables[sBaseListSheetName[1]];
+            convertParameter.CommandMappingTable = BaseListExceLData.Tables[sBaseListSheetName[2]];
+            convertParameter.BasefileColName = sBaseListColName;
+            string UIKey1 = "L1raButton";
+            string UIKey2 = "L2raButton";
+            string UIKey3 = "ViewNameteBox";
+            convertParameter.ViewName = UIdictionary[UIKey3].MyString;
+            if (UIdictionary[UIKey1].Mybool == true)
+            {
+                convertParameter.ViewNum = 1;
+            }
+            else if (UIdictionary[UIKey2].Mybool == true)
+            {
+                convertParameter.ViewNum = 2;
+            }
+            convertParameter.Stemp0 = sTestDaActive;
+            convertParameter.Stemp1 = sTestDaTemplateL1;
+            convertParameter.Stemp2 = sTestDaTemplateL2;
+
+            convertParameter.Stemp3 = sXmlTextBlock ;
+            convertParameter.Stemp4 = sXmlElement;
+
+            convertParameter.Stemp5 = sOPCDaSingleTemplate;
+            convertParameter.Stemp6 = sOPCDaCommandTemplate;
+            convertParameter.Stemp7 = sOPCDaHourTemplate;
+
+            return convertParameter;
         }
     }
 }

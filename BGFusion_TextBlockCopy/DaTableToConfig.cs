@@ -11,90 +11,62 @@ using System.Text.RegularExpressions;
 
 namespace BGFusion_TextBlockCopy
 {
-    public class DaTableToConfig
+    public class DaTableToConfig :BaseTableConvert
     {
-        private DataTable MainTable;
-        //public string[,] MainColName{ get; set; }
-        private string[,] MainColName;
-        //public int ViewNum { get; set; }
-        //private int ViewNum;
-        //public string sTemp0 { get; set; }
-        private string sTemp0;
-        //public string sTemp1 { get; set; }
-        private string sTemp1;
-        //public string sTemp2 { get; set; }
-        //private string sTemp2;
-        //public string sTemp3 { get; set; }
-        //private string sTemp3;
-        //public DataTable SecondTable { get; set; }
-        private DataTable SecondTable0;
-        //public DataTable SecondTable1 { get; set; }
-        private DataTable SecondTable1;
-        //public string[,] SecondColName { get; set; }
-        private string[,] SecondColName;
+
 
         private bool bConvAlarms;
         private bool bOPCInfo;
-
-
-
         //ALarmLinkOPCInfo.xml列名定义
         private List<string> sListColName;
 
 
 
         //初始化函数
-        public DaTableToConfig(DataTable mainTable, DataTable secondtable0, DataTable secondtable1,
-            string[,] mainColName, string[,] secondColName, bool bopcInfo, bool bconvAlarms, string stemp0, string stemp1, List<string> slistColName)
+        public DaTableToConfig(DaTableConverParameter ConverParameter,bool bconvAlarms,bool boPCInfo, List<string> slistColName)
         {
-            this.MainTable = mainTable;
-            this.MainColName = mainColName;
-            this.SecondTable0 = secondtable0;
-            this.SecondTable1 = secondtable1;
-            this.SecondColName = secondColName;
+            baseTableConverParameter = ConverParameter;
             this.bConvAlarms = bconvAlarms;
-            this.bOPCInfo = bopcInfo;
-            this.sTemp0 = stemp0;
-            this.sTemp1 = stemp1;
+            this.bOPCInfo = boPCInfo;
             this.sListColName = slistColName;
         }
 
         //生成DataTable数据
-        public List<List<string>> dOutData()
+        public override List<List<string>> lOutData()
         {
             List<List<string>> llOutData = new List<List<string>>();
             try
             {
 
                 llOutData.Add(sListColName);
-                foreach (DataRow selectConRow in MainTable.Rows)
+                foreach (DataRow selectConRow in baseTableConverParameter.TaglistTable.Rows)
                 {
 
-                    if (selectConRow[MainColName[1, 0]].ToString() == "")
+                    if (selectConRow[baseTableConverParameter.TaglistColName[1, 0]].ToString() == "")
                         break;
-                    string sSystem = selectConRow[MainColName[1, 0]].ToString();
-                    string sPlcLink = selectConRow[MainColName[1, 1]].ToString();
-                    string sEquipmentLine = selectConRow[MainColName[1, 3]].ToString();
-                    string sEquipmentElement = selectConRow[MainColName[1, 4]].ToString();
-                    string sEquipmentElementtype = selectConRow[MainColName[1, 5]].ToString();
-                    string sSingleMapping1 = selectConRow[MainColName[1, 6]].ToString();
-                    string sSignalAddress1 = selectConRow[MainColName[1, 7]].ToString();
-                    string sCommandMapping = selectConRow[MainColName[1, 8]].ToString();
-                    string sCommandAddress = selectConRow[MainColName[1, 9]].ToString();
-                    string sRunningHours = selectConRow[MainColName[1, 10]].ToString();
-                    string sDisplayName = selectConRow[MainColName[1, 12]].ToString();
-                    string sAlarmTree = selectConRow[MainColName[1, 14]].ToString();
-                    string sLevel1View = selectConRow[MainColName[1, 15]].ToString();
-                    string sLevel2View = selectConRow[MainColName[1, 16]].ToString();
-                    var SingleCounts = SecondTable0.AsEnumerable().Count(p => 
-                    p.Field<string>(SecondColName[1, 0]) == sSingleMapping1);
+                    string sSystem = selectConRow[baseTableConverParameter.TaglistColName[1, 0]].ToString();
+                    string sPlcLink = selectConRow[baseTableConverParameter.TaglistColName[1, 1]].ToString();
+                    string sEquipmentLine = selectConRow[baseTableConverParameter.TaglistColName[1, 3]].ToString();
+                    string sEquipmentElement = selectConRow[baseTableConverParameter.TaglistColName[1, 4]].ToString();
+                    string sEquipmentElementtype = selectConRow[baseTableConverParameter.TaglistColName[1, 5]].ToString();
+                    string sSingleMapping1 = selectConRow[baseTableConverParameter.TaglistColName[1, 6]].ToString();
+                    string sSignalAddress1 = selectConRow[baseTableConverParameter.TaglistColName[1, 7]].ToString();
+                    string sCommandMapping = selectConRow[baseTableConverParameter.TaglistColName[1, 8]].ToString();
+                    string sCommandAddress = selectConRow[baseTableConverParameter.TaglistColName[1, 9]].ToString();
+                    string sRunningHours = selectConRow[baseTableConverParameter.TaglistColName[1, 10]].ToString();
+                    string sDisplayName = selectConRow[baseTableConverParameter.TaglistColName[1, 12]].ToString();
+                    string sAlarmTree = selectConRow[baseTableConverParameter.TaglistColName[1, 14]].ToString();
+                    string sLevel1View = selectConRow[baseTableConverParameter.TaglistColName[1, 15]].ToString();
+                    string sLevel2View = selectConRow[baseTableConverParameter.TaglistColName[1, 16]].ToString();
+                    var SingleCounts = baseTableConverParameter.SingleMappingTable.AsEnumerable().Count(p => 
+                    p.Field<string>(baseTableConverParameter.BasefileColName[1, 0]) == sSingleMapping1);
 
                     //float dCounts = SingleCounts / 32;
                     if (bOPCInfo)
                     {
                         if (sSignalAddress1 != "")
                         {
-                            List<string> lSingName = sSignalName(SingleCounts, sTemp0, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement);
+                            List<string> lSingName = sSignalName(SingleCounts, baseTableConverParameter.Stemp5, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement);
                             foreach (string ss in lSingName)
                             {
                                 List<string> lOutData = new List<string>();
@@ -108,9 +80,9 @@ namespace BGFusion_TextBlockCopy
                         }
                         if (sCommandMapping != "")
                         {
-                            var CommandCounts = SecondTable1.AsEnumerable().Count(p => p.Field<string>(SecondColName[2, 0]) == sCommandMapping);
+                            var CommandCounts = baseTableConverParameter.CommandMappingTable.AsEnumerable().Count(p => p.Field<string>(baseTableConverParameter.BasefileColName[2, 0]) == sCommandMapping);
 
-                            List<string> lSingName = sSignalName(CommandCounts, sTemp1, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement);
+                            List<string> lSingName = sSignalName(CommandCounts, baseTableConverParameter.Stemp6, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement);
                             foreach (string ss in lSingName)
                             {
                                 List<string> lOutData = new List<string>();
@@ -125,7 +97,7 @@ namespace BGFusion_TextBlockCopy
                     }
                     if (bConvAlarms)
                     {
-                        string sSelectColName = SecondColName[1, 0];
+                        string sSelectColName = baseTableConverParameter.BasefileColName[1, 0];
                         string _sSignalName;
                         string _sAckType;
                         string _sAlarmTag;
@@ -149,9 +121,9 @@ namespace BGFusion_TextBlockCopy
                         string _sExtraTagList;
                         string _sCISData;
                         string _sTechnical;
-                        List<string> lSingName = sSignalName(SingleCounts, sTemp0, sSystem, sPlcLink,
+                        List<string> lSingName = sSignalName(SingleCounts, baseTableConverParameter.Stemp5, sSystem, sPlcLink,
                             sEquipmentLine, sEquipmentElement);
-                        var SingMappingRows = from p in SecondTable0.AsEnumerable()
+                        var SingMappingRows = from p in baseTableConverParameter.SingleMappingTable.AsEnumerable()
                                               where p.Field<string>(sSelectColName) == sSingleMapping1
                                               select p;
                         //foreach (string sSingName in lSingName)
@@ -267,25 +239,31 @@ namespace BGFusion_TextBlockCopy
             return llOutData;
         }
 
-        //根据Mapping判断需要的数据地址条数，生成对应的DataRow.
-        private List<string> sSignalName(int iByteCounts, string sTemp, string sSystem, string sPlcLink, string sEquipmentLine,
-            string sEquipmentElement)
+
+
+        public override string sOutData()
         {
-            List<string> ssignalName = new List<string>();
-            int iCounts;
-            if (iByteCounts <= 32)
-            {
-                ssignalName.Add(string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, 1));
-            }
-            else
-            {
-                iCounts = (int)Math.Ceiling((float)iByteCounts / 32);
-                for (int i = 0; i < iCounts; i++)
-                {
-                    ssignalName.Add(string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i + 1));
-                }
-            }
-            return ssignalName;
+            throw new NotImplementedException();
+        }
+
+        public override int iOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override DataTable dOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Dictionary<string, string> diOutData()
+        {
+            throw new NotImplementedException();
         }
     }
 }

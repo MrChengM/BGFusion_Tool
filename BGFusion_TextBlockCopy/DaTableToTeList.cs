@@ -5,45 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Windows;
+using System.Collections;
 
 namespace BGFusion_TextBlockCopy
 {
-    public class ListData
-    {
-
-        public string sColName { get; set; }
-
-        public string sColGroup { get; set; }
-
-    }
-    class DaTableToTeList
+    class DaTableToTeList:BaseTableConvert
     { 
-        private EnumerableRowCollection<DataRow> MainRows;
-        private string[,] MainColName;
-        private int ViewNum;
-        private DataTable SecondTable;
-        private string[,] SecondColName;
-        public DaTableToTeList(EnumerableRowCollection<DataRow> mainRows, string[,] mainColName, int ViewNum, DataTable secondTable, string[,] secondColName)
+        public DaTableToTeList(DaTableConverParameter ConverParameter)
         {
-            this.MainRows = mainRows;
-            this.MainColName = mainColName;
-            this.ViewNum = ViewNum;
-            this.SecondTable = secondTable;
-            this.SecondColName = secondColName;
+            this.baseTableConverParameter = ConverParameter;
         }
-        public void OutLiData(out List<ListData> ListDatas)
+        public override Dictionary<string,string> diOutData()
         {
-
-            ListDatas = new List<ListData>();
+            //ListDatas = new List<ListData>();
+            Dictionary<string, string> lDictionary = new Dictionary<string, string>();
+            EnumerableRowCollection<DataRow> MainRows = LinqToTable();
             try
             {
-                switch (ViewNum)
+                switch (baseTableConverParameter.ViewNum)
                 {
                     case 0:
                         break;
                     case 1:
                         var ELementLineGroups = from p in MainRows
-                                                group p by new { system = p.Field<string>(MainColName[1, 0]), plc = p.Field<string>(MainColName[1, 1]), line = p.Field<string>(MainColName[1, 3]), view = p.Field<string>(MainColName[1, 16]) } into pp
+                                                group p by new { system = p.Field<string>(baseTableConverParameter.TaglistColName[1, 0]), plc = p.Field<string>(baseTableConverParameter.TaglistColName[1, 1]), line = p.Field<string>(baseTableConverParameter.TaglistColName[1, 3]), view = p.Field<string>(baseTableConverParameter.TaglistColName[1, 16]) } into pp
                                                 select pp;
                         foreach (var ELementLineGroup in ELementLineGroups)
                         {
@@ -57,10 +42,7 @@ namespace BGFusion_TextBlockCopy
                             {
                                 string sEquipmentElement = selectConRow[4].ToString();
                                 string sElementName = sEquipmentLine + "." + sEquipmentElement;
-                                ListData listDataL1 = new ListData();
-                                listDataL1.sColName = sElementName;
-                                listDataL1.sColGroup = sLinesGroups;
-                                ListDatas.Add(listDataL1);
+                                lDictionary.Add(sElementName, sLinesGroups);
                             }
                         }
                         break;
@@ -75,10 +57,7 @@ namespace BGFusion_TextBlockCopy
                             string sSingleMapping1 = selectConRow[6].ToString();
                             string sAreaLevel2view = selectConRow[16].ToString();
                             string sElementName = sEquipmentLine + "." + sEquipmentElement;
-                            ListData listDataL2 = new ListData();
-                            listDataL2.sColName = sElementName;
-                            listDataL2.sColGroup = sPlcLink;
-                            ListDatas.Add(listDataL2);
+                            lDictionary.Add(sElementName, sPlcLink);
                         }
                         break;
                 }
@@ -87,6 +66,33 @@ namespace BGFusion_TextBlockCopy
             {
                 MessageBox.Show("数据处理错误：" + ex.Message);
             }
+            return lDictionary;
         }
+
+        public override string sOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int iOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override List<List<string>> lOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override DataTable dOutData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OutData()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
