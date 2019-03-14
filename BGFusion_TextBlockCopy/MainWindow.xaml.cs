@@ -366,7 +366,7 @@ namespace BGFusion_TextBlockCopy
             string UIKey4= "TeBlackraButton";
             string UIKey5= "ElementradioButton";
             string sFilePath = UIdictionary[UIKey].MyString;
-
+            UIdictionary[UIKey1].MyString = "";
             try
             {
                 bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
@@ -439,6 +439,7 @@ namespace BGFusion_TextBlockCopy
             string UIKey = "TestListOutPutFilePathteBox";
             string UIKey1 = "OutPutDatasteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
+            UIdictionary[UIKey1].MyString = "";
             try
             {
 
@@ -501,6 +502,7 @@ namespace BGFusion_TextBlockCopy
             string UIKey = "Level1DataOutPutFilePathteBox";
             string UIKey1 = "OutPutDatasteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
+            UIdictionary[UIKey1].MyString = "";
             try
             {
                 bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
@@ -535,6 +537,7 @@ namespace BGFusion_TextBlockCopy
             string UIKey4 = "HourcheckBox";
             string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
+            UIdictionary[UIKey1].MyString = "";
             try
             {
                 if (bOpenEnable)
@@ -569,6 +572,7 @@ namespace BGFusion_TextBlockCopy
             string UIKey3 = "AlarmListradioButton";
             string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
+            UIdictionary[UIKey1].MyString = "";
             try
             {
                 if (bOpenEnable)
@@ -604,7 +608,7 @@ namespace BGFusion_TextBlockCopy
             }
             catch (Exception ex)
             {
-                //MessageBox.Show("Build OPC Data Error: " + ex.Message);
+                MessageBox.Show("Build OPC Data Error: " + ex.Message);
             }
             GC.Collect();
 
@@ -632,10 +636,8 @@ namespace BGFusion_TextBlockCopy
             convertParameter.Stemp0 = sTestDaActive;
             convertParameter.Stemp1 = sTestDaTemplateL1;
             convertParameter.Stemp2 = sTestDaTemplateL2;
-
             convertParameter.Stemp3 = sXmlTextBlock ;
             convertParameter.Stemp4 = sXmlElement;
-
             convertParameter.Stemp5 = sOPCDaSingleTemplate;
             convertParameter.Stemp6 = sOPCDaCommandTemplate;
             convertParameter.Stemp7 = sOPCDaHourTemplate;
@@ -675,21 +677,30 @@ namespace BGFusion_TextBlockCopy
             string UIKey1 = "OutPutDatasteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
+            UIdictionary[UIKey1].MyString = "";
             var WorkbookAll = new Workbook();
-            if (bOpenEnable)
+            try
             {
-                int i = 0;
-                foreach(string s in sPaths)
+                if (bOpenEnable)
                 {
-                   var Workbook= XmlExcelSerialiaztion.XmlDeserialize(s);
-                    if (i == 0)
-                        WorkbookAll = Workbook;
-                    else
-                        WorkbookAll += Workbook;
-                    i++;
+                    int i = 0;
+                    foreach (string s in sPaths)
+                    {
+                        var Workbook = XmlExcelSerialiaztion.XmlDeserialize(s);
+                        if (i == 0)
+                            WorkbookAll = Workbook;
+                        else
+                            WorkbookAll += Workbook;
+                        i++;
+                    }
+                    XmlExcelSerialiaztion.XmlSerialiaztion(sFilePath, WorkbookAll);
+                    UIdictionary[UIKey1].MyString = "Merge Datas Successful";
+                    UIdictionary[UIKey].MyString  = sFilePath;
                 }
-                XmlExcelSerialiaztion.XmlSerialiaztion(sFilePath, WorkbookAll);
-                UIdictionary[UIKey1].MyString = "Merge Datas Successful";
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Merge files Error: " + ex.Message);
             }
         }
     }
