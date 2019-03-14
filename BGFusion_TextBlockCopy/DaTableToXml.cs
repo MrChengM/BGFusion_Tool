@@ -19,9 +19,9 @@ namespace BGFusion_TextBlockCopy
         }
         public override string sOutData()
         {
-            string sOutPutXmlData = null;
-            string sOutPutXmlDatas = null;
-            List<string> lOutPutXmlDatas = new List<string>();
+            string sOutPutData = null;
+            string sOutPutDatas = null;
+            List<string> lOutPutDatas = new List<string>();
             EnumerableRowCollection<DataRow> MainRows = LinqToTable();
             try
             {
@@ -75,8 +75,8 @@ namespace BGFusion_TextBlockCopy
                                     }
                                     xmlTestBlockCode.sTemple = baseTableConverParameter.Stemp3;
                                         xmlTestBlockCode.sElements = lElements;
-                                        sOutPutXmlData = xmlTestBlockCode.sOutPutXmlTestBlockCode();
-                                        lOutPutXmlDatas.Add(sOutPutXmlData);
+                                        sOutPutData = xmlTestBlockCode.sOutPutXmlTestBlockCode();
+                                        lOutPutDatas.Add(sOutPutData);
 
                                     }
                                     else
@@ -221,20 +221,20 @@ namespace BGFusion_TextBlockCopy
                             xmlElementCode.xmlElementThirds = xmlElementThirds;
                             xmlElementCode.xmlElementSix = xmlElementSix;
                             xmlElementCode.xmlElementnine = xmlElementnine;
-                            sOutPutXmlData = xmlElementCode.sOutPutXmlElementCode();
-                            lOutPutXmlDatas.Add(sOutPutXmlData);
+                            sOutPutData = xmlElementCode.sOutPutXmlElementCode();
+                            lOutPutDatas.Add(sOutPutData);
                             break;
                     }
 
                 }
-                sOutPutXmlDatas = DataConvert.ToString(lOutPutXmlDatas);
+                sOutPutDatas = DataConvert.ToString(lOutPutDatas);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("数据处理错误：" + ex.Message);
             }
 
-            return sOutPutXmlDatas;
+            return sOutPutDatas;
         }
         private void sMarginChange(ref int x,ref int y, int iColWidth, int iRowHight)
         {

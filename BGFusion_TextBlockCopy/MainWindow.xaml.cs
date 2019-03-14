@@ -19,6 +19,7 @@ using System.Reflection;
 using System.IO;
 using System.Configuration;
 
+
 namespace BGFusion_TextBlockCopy
 {
     /// <summary>
@@ -34,6 +35,7 @@ namespace BGFusion_TextBlockCopy
         Dictionary<string, DataString> UIdictionary = new Dictionary<string, DataString>();
         //Excel 数据表处理
         public string sPath;
+        public string[] sPaths;
         ///public DataSet MyExcelData;
         public DataSet ConveyorExcelData;
         public DataSet BaseListExceLData;
@@ -125,17 +127,11 @@ namespace BGFusion_TextBlockCopy
             bBool = null;
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             XMLOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
-            UIKey = "XMLOutPutDatasteBox";
-            UIdictionary.Add(UIKey, new DataString(sString, bBool));
-            XMLOutPutDatasteBox.DataContext = UIdictionary[UIKey];
 
             //TestData测试数据生成画面
             UIKey = "TestdataOutPutFilePathteBox";
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             TestdataOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
-            UIKey = "TestDataOutPutDatasteBox";
-            UIdictionary.Add(UIKey, new DataString(sString, bBool));
-            TestDataOutPutDatasteBox.DataContext = UIdictionary[UIKey];
 
             //TestList测试表格生成画面
             UIKey = "TestListTemplateteBox";
@@ -144,26 +140,17 @@ namespace BGFusion_TextBlockCopy
             UIKey = "TestListOutPutFilePathteBox";
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             TestListOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
-            UIKey = "TestListOutPutDatasteBox";
-            UIdictionary.Add(UIKey, new DataString(sString, bBool));
-            TestListOutPutDatasteBox.DataContext = UIdictionary[UIKey];
 
             //Level1Data生成L1画面点数据
             //Level1DataTemplateteBox.DataContext = dBinding[40];
             UIKey = "Level1DataOutPutFilePathteBox";
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             Level1DataOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
-            UIKey = "Level1DataOutPutDatasteBox";
-            UIdictionary.Add(UIKey, new DataString(sString, bBool));
-            Level1DataOutPutDatasteBox.DataContext = UIdictionary[UIKey];
 
             //OPC配置文件生成
             UIKey = "OPCDataOutPutFilePathteBox";
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             OPCDataOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
-            UIKey = "OPCDataOutPutDatasteBox";
-            UIdictionary.Add(UIKey, new DataString(sString, bBool));
-            OPCDataOutPutDatasteBox.DataContext = UIdictionary[UIKey];
             UIKey = "SinglecheckBox";
             bBool = true;
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
@@ -190,9 +177,19 @@ namespace BGFusion_TextBlockCopy
             bBool = null;
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             ConfOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
-            UIKey = "ConfOutPutDatasteBox";
+
+            //输出数据结果显示
+            UIKey = "OutPutDatasteBox";
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
-            ConfOutPutDatasteBox.DataContext = UIdictionary[UIKey];
+            OutPutDatasteBox.DataContext = UIdictionary[UIKey];
+
+            //合并.XML文件数据
+            UIKey = "MergeInputFilePathBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            MergeInputFilePathBox.DataContext = UIdictionary[UIKey];
+            UIKey = "MergeOutputFilePathBox";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            MergeOutputFilePathBox.DataContext = UIdictionary[UIKey];
 
         }
         void InitializeParametr()
@@ -365,29 +362,30 @@ namespace BGFusion_TextBlockCopy
             string sFileStyle = "Text documents (.txt)|*.txt";
 
             string UIKey = "XMLOutPutFilePathteBox";
-            string UIKey1 = "XMLOutPutDatasteBox";
+            string UIKey1 = "OutPutDatasteBox";
             string UIKey4= "TeBlackraButton";
             string UIKey5= "ElementradioButton";
             string sFilePath = UIdictionary[UIKey].MyString;
 
-            BaseFactory factory = new BaseFactory();
-            factory.BaseFactoryParameter = CreateConvertParameter();
-            if (UIdictionary[UIKey4].Mybool == true)
-            {
-                factory.iXmlType = 1;
-            }
-            else if (UIdictionary[UIKey5].Mybool == true)
-            {
-                factory.iXmlType = 2;
-            }
             try
             {
                 bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
-                    BaseTableConvert XmlData = factory.CreatTableConvert("ToXml");
+
+                    BaseFactory factory = new BaseFactory();
+                    factory.BaseFactoryParameter = CreateConvertParameter();
+                    if (UIdictionary[UIKey4].Mybool == true)
+                    {
+                        factory.iXmlType = 1;
+                    }
+                    else if (UIdictionary[UIKey5].Mybool == true)
+                    {
+                        factory.iXmlType = 2;
+                    }
+                    BaseTableConvert Data = factory.CreatTableConvert("ToXml");
                     UIdictionary[UIKey].MyString = sFilePath;
-                    UIdictionary[UIKey1].MyString = XmlData.sOutData();
+                    UIdictionary[UIKey1].MyString = Data.sOutData();
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
             }
@@ -407,16 +405,16 @@ namespace BGFusion_TextBlockCopy
         {
             string sFileStyle = "SIG File(.signaltester) | *.signaltester";
             string UIKey = "TestdataOutPutFilePathteBox";
-            string UIKey1 = "TestDataOutPutDatasteBox";
+            string UIKey1 = "OutPutDatasteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
-            BaseFactory factory = new BaseFactory();
-            factory.BaseFactoryParameter = CreateConvertParameter();
             try
             {
 
                 bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
+                    BaseFactory factory = new BaseFactory();
+                    factory.BaseFactoryParameter = CreateConvertParameter();
                     BaseTableConvert TestData =  factory.CreatTableConvert("ToTeData");
                     UIdictionary[UIKey].MyString = sFilePath;
                     UIdictionary[UIKey1].MyString = TestData.sOutData();
@@ -439,17 +437,18 @@ namespace BGFusion_TextBlockCopy
         {
             string sFileStyle = "Excel(.xlsx) | *.xlsx|Excel(.xls) | *.xls";
             string UIKey = "TestListOutPutFilePathteBox";
-            string UIKey1 = "TestListOutPutDatasteBox";
+            string UIKey1 = "OutPutDatasteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
-            BaseFactory factory = new BaseFactory();
-            factory.BaseFactoryParameter = CreateConvertParameter();
-
             try
             {
 
-             bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
+                bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
+                    BaseFactory factory = new BaseFactory();
+                    factory.BaseFactoryParameter = CreateConvertParameter();
+
+
                     BaseTableConvert ListData = factory.CreatTableConvert("ToTeList");
                     UIdictionary[UIKey].MyString = sFilePath;
                     string sOutPutLiData = null;
@@ -500,22 +499,21 @@ namespace BGFusion_TextBlockCopy
         {
             string sFileStyle = "Text documents (.txt)|*.txt";
             string UIKey = "Level1DataOutPutFilePathteBox";
-            string UIKey1 = "Level1DataOutPutDatasteBox";
+            string UIKey1 = "OutPutDatasteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
-            BaseFactory factory = new BaseFactory();
-            factory.BaseFactoryParameter = CreateConvertParameter();
-            factory.TempTable = Level1DataExcelData;
             try
             {
                 bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
+                    BaseFactory factory = new BaseFactory();
+                    factory.BaseFactoryParameter = CreateConvertParameter();
+                    factory.TempTable = Level1DataExcelData;
                     BaseTableConvert Level1Data =  factory.CreatTableConvert("ToLevel1Data");
                     UIdictionary[UIKey].MyString = sFilePath;
                     UIdictionary[UIKey1].MyString = Level1Data.sOutData();
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
-
             }
             catch (Exception ex)
             {
@@ -531,23 +529,21 @@ namespace BGFusion_TextBlockCopy
             //string sFileStyle = "Excel(.xlsx) | *.xlsx|Excel(.xls) | *.xls";
             string sFileStyle = "Excel(.csv) | *.csv";
             string UIKey = "OPCDataOutPutFilePathteBox";
-            string UIKey1 = "OPCDataOutPutDatasteBox";
+            string UIKey1 = "OutPutDatasteBox";
             string UIKey2 = "SinglecheckBox";
             string UIKey3 = "CommandcheckBox";
             string UIKey4 = "HourcheckBox";
             string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
-
-            BaseFactory factory = new BaseFactory();
-            factory.BaseFactoryParameter = CreateConvertParameter();
-            factory.bSingle = (bool)UIdictionary[UIKey2].Mybool;
-            factory.bCommand = (bool)UIdictionary[UIKey3].Mybool;
-            factory.bHours = (bool)UIdictionary[UIKey4].Mybool;
-
             try
             {
                 if (bOpenEnable)
                 {
+                    BaseFactory factory = new BaseFactory();
+                    factory.BaseFactoryParameter = CreateConvertParameter();
+                    factory.bSingle = (bool)UIdictionary[UIKey2].Mybool;
+                    factory.bCommand = (bool)UIdictionary[UIKey3].Mybool;
+                    factory.bHours = (bool)UIdictionary[UIKey4].Mybool;
                     BaseTableConvert OPCData = factory.CreatTableConvert("ToOPCData");
                     DataTable dt = OPCData.dOutData();
                     UIdictionary[UIKey].MyString = sFilePath;
@@ -568,41 +564,42 @@ namespace BGFusion_TextBlockCopy
         {
             string sFileStyle = "Excel(.xml) | *.xml";
             string UIKey = "ConfOutPutFilePathteBox";
-            string UIKey1 = "ConfOutPutDatasteBox";
+            string UIKey1 = "OutPutDatasteBox";
             string UIKey2 = "OPCInforaButton";
             string UIKey3 = "AlarmListradioButton";
             string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
-
-            BaseFactory factory = new BaseFactory();
-            factory.BaseFactoryParameter = CreateConvertParameter();
-            factory.bOPCIfo=(bool)UIdictionary[UIKey2].Mybool;
-            factory.bConvAlarm = (bool)UIdictionary[UIKey3].Mybool;
-            if (UIdictionary[UIKey2].Mybool==true )
-            {
-                string[] sListColName = { "Tag Name", "Type", "Channel", "Device", "DataType" };
-                factory.sListColName = sListColName.ToList<string>();
-            }
-            if (UIdictionary[UIKey3].Mybool==true)
-            {
-                string[] sListColName = { "SignalName", "AckType", "AlarmTag", "PartName",
-                    "Alarm Description", "AlarmGroup", "AlarmType", "AlarmCategory",
-                    "Delayed","ConditionName","Priority","GeneralComment","Level1View",
-                    "Level2View","Resetable","ResetBit","ALNumber","CCTVRecording",
-                    "ElementID","ResetSignal","ExtraTagList","CISData","Technical"};
-                factory.sListColName = sListColName.ToList<string>();
-            }
             try
             {
                 if (bOpenEnable)
                 {
+                    BaseFactory factory = new BaseFactory();
+                    factory.BaseFactoryParameter = CreateConvertParameter();
+                    factory.bOPCIfo = (bool)UIdictionary[UIKey2].Mybool;
+                    factory.bConvAlarm = (bool)UIdictionary[UIKey3].Mybool;
+                    if (UIdictionary[UIKey2].Mybool == true)
+                    {
+                        string[] sListColName = { "Tag Name", "Type", "Channel", "Device", "DataType" };
+                        factory.sListColName = sListColName.ToList<string>();
+                    }
+                    if (UIdictionary[UIKey3].Mybool == true)
+                    {
+                        string[] sListColName = { "SignalName", "AckType", "AlarmTag", "PartName",
+                    "Alarm Description", "AlarmGroup", "AlarmType", "AlarmCategory",
+                    "Delayed","ConditionName","Priority","GeneralComment","Level1View",
+                    "Level2View","Resetable","ResetBit","ALNumber","CCTVRecording",
+                    "ElementID","ResetSignal","ExtraTagList","CISData","Technical"};
+                        factory.sListColName = sListColName.ToList<string>();
+                    }
+
                     BaseTableConvert dConfigData = factory.CreatTableConvert("ToConfig");
                     List<List<string>> dt = dConfigData.lOutData();
                     UIdictionary[UIKey].MyString = sFilePath;
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
-                    XmlFuction xmlFuction = new XmlFuction();
-                    xmlFuction.XmlWrite(sFilePath, dt);
-                    //UIdictionary[UIKey1].MyString = DataConvert.ToString(dt);
+                    //XmlFuction xmlFuction = new XmlFuction();
+                    //xmlFuction.XmlWrite(sFilePath, dt);
+                    XmlExcelSerialiaztion.XmlSerialiaztion(sFilePath, dt);
+                    UIdictionary[UIKey1].MyString = "Build Datas Successful";
                 }
             }
             catch (Exception ex)
@@ -644,6 +641,56 @@ namespace BGFusion_TextBlockCopy
             convertParameter.Stemp7 = sOPCDaHourTemplate;
 
             return convertParameter;
+        }
+
+        private void MergeInputFilePathbutton_Click(object sender, RoutedEventArgs e)
+        {
+            string UIKey = "MergeInputFilePathBox";
+            string sFilePath = UIdictionary[UIKey].MyString;
+            //string[] sFilePaths;
+
+            /*if (Directory.Exists(sFilePath))
+            {
+                sFilePaths = Directory.GetFiles(sFilePath, "*.xml");
+            }*/
+            OpenFileDialog dialog = new OpenFileDialog();//open the path
+            dialog.FileName = sFilePath;
+            dialog.Multiselect = true;
+            dialog.Filter = "Excel(.xml) | *.xml";
+            if (dialog.ShowDialog() == true)
+            {
+                sPaths = dialog.FileNames;
+                UIdictionary[UIKey].MyString=System.IO.Path.GetDirectoryName(sPaths[0]);
+            }
+        }
+        /// <summary>
+        /// Merge the config files,such as :ALarm_TextList,OPCinfo.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MergeOutputFilePathbutton_Click(object sender, RoutedEventArgs e)
+        {
+            string sFileStyle = "Excel(.xml) | *.xml";
+            string UIKey = "MergeOutputFilePathBox";
+            string UIKey1 = "OutPutDatasteBox";
+            string sFilePath = UIdictionary[UIKey].MyString;
+            bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
+            var WorkbookAll = new Workbook();
+            if (bOpenEnable)
+            {
+                int i = 0;
+                foreach(string s in sPaths)
+                {
+                   var Workbook= XmlExcelSerialiaztion.XmlDeserialize(s);
+                    if (i == 0)
+                        WorkbookAll = Workbook;
+                    else
+                        WorkbookAll += Workbook;
+                    i++;
+                }
+                XmlExcelSerialiaztion.XmlSerialiaztion(sFilePath, WorkbookAll);
+                UIdictionary[UIKey1].MyString = "Merge Datas Successful";
+            }
         }
     }
 }

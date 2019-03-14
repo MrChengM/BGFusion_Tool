@@ -84,10 +84,7 @@ namespace BGFusion_TextBlockCopy
                     }
                     root.AppendChild(xeLimb);
                 }
-
                 xmlDoc.Save(_sFileName);
-
-
             }
         }
     }

@@ -83,6 +83,7 @@
     <Compile Include="ExcelFunction.cs" />
     <Compile Include="DataConvert.cs" />
     <Compile Include="XmlElementCode.cs" />
+    <Compile Include="XmlExcelSerialiaztion.cs" />
     <Compile Include="XmlFuction.cs" />
     <Compile Include="XmlTestBlockCode.cs" />
     <Page Include="MainWindow.xaml">
