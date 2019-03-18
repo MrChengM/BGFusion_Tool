@@ -82,6 +82,7 @@
     <Compile Include="DaTableToOPCData.cs" />
     <Compile Include="ExcelFunction.cs" />
     <Compile Include="DataConvert.cs" />
+    <Compile Include="IXmlExcelSerialiaztion.cs" />
     <Compile Include="XmlElementCode.cs" />
     <Compile Include="XmlExcelSerialiaztion.cs" />
     <Compile Include="XmlFuction.cs" />

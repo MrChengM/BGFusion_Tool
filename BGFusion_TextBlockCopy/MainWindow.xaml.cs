@@ -18,7 +18,7 @@ using System.Data.OleDb;
 using System.Reflection;
 using System.IO;
 using System.Configuration;
-
+using XmlSerializableHelper;
 
 namespace BGFusion_TextBlockCopy
 {
@@ -602,7 +602,7 @@ namespace BGFusion_TextBlockCopy
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
                     //XmlFuction xmlFuction = new XmlFuction();
                     //xmlFuction.XmlWrite(sFilePath, dt);
-                    XmlExcelSerialiaztion.XmlSerialiaztion(sFilePath, dt);
+                    IXmlExcelSerialiaztion.XmlSerialiaztion(sFilePath, dt);
                     UIdictionary[UIKey1].MyString = "Build Datas Successful";
                 }
             }
@@ -678,7 +678,7 @@ namespace BGFusion_TextBlockCopy
             string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = bDataOutput(ref sFilePath, sFileStyle);
             UIdictionary[UIKey1].MyString = "";
-            var WorkbookAll = new Workbook();
+            var WorkbookAll = new XmlSerializableHelper.Workbook();
             try
             {
                 if (bOpenEnable)
@@ -686,14 +686,14 @@ namespace BGFusion_TextBlockCopy
                     int i = 0;
                     foreach (string s in sPaths)
                     {
-                        var Workbook = XmlExcelSerialiaztion.XmlDeserialize(s);
+                        var Workbook = IXmlExcelSerialiaztion.XmlDeserialize(s);
                         if (i == 0)
                             WorkbookAll = Workbook;
                         else
                             WorkbookAll += Workbook;
                         i++;
                     }
-                    XmlExcelSerialiaztion.XmlSerialiaztion(sFilePath, WorkbookAll);
+                    IXmlExcelSerialiaztion.XmlSerialiaztion(sFilePath, WorkbookAll);
                     UIdictionary[UIKey1].MyString = "Merge Datas Successful";
                     UIdictionary[UIKey].MyString  = sFilePath;
                 }

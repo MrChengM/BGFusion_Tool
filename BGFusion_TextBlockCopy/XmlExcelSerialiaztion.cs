@@ -8,7 +8,9 @@ using System.IO;
 using System.Windows;
 using System.Xml;
 using System.Xml.Schema;
-
+/// <summary>
+/// Xml to Excel by Serializable
+/// </summary>
 namespace BGFusion_TextBlockCopy
 {
     public class XmlExcelSerialiaztion //:IXmlSerializable
@@ -50,7 +52,7 @@ namespace BGFusion_TextBlockCopy
 
                 XmlSerializer xmlserial = new XmlSerializer(typeof(Workbook));
                 xmlserial.Serialize(sFileSteam, xWorkBook, xmlns);
-                string sXml = "<?mso-application progid=\"Excel.Sheet\"?>" + "\r\n";
+                string sXml = "\r\n"+"<?mso-application progid=\"Excel.Sheet\"?>" ;
                 FileStreamInsert(sFileSteam, sXml, 21);
                 sFileSteam.Flush();
                 sFileSteam.Close();
@@ -117,14 +119,15 @@ namespace BGFusion_TextBlockCopy
         /// <param name="sFileStream"></param>
         /// <param name="Insert string"></param>
         /// <param name="Insert Postion"></param>
-        public static void FileStreamInsert(Stream sFileStream, string sInsert, long lPostion)
+        /// <param name="Data Block Size to transfer "></param>
+        public static void FileStreamInsert(Stream sFileStream, string sInsert, long lPostion,int iBlockLength=10000)
         {
             //string sInsertXml = "\r\n" + "<?mso-application progid=\"Excel.Sheet\"?>" + "\r\n";
             var insertChars = sInsert.ToCharArray();
             var insertBytes = new byte[insertChars.Length];
             Encoder e = Encoding.UTF8.GetEncoder();
             e.GetBytes(insertChars, 0, insertChars.Length, insertBytes, 0, true);
-            int iBlockLength = 10000;
+            //int iBlockLength = 10000;
             long lSurplusLength = sFileStream.Length - lPostion;
             for (long i = 0; i < lSurplusLength; i += iBlockLength)
             {
