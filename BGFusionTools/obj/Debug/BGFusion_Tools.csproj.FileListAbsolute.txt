@@ -1,0 +1,16 @@
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\bin\Debug\BGFusion_TextBlockCopy.exe.config
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\bin\Debug\BGFusion_TextBlockCopy.exe
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\bin\Debug\BGFusion_TextBlockCopy.pdb
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\BGFusion_Tools.csprojResolveAssemblyReference.cache
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\Interop.Office.dll
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\BGFusion_Tools.csproj.ResolveComReference.cache
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\Views\MainWindow.g.cs
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\App.g.cs
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\BGFusion_TextBlockCopy_MarkupCompile.cache
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\BGFusion_TextBlockCopy_MarkupCompile.lref
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\Views\MainWindow.baml
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\BGFusion_TextBlockCopy.g.resources
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\BGFusion_TextBlockCopy.Properties.Resources.resources
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\BGFusion_Tools.csproj.GenerateResource.Cache
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\BGFusion_TextBlockCopy.exe
+D:\C#Projects\BGFusion_TextBlockCopy\BGFusion_TextBlockCopy\obj\Debug\BGFusion_TextBlockCopy.pdb
