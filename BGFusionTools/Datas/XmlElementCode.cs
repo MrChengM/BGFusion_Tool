@@ -8,40 +8,40 @@ using System.Windows;
 
 namespace BGFusionTools.Datas
 {
-    public class baseXmlElement
+    public class baseXamlElement
     {
         public List<string> sLineElements = new List<string>();
 
     }
-    public class XmlElementFirst: baseXmlElement
+    public class XamlElementFirst: baseXamlElement
     {
 
         //line1
 
         //public List<string> sLineElements =new List<string>();
     }
-    public class XmlElementThird: baseXmlElement
+    public class XamlElementThird: baseXamlElement
     {
         //public List<string> sLineElements = new List<string>();
     }
-    public class XmlElementSix:baseXmlElement
+    public class XamlElementSix:baseXamlElement
     {
         //public List<string> sLineElements = new List<string>();
     }
-    public class XmlElementnine: baseXmlElement
+    public class XamlElementnine: baseXamlElement
     {
         //public List<string> sLineElements = new List<string>();
     }
-    public class XmlElementCode
+    public class XamlElementCode
     {
         public string sTemplate;
         public int iSingleCounts;
         private List<string> lLines =new List<string>();
         public string[] sLines=new string[8];
-        public XmlElementFirst xmlElementFirst = new XmlElementFirst();
-        public List<XmlElementThird> xmlElementThirds = new List<XmlElementThird>();
-        public XmlElementSix xmlElementSix = new XmlElementSix();
-        public XmlElementnine xmlElementnine = new XmlElementnine();
+        public XamlElementFirst xmlElementFirst = new XamlElementFirst();
+        public List<XamlElementThird> xmlElementThirds = new List<XamlElementThird>();
+        public XamlElementSix xmlElementSix = new XamlElementSix();
+        public XamlElementnine xmlElementnine = new XamlElementnine();
 
         //public string[] sLine3Elements = new string[7];
         //public string sLine6Elements;
@@ -56,7 +56,7 @@ namespace BGFusionTools.Datas
                 string[] sLines1Element = xmlElementFirst.sLineElements.ToArray<string>();
                 lLines.Add(string.Format(sLines[0], sLines1Element));
                 lLines.Add(sLines[1]);
-                foreach (XmlElementThird xmlElementThird in xmlElementThirds)
+                foreach (XamlElementThird xmlElementThird in xmlElementThirds)
                 {
                     string[] sLines3Element = xmlElementThird.sLineElements.ToArray<string>();
                     lLines.Add(string.Format(sLines[2], sLines3Element));

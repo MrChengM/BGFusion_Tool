@@ -193,6 +193,12 @@ namespace BGFusionTools
             UIKey = "MergeOutputFilePathBox";
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             MergeOutputFilePathBox.DataContext = UIdictionary[UIKey];
+            UIKey = "WorkraButton";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            WorkraButton.DataContext = UIdictionary[UIKey];
+            UIKey = "ElementSearchraButton";
+            UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            ElementSearchraButton.DataContext = UIdictionary[UIKey];
 
             //SortIO OPC数据生成
             UIKey = "SorteIOInputFilePathBox";
@@ -408,7 +414,7 @@ namespace BGFusionTools
                 {
 
                     BaseFactory factory = new BaseFactory();
-                    factory.BaseFactoryParameter = CreateConvertParameter();
+                    factory.BaseParameter = CreateConvertParameter();
                     if (UIdictionary[UIKey4].Mybool == true)
                     {
                         factory.iXmlType = 1;
@@ -417,7 +423,7 @@ namespace BGFusionTools
                     {
                         factory.iXmlType = 2;
                     }
-                    BaseData Data = factory.CreatTableConvert("ToXml");
+                    BaseData Data = factory.CreatDataClass("XamlData");
                     UIdictionary[UIKey].MyString = sFilePath;
                     UIdictionary[UIKey1].MyString = Data.ToString();
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
@@ -448,8 +454,8 @@ namespace BGFusionTools
                 if (bOpenEnable == true)
                 {
                     BaseFactory factory = new BaseFactory();
-                    factory.BaseFactoryParameter = CreateConvertParameter();
-                    BaseData TestData =  factory.CreatTableConvert("ToTeData");
+                    factory.BaseParameter = CreateConvertParameter();
+                    BaseData TestData =  factory.CreatDataClass("TestData");
                     UIdictionary[UIKey].MyString = sFilePath;
                     UIdictionary[UIKey1].MyString = TestData.ToString();
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
@@ -481,10 +487,10 @@ namespace BGFusionTools
                 if (bOpenEnable == true)
                 {
                     BaseFactory factory = new BaseFactory();
-                    factory.BaseFactoryParameter = CreateConvertParameter();
+                    factory.BaseParameter = CreateConvertParameter();
 
 
-                    BaseData ListData = factory.CreatTableConvert("ToTeList");
+                    BaseData ListData = factory.CreatDataClass("TestList");
                     UIdictionary[UIKey].MyString = sFilePath;
                     string sOutPutLiData = null;
                     Dictionary<string, string> telistDictionary = ListData.ToDictionary();
@@ -543,9 +549,9 @@ namespace BGFusionTools
                 if (bOpenEnable == true)
                 {
                     BaseFactory factory = new BaseFactory();
-                    factory.BaseFactoryParameter = CreateConvertParameter();
+                    factory.BaseParameter = CreateConvertParameter();
                     factory.TempTable = Level1DataExcelData;
-                    BaseData Level1Data =  factory.CreatTableConvert("ToLevel1Data");
+                    BaseData Level1Data =  factory.CreatDataClass("Level1Data");
                     UIdictionary[UIKey].MyString = sFilePath;
                     UIdictionary[UIKey1].MyString = Level1Data.ToString();
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
@@ -577,11 +583,11 @@ namespace BGFusionTools
                 if (bOpenEnable)
                 {
                     BaseFactory factory = new BaseFactory();
-                    factory.BaseFactoryParameter = CreateConvertParameter();
+                    factory.BaseParameter = CreateConvertParameter();
                     factory.bSingle = (bool)UIdictionary[UIKey2].Mybool;
                     factory.bCommand = (bool)UIdictionary[UIKey3].Mybool;
                     factory.bHours = (bool)UIdictionary[UIKey4].Mybool;
-                    BaseData OPCData = factory.CreatTableConvert("ToOPCData");
+                    BaseData OPCData = factory.CreatDataClass("OPCData");
                     DataTable dt = OPCData.ToDataTable();
                     UIdictionary[UIKey].MyString = sFilePath;
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
@@ -612,7 +618,7 @@ namespace BGFusionTools
                 if (bOpenEnable)
                 {
                     BaseFactory factory = new BaseFactory();
-                    factory.BaseFactoryParameter = CreateConvertParameter();
+                    factory.BaseParameter = CreateConvertParameter();
                     factory.bOPCIfo = (bool)UIdictionary[UIKey2].Mybool;
                     factory.bConvAlarm = (bool)UIdictionary[UIKey3].Mybool;
                     if (UIdictionary[UIKey2].Mybool == true)
@@ -630,13 +636,13 @@ namespace BGFusionTools
                         factory.sListColName = sListColName.ToList<string>();
                     }
 
-                    BaseData dConfigData = factory.CreatTableConvert("ToConfig");
+                    BaseData dConfigData = factory.CreatDataClass("ConfigData");
                     List<List<string>> dt = dConfigData.ToList();
                     UIdictionary[UIKey].MyString = sFilePath;
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
                     //XmlFuction xmlFuction = new XmlFuction();
                     //xmlFuction.XmlWrite(sFilePath, dt);
-                    XmlSerialiaztion.XmlExcelSerialiaztion(sFilePath, dt);
+                    XmlSerialiaztion.XmlSerial(sFilePath, new Workbook(dt));
                     UIdictionary[UIKey1].MyString = "Build Datas Successful";
                 }
             }
@@ -706,30 +712,53 @@ namespace BGFusionTools
         /// <param name="e"></param>
         private void MergeOutputFilePathbutton_Click(object sender, RoutedEventArgs e)
         {
-            string sFileStyle = "Excel(.xml) | *.xml";
+            string sFileStyle = "XML | *.xml";
             string UIKey = "MergeOutputFilePathBox";
             string UIKey1 = "OutPutDatasteBox";
+            string UIKey2 = "WorkraButton";
+            string UIKey3 = "ElementSearchraButton";
             string sFilePath = UIdictionary[UIKey].MyString;
+            bool? btypeWorkbook = UIdictionary[UIKey2].Mybool;
+            bool? btypeElementSearch =UIdictionary[UIKey1].Mybool;
             bool bOpenEnable = Outputfile(ref sFilePath, sFileStyle);
             UIdictionary[UIKey1].MyString = "";
-            var WorkbookAll = new Workbook();
             try
             {
                 if (bOpenEnable)
                 {
-                    int i = 0;
-                    foreach (string s in sPaths)
-                    {
-                        var Workbook = XmlSerialiaztion.XmlExcelDeserialize(s);
-                        if (i == 0)
-                            WorkbookAll = Workbook;
-                        else
-                            WorkbookAll += Workbook;
-                        i++;
-                    }
-                    XmlSerialiaztion.XmlExcelSerialiaztion(sFilePath, WorkbookAll);
+                  
                     UIdictionary[UIKey1].MyString = "Merge Datas Successful";
                     UIdictionary[UIKey].MyString  = sFilePath;
+                    if (btypeWorkbook == true)
+                    {
+                        int i = 0;
+                        var files = new Workbook();
+                        foreach (string s in sPaths)
+                        {
+                            var flie = XmlSerialiaztion.XmlDeserial<Workbook>(s);
+                            if (i == 0)
+                                files = flie;
+                            else
+                                files += flie;
+                            i++;
+                        }
+                        XmlSerialiaztion.XmlSerial(sFilePath, files);
+                    }
+                    else if (btypeElementSearch == true)
+                    {
+                        int i = 0;
+                        var files = new ElementSearchData();
+                        foreach (string s in sPaths)
+                        {
+                            var flie = XmlSerialiaztion.XmlDeserial<ElementSearchData>(s);
+                            if (i == 0)
+                                files = flie;
+                            else
+                                files += flie;
+                            i++;
+                        }
+                        XmlSerialiaztion.XmlSerial(sFilePath, files);
+                    }
                 }
             }
             catch(Exception ex)
@@ -737,7 +766,6 @@ namespace BGFusionTools
                 MessageBox.Show("Merge files Error: " + ex.Message);
             }
         }
-
         private void SorteIOOutputFilePathbutton_Click(object sender, RoutedEventArgs e)
         {
             string sFileStyle = "Excel(.csv) | *.csv";
@@ -753,7 +781,7 @@ namespace BGFusionTools
             {
                 if (bOpenEnable & sInFilePath!="")
                 {
-                    DataTable dt = XmlSerialiaztion.XmlSorteMointerDeserialize(sInFilePath).ToDataTable();
+                    DataTable dt = XmlSerialiaztion.XmlDeserial<SignalMonitor>(sInFilePath).ToDataTable();
                     UIdictionary[UIKey].MyString = sOutFilePath;
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
                     CsvFunction.CsvWirte(sOutFilePath, dt);
@@ -780,7 +808,28 @@ namespace BGFusionTools
 
         private void ElementSearchOutputFilePathbutton_Click(object sender, RoutedEventArgs e)
         {
-
+            string sFileStyle = "XML | *.xml";
+            string UIKey = "ElementSearchOutputFilePathBox";
+            string UIKey1 = "OutPutDatasteBox";
+            string sOutFilePath = UIdictionary[UIKey].MyString;
+            bool bOpenEnable = Outputfile(ref sOutFilePath, sFileStyle);
+            UIdictionary[UIKey1].MyString = "";
+            try
+            {
+                if (bOpenEnable )
+                {
+                    BaseFactory factory = new BaseFactory(CreateConvertParameter());
+                    BaseData elmentSearchData = factory.CreatDataClass("ElementSearchData");
+                    UIdictionary[UIKey1].MyString = elmentSearchData.ToString();
+                    UIdictionary[UIKey].MyString = sOutFilePath;
+                    XmlSerialiaztion.XmlSerial(sOutFilePath, (ElementSearchData)elmentSearchData);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Build Element Search Data Error: " + ex.Message);
+            }
+            GC.Collect();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BGFusionTools.Datas;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -68,6 +69,26 @@ namespace BGFusionTools.Functions
                         sDr += ",";
                     }
                 }
+                if (outputstring == null)
+                {
+                    outputstring += sDr;
+                }
+                else
+                {
+                    outputstring += "\n";
+                    outputstring += sDr;
+                }
+            }
+            return outputstring;
+        }
+        public static string ToString(List<Element> elements)
+        {
+            string outputstring = null;
+            foreach (Element element in elements)
+            {
+                string sDr = string.Format("< element displayname = \"{0}\" level1 = \"{1}\" level2 = \"{2}\" name = \"{3}\" />",
+                    element.DisplayName,element.Level1,element.Level2,element.Name);
+          
                 if (outputstring == null)
                 {
                     outputstring += sDr;

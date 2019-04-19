@@ -18,8 +18,15 @@ namespace BGFusionTools.Datas
         private bool bcommand;
         private bool bhours;
         private int ixmlType;
+        public BaseFactory()
+        {
+        }
+        public BaseFactory(BaseParameter baseParameter)
+        {
+            this.baseParameter = baseParameter;
+        }
 
-        public BaseParameter BaseFactoryParameter
+        public BaseParameter BaseParameter
         {
             get
             {
@@ -118,21 +125,23 @@ namespace BGFusionTools.Datas
                 ixmlType = value;
             }
         }
-        public BaseData CreatTableConvert(string ConvertType)
+        public BaseData CreatDataClass(string DataClassName)
         {
             BaseData baTableConvert ;
-            if (ConvertType == "ToConfig")
+            if (DataClassName == "ConfigData")
                 baTableConvert = new ConfigData(baseParameter, bconvAlarm, boPCIfo, slistColName);
-            else if(ConvertType == "ToLevel1Data")
+            else if(DataClassName == "Level1Data")
                 baTableConvert = new Level1Data(baseParameter, tempTable);
-            else if (ConvertType == "ToOPCData")
+            else if (DataClassName == "OPCData")
                 baTableConvert = new OPCData(baseParameter, bsingle, bcommand, bhours);
-            else if (ConvertType == "ToTeData")
+            else if (DataClassName == "TestData")
                 baTableConvert = new TestData(baseParameter);
-            else if(ConvertType == "ToXml")
-                baTableConvert = new XmlData(baseParameter, ixmlType);
-            else if (ConvertType == "ToTeList")
+            else if(DataClassName == "XamlData")
+                baTableConvert = new XamlData(baseParameter, ixmlType);
+            else if (DataClassName == "TestList")
                 baTableConvert = new TestList(baseParameter);
+            else if(DataClassName == "ElementSearchData")
+                baTableConvert = new ElementSearchData(baseParameter);
             else
                 throw new NotImplementedException();
             return baTableConvert;

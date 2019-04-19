@@ -9,11 +9,11 @@ using BGFusionTools.Functions;
 
 namespace BGFusionTools.Datas
 {
-    class XmlData:BaseData
+    class XamlData:BaseData
     {
         private int XmlTypes;
 
-        public XmlData(BaseParameter ConverParameter, int XmlTypes)
+        public XamlData(BaseParameter ConverParameter, int XmlTypes)
         {
             this.baseParameter = ConverParameter;
             this.XmlTypes = XmlTypes;
@@ -88,12 +88,12 @@ namespace BGFusionTools.Datas
                             }
                             break;
                         case 2:
-                            XmlElementCode xmlElementCode = new XmlElementCode();
-                            XmlElementFirst xmlElementFirst = new XmlElementFirst();
-                            XmlElementThird xmlElementThird ;
-                            List<XmlElementThird> xmlElementThirds = new List<XmlElementThird>();
-                            XmlElementSix xmlElementSix = new XmlElementSix();
-                            XmlElementnine xmlElementnine = new XmlElementnine();
+                            XamlElementCode xmlElementCode = new XamlElementCode();
+                            XamlElementFirst xmlElementFirst = new XamlElementFirst();
+                            XamlElementThird xmlElementThird ;
+                            List<XamlElementThird> xmlElementThirds = new List<XamlElementThird>();
+                            XamlElementSix xmlElementSix = new XamlElementSix();
+                            XamlElementnine xmlElementnine = new XamlElementnine();
                             switch (baseParameter.ViewNum)
                             {
                                 case 0:
@@ -123,7 +123,7 @@ namespace BGFusionTools.Datas
                                         xmlElementFirst.sLineElements.Add(sEquipmentElementtype);//sTypeDescription
                                                                                                  //line2
                                                                                                  //line3
-                                        xmlElementThird = new XmlElementThird();
+                                        xmlElementThird = new XamlElementThird();
                                         xmlElementThird.sLineElements.Add(string.Format("Signal{0}", 1));//sId
                                         xmlElementThird.sLineElements.Add("True");//sUsePostfix
                                         xmlElementThird.sLineElements.Add(string.Format("_{0}_{1}_Line_AC", sPlcLink, sAreaLevel2view));//sPostfix
@@ -175,7 +175,7 @@ namespace BGFusionTools.Datas
                                                                                                  //line2
                                         if (iCounts == 0)
                                         {
-                                            xmlElementThird = new XmlElementThird();
+                                            xmlElementThird = new XamlElementThird();
                                             xmlElementThird.sLineElements.Add(string.Format("Signal{0}", 1));//sId
                                             xmlElementThird.sLineElements.Add("True");//sUsePostfix
                                             xmlElementThird.sLineElements.Add(string.Format("_SIGNAL_{0}", 1));//sPostfix
@@ -189,7 +189,7 @@ namespace BGFusionTools.Datas
                                         { 
                                             for (int i = 1; i <= iCounts; i++)
                                             {
-                                                xmlElementThird = new XmlElementThird();
+                                                xmlElementThird = new XamlElementThird();
                                                 xmlElementThird.sLineElements.Add(string.Format("Signal{0}", i));//sId
                                                 xmlElementThird.sLineElements.Add("True");//sUsePostfix
                                                 xmlElementThird.sLineElements.Add(string.Format("_SIGNAL_{0}", i));//sPostfix

@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BGFusion_TextBlockCopy")]
+[assembly: AssemblyTitle("BGFusionTools")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BEUMER Group")]
-[assembly: AssemblyProduct("BGFusion_TextBlockCopy")]
+[assembly: AssemblyProduct("BGFusionTools")]
 [assembly: AssemblyCopyright("Copyright © BEUMER Group 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

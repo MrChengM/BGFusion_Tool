@@ -38,19 +38,18 @@
         <TabControl x:Name="tabControl" Height="165.6" VerticalAlignment="Top"  Margin="17.3,206,15,0" BorderBrush="Green" BorderThickness="2">
             <TabItem Header="XML"  BorderBrush="Green" BorderThickness="1">
                 <Grid Background="#FFE5E5E5">
-                    <GroupBox x:Name="XMLFilePath_groupBox" Header="OutPutFilePath" HorizontalAlignment="Left" Height="63" Margin="10,63.332,0,0" VerticalAlignment="Top"   BorderBrush="Black" BorderThickness="2"  >
+                    <GroupBox x:Name="XMLFilePath_groupBox" Header="OutPutFilePath" HorizontalAlignment="Left" Height="63" Margin="10,63.332,0,0" VerticalAlignment="Top"   BorderBrush="Black" BorderThickness="2" Grid.ColumnSpan="2"  >
                         <StackPanel HorizontalAlignment="Left" Height="54" Margin="0,-10,-1.6,-2.4" VerticalAlignment="Top"  Orientation="Horizontal" >
                             <Button x:Name="XMLOutputbutton" Content="Save" HorizontalAlignment="Left"  Width="50" Click="XMLOutputbutton_Click" Margin="5,16,0,16.04" d:LayoutOverrides="Height"/>
                             <TextBox x:Name="XMLOutPutFilePathteBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding MyString, Mode=TwoWay}" Width="540" Margin="5,16,5,15" />
                         </StackPanel>
                     </GroupBox>
                     <Border BorderBrush="Black" BorderThickness="2"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="10,8.664,0,0" CornerRadius="5" >
-                        <StackPanel HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top">
-                            <RadioButton x:Name="TeBlackraButton" Content="TextBlack" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,3,0,0" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
-                            <RadioButton x:Name="ElementradioButton" Content="Element" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,0,0,3" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
+                        <StackPanel HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Orientation="Horizontal">
+                            <RadioButton x:Name="TeBlackraButton" Content="TextBlack" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,3,0,3" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
+                            <RadioButton x:Name="ElementradioButton" Content="Element" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="3,3,0,3" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
                         </StackPanel>
                     </Border>
-
                 </Grid>
             </TabItem>
             <TabItem Header="TestData"  BorderBrush="Green" BorderThickness="1">
@@ -136,46 +135,60 @@
                 </Grid>
             </TabItem>
             <TabItem Header="MergFile"  BorderBrush="Green" BorderThickness="1">
-                <GroupBox x:Name="Merge_groupBox" Header="MergeFile" HorizontalAlignment="Left" Height="111.2" Margin="0,1,0,0" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="2" d:LayoutOverrides="VerticalAlignment, LeftPosition, RightPosition">
-                    <StackPanel HorizontalAlignment="Left"   VerticalAlignment="Top" >
-                        <StackPanel Margin="5,5,5,0" Orientation="Horizontal" Height="36" >
-                            <Button x:Name="MergeInputFilePathbutton" Content="InputFile" HorizontalAlignment="Left"  Width="52.133"  Click="MergeInputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
-                            <TextBox x:Name="MergeInputFilePathBox" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" Margin="5,5,5,0" VerticalAlignment="Top" Width="530"  />
-                        </StackPanel>
-                        <StackPanel Margin="5,5,5,0" Orientation="Horizontal" >
-                            <Button x:Name="MergeOutputFilePathbutton" Content="OutputFile" HorizontalAlignment="Left"  Width="63.866"  Click="MergeOutputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
-                            <TextBox x:Name="MergeOutputFilePathBox" Margin="5,5,5,5" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" VerticalAlignment="Top" Width="520"  />
-                        </StackPanel>
+                <Grid Background="#FFE5E5E5" >
+                    <StackPanel>
+                        <Border  HorizontalAlignment="Left" Margin="20,0,0,0" BorderBrush="Black" BorderThickness="2" CornerRadius="5">
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,0">
+                                <RadioButton x:Name="WorkraButton" Content="WorkBook" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,3,0,3" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
+                                <RadioButton x:Name="ElementSearchraButton" Content="ElementSearch" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,3,10,3" IsChecked="{Binding Mybool, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </Border>
+                        <GroupBox x:Name="Merge_groupBox" Header="MergeFile" HorizontalAlignment="Left"  Margin="10,0,0,0" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="2" d:LayoutOverrides="LeftPosition, RightPosition">
+                            <StackPanel HorizontalAlignment="Left"   VerticalAlignment="Top" >
+                                <StackPanel Margin="5,5,5,0" Orientation="Horizontal" Height="36" >
+                                    <Button x:Name="MergeInputFilePathbutton" Content="InputFile" HorizontalAlignment="Left"  Width="52.133"  Click="MergeInputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
+                                    <TextBox x:Name="MergeInputFilePathBox" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" Margin="5,5,5,0" VerticalAlignment="Top" Width="530"  />
+                                </StackPanel>
+                                <StackPanel Margin="5,5,5,0" Orientation="Horizontal" >
+                                    <Button x:Name="MergeOutputFilePathbutton" Content="OutputFile" HorizontalAlignment="Left"  Width="63.866"  Click="MergeOutputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
+                                    <TextBox x:Name="MergeOutputFilePathBox" Margin="5,5,5,5" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" VerticalAlignment="Top" Width="520"  />
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
                     </StackPanel>
-                </GroupBox>
+                </Grid>
             </TabItem>
             <TabItem Header="SorteIO"  BorderBrush="Green" BorderThickness="1" >
-                <GroupBox x:Name="SorteIO_groupBox" Header="SorteIO" HorizontalAlignment="Left" Height="111.2" Margin="0,1,0,0" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="2" d:LayoutOverrides="VerticalAlignment, LeftPosition, RightPosition">
-                    <StackPanel HorizontalAlignment="Left"   VerticalAlignment="Top" >
-                        <StackPanel Margin="5,5,5,0" Orientation="Horizontal" Height="36" >
-                            <Button x:Name="SorteIOInputFilePathbutton" Content="InputFile" HorizontalAlignment="Left"  Width="52.133"  Click="SorteIOInputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
-                            <TextBox x:Name="SorteIOInputFilePathBox" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" Margin="5,5,5,0" VerticalAlignment="Top" Width="530"  />
+                <Grid Background="#FFE5E5E5" >
+                    <GroupBox x:Name="SorteIO_groupBox" Header="SorteIO" HorizontalAlignment="Left" Height="111.2" Margin="0,1,0,0" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="2" d:LayoutOverrides="VerticalAlignment, LeftPosition, RightPosition">
+                        <StackPanel HorizontalAlignment="Left"   VerticalAlignment="Top" >
+                            <StackPanel Margin="5,5,5,0" Orientation="Horizontal" Height="36" >
+                                <Button x:Name="SorteIOInputFilePathbutton" Content="InputFile" HorizontalAlignment="Left"  Width="52.133"  Click="SorteIOInputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
+                                <TextBox x:Name="SorteIOInputFilePathBox" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" Margin="5,5,5,0" VerticalAlignment="Top" Width="530"  />
+                            </StackPanel>
+                            <StackPanel Margin="5,5,5,0" Orientation="Horizontal" >
+                                <Button x:Name="SorteIOOutputFilePathbutton" Content="OutputFile" HorizontalAlignment="Left"  Width="63.866"  Click="SorteIOOutputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
+                                <TextBox x:Name="SorteIOOutputFilePathBox" Margin="5,5,5,5" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" VerticalAlignment="Top" Width="520"  />
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Margin="5,5,5,0" Orientation="Horizontal" >
-                            <Button x:Name="SorteIOOutputFilePathbutton" Content="OutputFile" HorizontalAlignment="Left"  Width="63.866"  Click="SorteIOOutputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
-                            <TextBox x:Name="SorteIOOutputFilePathBox" Margin="5,5,5,5" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" VerticalAlignment="Top" Width="520"  />
-                        </StackPanel>
-                    </StackPanel>
-                </GroupBox>
+                    </GroupBox>
+                </Grid>
             </TabItem>
             <TabItem Header="ElementSearch"  BorderBrush="Green" BorderThickness="1">
-                <GroupBox x:Name="ElementSearch_groupBox" Header="ElementSearch" HorizontalAlignment="Left" Height="63" Margin="0,1,0,0" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="2" d:LayoutOverrides="VerticalAlignment, LeftPosition, RightPosition">
-                    <StackPanel HorizontalAlignment="Left"   VerticalAlignment="Top" >
-                        <!--<StackPanel Margin="5,5,5,0" Orientation="Horizontal" Height="36" >
+                <Grid Background="#FFE5E5E5" >
+                    <GroupBox x:Name="ElementSearch_groupBox" Header="ElementSearch" HorizontalAlignment="Left" Height="63" Margin="0,1,0,0" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="2" d:LayoutOverrides="VerticalAlignment, LeftPosition, RightPosition">
+                        <StackPanel HorizontalAlignment="Left"   VerticalAlignment="Top" >
+                            <!--<StackPanel Margin="5,5,5,0" Orientation="Horizontal" Height="36" >
                             <Button x:Name="MergeInputFilePathbutton2" Content="InputFile" HorizontalAlignment="Left"  Width="52.133"  Click="MergeInputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
                             <TextBox x:Name="MergeInputFilePathBox2" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" Margin="5,5,5,0" VerticalAlignment="Top" Width="530"  />
                         </StackPanel>-->
-                        <StackPanel Margin="5,5,5,0" Orientation="Horizontal" >
-                            <Button x:Name="ElementSearchOutputFilePathbutton" Content="OutputFile" HorizontalAlignment="Left"  Width="63.866"  Click="ElementSearchOutputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
-                            <TextBox x:Name="ElementSearchOutputFilePathBox" Margin="5,5,5,5" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" VerticalAlignment="Top" Width="520"  />
+                            <StackPanel Margin="5,5,5,0" Orientation="Horizontal" >
+                                <Button x:Name="ElementSearchOutputFilePathbutton" Content="OutputFile" HorizontalAlignment="Left"  Width="63.866"  Click="ElementSearchOutputFilePathbutton_Click" Margin="5,5,5,5" Height="22.266"/>
+                                <TextBox x:Name="ElementSearchOutputFilePathBox" Margin="5,5,5,5" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap" Text="{Binding MyString, Mode=OneWay}" VerticalAlignment="Top" Width="520"  />
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </GroupBox>
+                    </GroupBox>
+                </Grid>
             </TabItem>
         </TabControl>
         <GroupBox x:Name="OutText_groupBox" Header="OutPutDatas" Height="180" Margin="15,370.6,15,15" VerticalAlignment="Top"  BorderBrush="Gold" BorderThickness="2" d:LayoutOverrides="Width">

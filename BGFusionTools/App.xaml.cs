@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace BGFusion_TextBlockCopy
+namespace BGFusionTools
 {
     /// <summary>
     /// Interaction logic for App.xaml

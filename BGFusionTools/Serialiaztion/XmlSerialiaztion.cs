@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BGFusionTools.Datas;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -14,7 +15,7 @@ using System.Xml.Serialization;
 /// </summary>
 namespace BGFusionTools.Serialization
 {
-    public class XmlSerialiaztion 
+    public class XmlSerialiaztion
     {
         /// <summary>
         ///XMl Serialiaztion 
@@ -30,7 +31,7 @@ namespace BGFusionTools.Serialization
                 Workbook xWorkBook = new Workbook(llString);
                 XmlSerializer xmlserial = new XmlSerializer(typeof(Workbook));
                 xmlserial.Serialize(sFileSteam, xWorkBook);
-                string sXml = "\r\n"+ "<?mso-application progid=\"Excel.Sheet\"?>";
+                string sXml = "\r\n" + "<?mso-application progid=\"Excel.Sheet\"?>";
                 FileStreamInsert(sFileSteam, sXml, 21);
                 sFileSteam.Flush();
                 sFileSteam.Close();
@@ -55,7 +56,7 @@ namespace BGFusionTools.Serialization
                 Stream sFileSteam = new FileStream(sFilePath, FileMode.Create, FileAccess.ReadWrite);
                 XmlSerializer xmlserial = new XmlSerializer(typeof(Workbook));
                 xmlserial.Serialize(sFileSteam, xWorkbook);
-                string sXml = "\r\n"+"<?mso-application progid=\"Excel.Sheet\"?>" ;
+                string sXml = "\r\n" + "<?mso-application progid=\"Excel.Sheet\"?>";
                 FileStreamInsert(sFileSteam, sXml, 21);
                 sFileSteam.Flush();
                 sFileSteam.Close();
@@ -74,7 +75,7 @@ namespace BGFusionTools.Serialization
             {
                 Workbook xWorkBook = new Workbook();
                 Stream sFileSteam = new FileStream(sFilePath, FileMode.Open, FileAccess.ReadWrite);
-                XmlSerializer xmlserial = new XmlSerializer(typeof(Workbook),"urn:schemas-microsoft-com:office:spreadsheet");
+                XmlSerializer xmlserial = new XmlSerializer(typeof(Workbook), "urn:schemas-microsoft-com:office:spreadsheet");
                 sFileSteam.Position = 0;
                 xWorkBook = (Workbook)xmlserial.Deserialize(sFileSteam);
                 sFileSteam.Flush();
@@ -108,6 +109,98 @@ namespace BGFusionTools.Serialization
             {
                 MessageBox.Show("XmlDeserialiaztion error： " + ex.Message);
                 return default(SignalMonitor);
+            }
+
+        }
+        public static bool XmlElementSearchDataSerialiaztion(string sFilePath,ElementSearchData elementSearchData)
+        {
+            try
+            {
+                Stream sFileSteam = new FileStream(sFilePath, FileMode.Create, FileAccess.ReadWrite);
+                XmlSerializer xmlserial = new XmlSerializer(typeof(ElementSearchData));
+                xmlserial.Serialize(sFileSteam, elementSearchData);
+                //string sXml = "\r\n" + "<?mso-application progid=\"Excel.Sheet\"?>";
+                //FileStreamInsert(sFileSteam, sXml, 21);
+                sFileSteam.Flush();
+                sFileSteam.Close();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("XmlSerialiaztion error： " + ex.Message);
+                return false;
+            }
+        }
+        public static ElementSearchData XmlElementSearchDatDeserialize(string sFilePath)
+        {
+            try
+            {
+                ElementSearchData elementSearchData = new ElementSearchData();
+                Stream sFileSteam = new FileStream(sFilePath, FileMode.Open, FileAccess.ReadWrite);
+                XmlSerializer xmlserial = new XmlSerializer(typeof(Workbook), "urn:schemas-microsoft-com:office:spreadsheet");
+                sFileSteam.Position = 0;
+                elementSearchData = (ElementSearchData)xmlserial.Deserialize(sFileSteam);
+                sFileSteam.Flush();
+                sFileSteam.Close();
+                return elementSearchData;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("XmlDeserialiaztion error： " + ex.Message);
+                return default(ElementSearchData);
+            }
+        }
+
+        public static bool XmlSerial<T>(string sFilePath,T XmlSerialClass)
+        {
+            try
+            {
+                Stream sFileSteam = new FileStream(sFilePath, FileMode.Create, FileAccess.ReadWrite);
+                XmlSerializer xmlserial = new XmlSerializer(typeof(T));
+                xmlserial.Serialize(sFileSteam, XmlSerialClass);
+                if(typeof(T)== typeof(Workbook))
+                {
+                    string sXml = "\r\n" + "<?mso-application progid=\"Excel.Sheet\"?>";
+                    FileStreamInsert(sFileSteam, sXml, 21);
+                }
+                sFileSteam.Flush();
+                sFileSteam.Close();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(typeof(T).ToString() + ":" + ex.Message);
+                return false;
+            }
+
+        }
+        public static T XmlDeserial<T>(string sFilePath)
+        {
+            try
+            {
+                //T xmlDeserialClass = new T();
+                Stream sFileSteam = new FileStream(sFilePath, FileMode.Open, FileAccess.ReadWrite);
+                XmlSerializer xmlserial;
+                if (typeof(T) == typeof(Workbook))
+                {
+                    xmlserial = new XmlSerializer(typeof(T), "urn:schemas-microsoft-com:office:spreadsheet");
+                }
+                else
+                {
+                    xmlserial = new XmlSerializer(typeof(T));
+                }
+                sFileSteam.Position = 0;
+                T xmlDeserialClass = (T)xmlserial.Deserialize(sFileSteam);
+                sFileSteam.Flush();
+                sFileSteam.Close();
+                return xmlDeserialClass;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(typeof(T).ToString()+ ":" + ex.Message);
+                return default(T);
             }
 
         }
@@ -291,7 +384,7 @@ namespace BGFusionTools.Serialization
             writer.WriteEndElement();
             writer.WriteEndElement();
         }
-        public static Workbook operator+( Workbook a,Workbook b)
+        public static Workbook operator +(Workbook a, Workbook b)
         {
             Workbook c = new Workbook();
             b.llStrings.RemoveAt(0);
@@ -309,7 +402,7 @@ namespace BGFusionTools.Serialization
         private string shortname = "Sorter No.: FS01";
 
         public SignalMonitor() { }
-        public List<KepWareData> KepWareDatas { get {return kepWareDatas; } set {kepWareDatas=value; } }
+        public List<KepWareData> KepWareDatas { get { return kepWareDatas; } set { kepWareDatas = value; } }
 
         public DataTable ToDataTable()
         {
@@ -335,7 +428,7 @@ namespace BGFusionTools.Serialization
             }
 
             return dOPCdataTable;
-    }
+        }
         public XmlSchema GetSchema()
         {
             throw new NotImplementedException();
@@ -354,14 +447,14 @@ namespace BGFusionTools.Serialization
                         {
                             KepWareData kpdata = new KepWareData();
                             kpdata.TagName = reader["signalname"];
-                            kpdata.Address = reader["ionumber"].Split(".".ToCharArray())[0].Insert(1,"B");
+                            kpdata.Address = reader["ionumber"].Split(".".ToCharArray())[0].Insert(1, "B");
                             kpdata.DataType = "Byte";
                             //kpdata.Description = reader["description"];
                             kpdata.RespectData = "1";
                             kpdata.ClientAccess = "RO";
                             kpdata.ScanRate = "100";
                             var value = from p in kepWareDatas where p.TagName == kpdata.TagName select p;
-                            if (value.Count<KepWareData>()==0)
+                            if (value.Count<KepWareData>() == 0)
                                 kepWareDatas.Add(kpdata);
                             reader.Read();
                         }
