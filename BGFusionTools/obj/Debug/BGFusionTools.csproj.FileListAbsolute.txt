@@ -29,3 +29,9 @@ D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.exe
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.pdb
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\MainWindow.g.cs
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\MainWindow.baml
+D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.dll
+D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OOXML.dll
+D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXml4Net.dll
+D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXmlFormats.dll
+D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\ICSharpCode.SharpZipLib.xml

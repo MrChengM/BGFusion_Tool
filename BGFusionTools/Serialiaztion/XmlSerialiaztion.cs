@@ -1,4 +1,5 @@
 ﻿using BGFusionTools.Datas;
+using BGFusionTools.Helper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -248,7 +249,7 @@ namespace BGFusionTools.Serialization
 
 
     [XmlRoot("Workbook")]
-    public class Workbook : IXmlSerializable
+    public class Workbook : IXmlSerializable,IOperation<Workbook>
     {
         public Workbook() { }
         public Workbook(List<List<string>> llstrings) { _llStrings = llstrings; }
@@ -275,14 +276,11 @@ namespace BGFusionTools.Serialization
                         ls.Add(reader.ReadElementContentAsString());
                         reader.Read();
                     }
-                    //reader.MoveToContent();
                     _llStrings.Add(ls);
                 }
                 reader.MoveToContent();
             }
-
         }
-
         public void WriteXml(XmlWriter writer)
         {
             //Namespace.
@@ -384,18 +382,62 @@ namespace BGFusionTools.Serialization
             writer.WriteEndElement();
             writer.WriteEndElement();
         }
-        public static Workbook operator +(Workbook a, Workbook b)
+
+        public Workbook Add(Workbook T1, Workbook T2)
+        {
+            T2._llStrings.RemoveAt(0);
+            T1._llStrings.AddRange(T2._llStrings);
+            return T1;
+        }
+
+        public Workbook Subtract(Workbook T1, Workbook T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Workbook Multiply(Workbook T1, Workbook T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Workbook Div(Workbook T1, Workbook T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Workbook Add(Workbook T1)
+        {
+            T1._llStrings.RemoveAt(0);
+            _llStrings.AddRange(T1._llStrings);
+            return this;
+        }
+
+        public Workbook Subtract(Workbook T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Workbook Multiply(Workbook T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Workbook Div(Workbook T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        /*public static Workbook operator +(Workbook a, Workbook b)
         {
             Workbook c = new Workbook();
             b.llStrings.RemoveAt(0);
             a.llStrings.AddRange(b.llStrings);
             c.llStrings.AddRange(a.llStrings);
             return c;
-
-        }
+        }*/
     }
     [XmlRoot("monitor")]
-    public class SignalMonitor : IXmlSerializable
+    public class SignalMonitor : IXmlSerializable, IOperation<SignalMonitor>
     {
         private List<KepWareData> kepWareDatas = new List<KepWareData>();
         private string name = "12523_JD_FS01_1_IO_v1_1";
@@ -465,6 +507,46 @@ namespace BGFusionTools.Serialization
         }
 
         public void WriteXml(XmlWriter writer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SignalMonitor Add(SignalMonitor T1, SignalMonitor T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SignalMonitor Subtract(SignalMonitor T1, SignalMonitor T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SignalMonitor Multiply(SignalMonitor T1, SignalMonitor T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SignalMonitor Div(SignalMonitor T1, SignalMonitor T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SignalMonitor Add(SignalMonitor T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SignalMonitor Subtract(SignalMonitor T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SignalMonitor Multiply(SignalMonitor T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SignalMonitor Div(SignalMonitor T1)
         {
             throw new NotImplementedException();
         }

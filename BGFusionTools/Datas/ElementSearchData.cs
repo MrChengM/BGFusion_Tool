@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BGFusionTools.Helper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Xml.Serialization;
 namespace BGFusionTools.Datas
 {
     [XmlRoot("elements")]
-    public class ElementSearchData : BaseData,IXmlSerializable
+    public class ElementSearchData : BaseData,IXmlSerializable, IOperation<ElementSearchData>
     {
         private List<Element> elements = new List<Element>();
         public List<Element> Elements { get { return elements; } }
@@ -109,14 +110,57 @@ namespace BGFusionTools.Datas
                 writer.WriteEndElement();
             }
         }
-        public static ElementSearchData operator +(ElementSearchData a, ElementSearchData b)
+
+        public ElementSearchData Add(ElementSearchData T1, ElementSearchData T2)
         {
-            ElementSearchData c = new ElementSearchData();
-            //b.elements.RemoveAt(0);
-            a.elements.AddRange(b.elements);
-            c.elements.AddRange(a.elements);
-            return c;
+            T1.elements.AddRange(T2.elements);
+            return T1;
         }
+
+        public ElementSearchData Subtract(ElementSearchData T1, ElementSearchData T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchData Multiply(ElementSearchData T1, ElementSearchData T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchData Div(ElementSearchData T1, ElementSearchData T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchData Add(ElementSearchData T1)
+        {
+            elements.AddRange(T1.elements);
+            return this;
+        }
+
+        public ElementSearchData Subtract(ElementSearchData T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchData Multiply(ElementSearchData T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchData Div(ElementSearchData T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        /*  public static ElementSearchData operator +(ElementSearchData a, ElementSearchData b)
+          {
+              ElementSearchData c = new ElementSearchData();
+              //b.elements.RemoveAt(0);
+              a.elements.AddRange(b.elements);
+              c.elements.AddRange(a.elements);
+              return c;
+          }*/
     }
 
     public struct Element
