@@ -20,7 +20,6 @@ D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csproj.Generat
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\BGFusionTools.exe.config
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\BGFusionTools.exe
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\BGFusionTools.pdb
-D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csprojResolveAssemblyReference.cache
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.cache
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.lref
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.g.resources

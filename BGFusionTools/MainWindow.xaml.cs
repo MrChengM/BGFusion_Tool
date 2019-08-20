@@ -22,6 +22,7 @@ using BGFusionTools.Helper;
 using BGFusionTools.Functions;
 using BGFusionTools.Serialization;
 using BGFusionTools.Datas;
+using System.Xml;
 
 namespace BGFusionTools
 {
@@ -46,18 +47,20 @@ namespace BGFusionTools
         public DataTable Level1DataExcelData;
         public EnumerableRowCollection<DataRow> SelectConRows;
         public DataTable SelectConveyorExcelTable;
-        
-         //public EnumerableRowCollection<object> ConveyorRows;
+
+        //public EnumerableRowCollection<object> ConveyorRows;
 
         //DataTable列常量定义
 
         //Conveyor数据表定义
-        public string[] sConveyorSheetName;
-        public string[,] sConveyorColName;
+        //public string[] sConveyorSheetName;
+        //public string[,] sConveyorColName;
+        public TaglistColumns taglistColumns= TaglistColumns.getInstance();
         //BaseList数据表定义
-        public string[] sBaseListSheetName ;
-        public string[,] sBaseListColName ;
-
+        public string[] sBaseListSheetName;
+        public string[,] sBaseListColName;
+        public BaseListSignalMappingColumns signalMappingColumns = BaseListSignalMappingColumns.getInstance();
+        public BaseListCommandMappingColumns commandMappingColumns = BaseListCommandMappingColumns.getInstance();
         //输出变量定义
         //public string  sEquipmentElement="";
         //public string  sPLCLink = "";
@@ -89,7 +92,7 @@ namespace BGFusionTools
             //Gui对应的画面名
             string UIKey = "ViewNameteBox";
             string sString = "PVG_BHS_S1_LA_0002_0003";
-            bool? bBool=null ;
+            bool? bBool = null;
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             ViewNameteBox.DataContext = UIdictionary[UIKey];
 
@@ -137,9 +140,9 @@ namespace BGFusionTools
             TestdataOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
 
             //TestList测试表格生成画面
-            UIKey = "TestListTemplateteBox";
-            UIdictionary.Add(UIKey, new DataString(sString, bBool));
-            TestListTemplateteBox.DataContext = UIdictionary[UIKey];
+            //UIKey = "TestListTemplateteBox";
+            //UIdictionary.Add(UIKey, new DataString(sString, bBool));
+            //TestListTemplateteBox.DataContext = UIdictionary[UIKey];
             UIKey = "TestListOutPutFilePathteBox";
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             TestListOutPutFilePathteBox.DataContext = UIdictionary[UIKey];
@@ -216,7 +219,7 @@ namespace BGFusionTools
             ElementSearchOutputFilePathBox.DataContext = UIdictionary[UIKey];
         }
         void InitializeParametr()
-        {        
+        {
 
             try
             {
@@ -226,30 +229,30 @@ namespace BGFusionTools
                 string sConFilePath = ConfigurationSettings.AppSettings["Config.FilePath"];
                 //ConveyorSheetName初始化
                 dConfigTable = ExcelFunction.ExcelRead(sConFilePath);
-                //Conveyor Sheet Name & Conveyor Column Name初始化
+                /*//Conveyor Sheet Name & Conveyor Column Name初始化
                 sTableName = ConfigurationSettings.AppSettings["ConveyorTaName"];
                 sTableToStringArrary(dConfigTable.Tables[sTableName], out sConveyorSheetName, out sConveyorColName);
                 //BaseList Sheet Name & Conveyor Column Name初始化
-                sTableName = ConfigurationSettings.AppSettings["BaseTaName"]; 
+                sTableName = ConfigurationSettings.AppSettings["BaseTaName"];
                 sTableToStringArrary(dConfigTable.Tables[sTableName], out sBaseListSheetName, out sBaseListColName);
-
+                */
                 //TestDataTemplate
-                sTableName = ConfigurationSettings.AppSettings["TestDaTeTaName"] ;
+                sTableName = ConfigurationSettings.AppSettings["TestDaTeTaName"];
                 sTestDaActive = (string)dConfigTable.Tables[sTableName].Rows[0][0];
                 sTestDaTemplateL1 = (string)dConfigTable.Tables[sTableName].Rows[1][0];
                 sTestDaTemplateL2 = (string)dConfigTable.Tables[sTableName].Rows[2][0];
 
                 //XmlTemplate
-                sTableName = ConfigurationSettings.AppSettings["XmlTeTaName"]; 
+                sTableName = ConfigurationSettings.AppSettings["XmlTeTaName"];
                 sXmlTextBlock = (string)dConfigTable.Tables[sTableName].Rows[0][0];
                 sXmlElement = (string)dConfigTable.Tables[sTableName].Rows[1][0];
 
                 //L1AlarmDataTemplate
-                sTableName = ConfigurationSettings.AppSettings["L1AlmDaTeTaName"]; 
+                sTableName = ConfigurationSettings.AppSettings["L1AlmDaTeTaName"];
                 Level1DataExcelData = dConfigTable.Tables[sTableName];
 
                 //OPCDataTemplate
-                sTableName = ConfigurationSettings.AppSettings["OpcDaTeTaName"]; 
+                sTableName = ConfigurationSettings.AppSettings["OpcDaTeTaName"];
                 sOPCDaSingleTemplate = (string)dConfigTable.Tables[sTableName].Rows[0][0];
                 sOPCDaCommandTemplate = (string)dConfigTable.Tables[sTableName].Rows[1][0];
                 sOPCDaHourTemplate = (string)dConfigTable.Tables[sTableName].Rows[2][0];
@@ -269,7 +272,7 @@ namespace BGFusionTools
         /// <returns></returns>
         private void sTableToStringArrary(DataTable dInputDataTable, out string[] sTableColName, out string[,] sTableData)
         {
-            string[] sColumnsName;   
+            string[] sColumnsName;
             string[,] sArrary;
             int iRowsCount;
             int iColumnsCount;
@@ -285,7 +288,7 @@ namespace BGFusionTools
                 {
                     if (dInputDataTable.Rows[j][i] is System.DBNull == false)
                     {
-                        sArrary[i, j] = (string)dInputDataTable.Rows[j ][i];
+                        sArrary[i, j] = (string)dInputDataTable.Rows[j][i];
                     }
                 }
             }
@@ -297,9 +300,9 @@ namespace BGFusionTools
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private DataSet dDataLoad (ref string sFileName)
+        private DataSet dDataLoad(ref string sFileName)
         {
-            DataSet dExcelDataSet =new DataSet();
+            DataSet dExcelDataSet = new DataSet();
             //sEquipmentElement.Clear();
             //sEquipmentLine.Clear();
             OpenFileDialog dialog = new OpenFileDialog();//open the path
@@ -308,7 +311,7 @@ namespace BGFusionTools
             if (dialog.ShowDialog() == true)
             {
                 sPath = dialog.FileName;
-                sFileName=dialog.FileName;
+                sFileName = dialog.FileName;
             }
             else
             {
@@ -316,7 +319,7 @@ namespace BGFusionTools
             }
             if (sPath != null)
             {
-                dExcelDataSet =ExcelFunction.ExcelRead(sPath);
+                dExcelDataSet = ExcelFunction.ExcelRead(sPath);
                 //DataTableToOutPutList();
             }
             return dExcelDataSet;
@@ -330,7 +333,7 @@ namespace BGFusionTools
 
             if (dialog.ShowDialog() == true)
             {
-               // sPath = dialog.FileName;
+                // sPath = dialog.FileName;
                 sfileName = dialog.FileName;
                 return true;
             }
@@ -346,15 +349,15 @@ namespace BGFusionTools
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private bool  Outputfile(ref string sfileName ,string sFilter)
+        private bool Outputfile(ref string sfileName, string sFilter)
         {
 
             SaveFileDialog dialog = new SaveFileDialog();
-            dialog.FileName = sfileName; 
+            dialog.FileName = sfileName;
             dialog.Filter = sFilter;
 
             // Show save file dialog box
-            Nullable <bool> result = dialog.ShowDialog();
+            Nullable<bool> result = dialog.ShowDialog();
             // Process save file dialog box results
             if (result == true)
             {
@@ -365,7 +368,7 @@ namespace BGFusionTools
             {
                 return false;
             }
-     
+
         }
         /// <summary>
         /// TagList表格输入（PVG_SCADA_CNV_...）
@@ -405,8 +408,8 @@ namespace BGFusionTools
 
             string UIKey = "XMLOutPutFilePathteBox";
             string UIKey1 = "OutPutDatasteBox";
-            string UIKey4= "TeBlackraButton";
-            string UIKey5= "ElementradioButton";
+            string UIKey4 = "TeBlackraButton";
+            string UIKey5 = "ElementradioButton";
             string sFilePath = UIdictionary[UIKey].MyString;
             UIdictionary[UIKey1].MyString = "";
             try
@@ -431,7 +434,7 @@ namespace BGFusionTools
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Build XML Data Error: " + ex.Message);
             }
@@ -457,13 +460,13 @@ namespace BGFusionTools
                 {
                     BaseFactory factory = new BaseFactory();
                     factory.BaseParameter = CreateConvertParameter();
-                    BaseData TestData =  factory.CreatDataClass("TestData");
+                    BaseData TestData = factory.CreatDataClass("TestData");
                     UIdictionary[UIKey].MyString = sFilePath;
                     UIdictionary[UIKey1].MyString = TestData.ToString();
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Build Test data Error： " + ex.Message);
             }
@@ -516,7 +519,7 @@ namespace BGFusionTools
                     UIdictionary[UIKey1].MyString = "Output Test List successful!";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Build Test List Error： " + ex.Message);
             }
@@ -558,7 +561,7 @@ namespace BGFusionTools
                     BaseFactory factory = new BaseFactory();
                     factory.BaseParameter = CreateConvertParameter();
                     factory.TempTable = Level1DataExcelData;
-                    BaseData Level1Data =  factory.CreatDataClass("Level1Data");
+                    BaseData Level1Data = factory.CreatDataClass("Level1Data");
                     UIdictionary[UIKey].MyString = sFilePath;
                     UIdictionary[UIKey1].MyString = Level1Data.ToString();
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
@@ -602,7 +605,7 @@ namespace BGFusionTools
                     UIdictionary[UIKey1].MyString = DataConvert.ToString(dt);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Build OPC Data Error: " + ex.Message);
             }
@@ -660,14 +663,19 @@ namespace BGFusionTools
             GC.Collect();
 
         }
+        /// <summary>
+        /// 创建公共参数
+        /// </summary>
+        /// <returns></returns>
         private BaseParameter CreateConvertParameter()
         {
             BaseParameter convertParameter = new BaseParameter();
-            convertParameter.TaglistTable = ConveyorExcelData.Tables[sConveyorSheetName[1]];
-            convertParameter.TaglistColName = sConveyorColName;
-            convertParameter.SingleMappingTable = BaseListExceLData.Tables[sBaseListSheetName[1]];
-            convertParameter.CommandMappingTable = BaseListExceLData.Tables[sBaseListSheetName[2]];
-            convertParameter.BasefileColName = sBaseListColName;
+            convertParameter.TaglistTable = ConveyorExcelData.Tables[taglistColumns.sTagName];
+            convertParameter.TaglistColName = taglistColumns;
+            convertParameter.SingleMappingTable = BaseListExceLData.Tables[signalMappingColumns.sSignalMapping];
+            convertParameter.SignalMappingColName = signalMappingColumns;
+            convertParameter.CommandMappingTable = BaseListExceLData.Tables[commandMappingColumns.sCommandMapping];
+            convertParameter.CommandMappingColName = commandMappingColumns;
             string UIKey1 = "L1raButton";
             string UIKey2 = "L2raButton";
             string UIKey3 = "ViewNameteBox";
@@ -683,7 +691,7 @@ namespace BGFusionTools
             convertParameter.Stemp0 = sTestDaActive;
             convertParameter.Stemp1 = sTestDaTemplateL1;
             convertParameter.Stemp2 = sTestDaTemplateL2;
-            convertParameter.Stemp3 = sXmlTextBlock ;
+            convertParameter.Stemp3 = sXmlTextBlock;
             convertParameter.Stemp4 = sXmlElement;
             convertParameter.Stemp5 = sOPCDaSingleTemplate;
             convertParameter.Stemp6 = sOPCDaCommandTemplate;
@@ -709,7 +717,7 @@ namespace BGFusionTools
             if (dialog.ShowDialog() == true)
             {
                 sPaths = dialog.FileNames;
-                UIdictionary[UIKey].MyString=System.IO.Path.GetDirectoryName(sPaths[0]);
+                UIdictionary[UIKey].MyString = System.IO.Path.GetDirectoryName(sPaths[0]);
             }
         }
         /// <summary>
@@ -726,39 +734,39 @@ namespace BGFusionTools
             string UIKey3 = "ElementSearchraButton";
             string sFilePath = UIdictionary[UIKey].MyString;
             bool? btypeWorkbook = UIdictionary[UIKey2].Mybool;
-            bool? btypeElementSearch =UIdictionary[UIKey3].Mybool;
+            bool? btypeElementSearch = UIdictionary[UIKey3].Mybool;
             bool bOpenEnable = Outputfile(ref sFilePath, sFileStyle);
             UIdictionary[UIKey1].MyString = "";
             try
             {
                 if (bOpenEnable)
                 {
-                  
+
                     UIdictionary[UIKey1].MyString = "Merge Datas Successful";
-                    UIdictionary[UIKey].MyString  = sFilePath;
+                    UIdictionary[UIKey].MyString = sFilePath;
                     if (btypeWorkbook == true)
                     {
-                        XmlSerialiaztion.XmlSerial(sFilePath,Merge<Workbook>(sPaths));
+                        XmlSerialiaztion.XmlSerial(sFilePath, Merge<Workbook>(sPaths));
                     }
                     else if (btypeElementSearch == true)
                     {
-                        XmlSerialiaztion.XmlSerial(sFilePath,Merge<ElementSearchData>(sPaths));
+                        XmlSerialiaztion.XmlSerial(sFilePath, Merge<ElementSearchData>(sPaths));
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Merge files Error: " + ex.Message);
             }
         }
-        private T Merge<T>(string[] spaths) where T: IOperation<T>,new()
+        private T Merge<T>(string[] spaths) where T : IOperation<T>, new()
         {
             int i = 0;
-            T files =new T();
+            T files = new T();
             foreach (string s in sPaths)
             {
                 T flie = XmlSerialiaztion.XmlDeserial<T>(s);
-                    files.Add(flie);
+                files.Add(flie);
                 i++;
             }
             return files;
@@ -776,7 +784,7 @@ namespace BGFusionTools
             UIdictionary[UIKey1].MyString = "";
             try
             {
-                if (bOpenEnable & sInFilePath!="")
+                if (bOpenEnable & sInFilePath != "")
                 {
                     DataTable dt = XmlSerialiaztion.XmlDeserial<SignalMonitor>(sInFilePath).ToDataTable();
                     UIdictionary[UIKey].MyString = sOutFilePath;
@@ -799,8 +807,8 @@ namespace BGFusionTools
             string UIKey = "SorteIOInputFilePathBox";
             string sFileStyle = "Xml|*.xml";
             string sFilePath = UIdictionary[UIKey].MyString;
-            if(Inputfile(ref sFilePath, sFileStyle))
-            UIdictionary[UIKey].MyString = sFilePath;
+            if (Inputfile(ref sFilePath, sFileStyle))
+                UIdictionary[UIKey].MyString = sFilePath;
         }
 
         private void ElementSearchOutputFilePathbutton_Click(object sender, RoutedEventArgs e)
@@ -813,7 +821,7 @@ namespace BGFusionTools
             UIdictionary[UIKey1].MyString = "";
             try
             {
-                if (bOpenEnable )
+                if (bOpenEnable)
                 {
                     BaseFactory factory = new BaseFactory(CreateConvertParameter());
                     BaseData elmentSearchData = factory.CreatDataClass("ElementSearchData");
@@ -827,6 +835,383 @@ namespace BGFusionTools
                 MessageBox.Show("Build Element Search Data Error: " + ex.Message);
             }
             GC.Collect();
+        }
+    }
+    /// <summary>
+    /// 输送机taglist表列名获取
+    /// </summary>
+    public class TaglistColumns
+    {
+        public string sTagName;
+        public string sSystem;
+        public string sPLC;
+        public string sPowerBox;
+        public string sEquipmentLine;
+        public string sElementType;
+        public string sElementName;
+        public string sBehaviorName;
+        public List<string> sSignalMapping;
+        public List<string> sSignalAddress;
+        public string sCommandMapping;
+        public string sCommandAddress;
+        public string sRunningHours;
+        public string sCopyRunningHours;
+        public string sDisplayName;
+        public string sEdgeColor;
+        public string sAlarmTree;
+        public string sLevel1View;
+        public string sLevel2View;
+        public string sDrawOnViews;
+        public string sLeftClick;
+        public string sRightClick;
+        public string sLevel1AsLevel2;
+        public string sExtendedPropertyAsCamera;
+        private TaglistColumns()
+        {
+            const string filePath = "../../Configuration.xml";
+            Stream sFileSteam = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
+            XmlReader xmlReader = XmlReader.Create(sFileSteam);
+            while (xmlReader.Read())
+            {
+                xmlReader.MoveToContent();
+                if (xmlReader.IsStartElement("DataSet") && xmlReader["name"] == "sTagName")
+                {
+                    sTagName = xmlReader["value"];
+                    xmlReader.Read();
+                    //遍历configuration文件，加载配置
+                    while (xmlReader.IsStartElement("Column"))
+                    {
+                        switch (xmlReader["name"])
+                        {
+                            case "sTagName":
+                                sTagName = xmlReader["value"];
+                                break;
+                            case "sPLC":
+                                sPLC = xmlReader["value"];
+                                break;
+                            case "sPowerBox":
+                                sPowerBox = xmlReader["value"];
+                                break;
+                            case "sEquipmentLine":
+                                sEquipmentLine = xmlReader["value"];
+                                break;
+                            case "sElementType":
+                                sElementType = xmlReader["value"];
+                                break;
+                            case "sElementName":
+                                sElementName = xmlReader["value"];
+                                break;
+                            case "sBehaviorName":
+                                sBehaviorName = xmlReader["value"];
+                                break;
+                            case "sSignalMapping1":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping2":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping3":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping4":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping5":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping6":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping7":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping8":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping9":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping10":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalMapping11":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalMapping.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress1":
+                                if (xmlReader["enable"] != "false")
+                                        sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress2":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress3":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress4":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress5":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress6":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress7":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress8":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress9":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress10":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sSignalAddress11":
+                                if (xmlReader["enable"] != "false")
+                                    sSignalAddress.Add(xmlReader["value"]);
+                                break;
+                            case "sCommandMapping":
+                                sCommandMapping =xmlReader["value"];
+                                break;
+                            case "sCommandAddress":
+                                sCommandAddress= xmlReader["value"];
+                                break;
+                            case "sRunningHours":
+                                sRunningHours = xmlReader["value"];
+                                break;
+                            case "sCopyRunningHours":
+                                sCopyRunningHours = xmlReader["value"];
+                                break;
+                            case "sDisplayName":
+                                sDisplayName = xmlReader["value"];
+                                break;
+                            case "sEdgeColor":
+                                sEdgeColor = xmlReader["value"];
+                                break;
+                            case "sAlarmTree":
+                                sAlarmTree = xmlReader["value"];
+                                break;
+                            case "sLevel1View":
+                                sLevel1View = xmlReader["value"];
+                                break;
+                            case "sLevel2View":
+                                sLevel2View = xmlReader["value"];
+                                break;
+                            case "sDrawOnViews":
+                                sDrawOnViews = xmlReader["value"];
+                                break;
+                            case "sLeftClick":
+                                sLeftClick = xmlReader["value"];
+                                break;
+                            case "sRightClick":
+                                sRightClick = xmlReader["value"];
+                                break;
+                            case "sLevel1AsLevel2":
+                                sLevel1AsLevel2 = xmlReader["value"];
+                                break;
+                            case "sExtendedPropertyAsCamera":
+                                sExtendedPropertyAsCamera = xmlReader["value"];
+                                break;
+                        }
+                        xmlReader.Read();
+                    }
+                }
+            }
+            xmlReader.Dispose();
+            sFileSteam.Dispose();
+        }
+
+        private static TaglistColumns instance = new TaglistColumns();
+        public static TaglistColumns getInstance()
+        {
+            return instance;
+        }
+
+    }
+    /// <summary>
+    /// SignalMapping表列名获取
+    /// </summary>
+    public  class BaseListSignalMappingColumns
+    {
+        public string sSignalMapping;
+        public string sType;
+        public string sWord;
+        public string sBit;
+        public string sAnalogValue;
+        public string sAlarmStatusNumber;
+        public string sPartName;
+        public string sShowOnSCADA;
+        public string sStateRef;
+        public string sFunctionalText;
+        public string sStateText;
+        public string sStatespriority;
+        public string sStateColor;
+        public string sStateSpecialFunction;
+        public string sAlarmStatusPriority;
+        public string sPriorityFormula;
+        private BaseListSignalMappingColumns()
+        {
+            const string filePath = "../../Configuration.xml";
+            Stream sFileSteam = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
+            XmlReader xmlReader = XmlReader.Create(sFileSteam);
+            while (xmlReader.Read())
+            {
+                xmlReader.MoveToContent();
+                if (xmlReader.IsStartElement("DataSet") && xmlReader["name"] == "sSignalMapping")
+                {
+                    sSignalMapping = xmlReader["value"];
+                    xmlReader.Read();
+                    while (xmlReader.IsStartElement("Column"))
+                    {
+                        switch (xmlReader["name"])
+                        {
+                            case "sType":
+                                sType = xmlReader["name"];
+                                break;
+                            case "sWord":
+                                sWord = xmlReader["name"];
+                                break;
+                            case "sBit":
+                                sBit = xmlReader["name"];
+                                break;
+                            case "sAnalogValue":
+                                sAnalogValue = xmlReader["name"];
+                                break;
+                            case "sAlarmStatusNumber":
+                                sAlarmStatusNumber = xmlReader["name"];
+                                break;
+                            case "sPartName":
+                                sPartName = xmlReader["name"];
+                                break;
+                            case "sShowOnSCADA":
+                                sShowOnSCADA = xmlReader["name"];
+                                break;
+                            case "sStateRef":
+                                sStateRef = xmlReader["name"];
+                                break;
+                            case "sFunctionalText":
+                                sFunctionalText = xmlReader["name"];
+                                break;
+                            case "sStateText":
+                                sStateText = xmlReader["name"];
+                                break;
+                            case "sStatespriority":
+                                sStatespriority = xmlReader["name"];
+                                break;
+                            case "sStateColor":
+                                sStateColor = xmlReader["name"];
+                                break;
+                            case "sStateSpecialFunction":
+                                sStateSpecialFunction = xmlReader["name"];
+                                break;
+                            case "sAlarmStatusPriority":
+                                sAlarmStatusPriority = xmlReader["name"];
+                                break;
+                            case "sPriorityFormula":
+                                sPriorityFormula = xmlReader["name"];
+                                break;
+                        }
+                        xmlReader.Read();
+                    }
+                }
+            }
+            xmlReader.Dispose();
+            sFileSteam.Dispose();
+        }
+        private static BaseListSignalMappingColumns instance = new BaseListSignalMappingColumns();
+        public static BaseListSignalMappingColumns getInstance()
+        {
+            return instance;
+        }
+    }
+    /// <summary>
+    /// CommandMapping列表名获取
+    /// </summary>
+    public class BaseListCommandMappingColumns
+    {
+        public string sCommandMapping;
+        public string sType;
+        public string sElementLink;
+        public string sBit;
+        public string sAnalogValue;
+        public string sCommandNumber;
+        public string sPartName;
+        public string sCommandPriority;
+        public string sCommandText;
+        private BaseListCommandMappingColumns()
+        {
+            const string filePath = "../../Configuration.xml";
+            Stream sFileSteam = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
+            XmlReader xmlReader = XmlReader.Create(sFileSteam);
+            while (xmlReader.Read())
+            {
+                xmlReader.MoveToContent();
+                if (xmlReader.IsStartElement("DataSet") && xmlReader["name"] == "sCommandMapping")
+                {
+                    sCommandMapping = xmlReader["value"];
+                    xmlReader.Read();
+                    while (xmlReader.IsStartElement("Column"))
+                    {
+                        switch (xmlReader["name"])
+                        {
+                            case "sType":
+                                sType = xmlReader["name"];
+                                break;
+                            case "sElementLink":
+                                sElementLink = xmlReader["name"];
+                                break;
+                            case "sBit":
+                                sBit = xmlReader["name"];
+                                break;
+                            case "sAnalogValue":
+                                sAnalogValue = xmlReader["name"];
+                                break;
+                            case "sCommandNumber":
+                                sCommandNumber = xmlReader["name"];
+                                break;
+                            case "sPartName":
+                                sPartName = xmlReader["name"];
+                                break;
+                            case "sCommandPriority":
+                                sCommandPriority = xmlReader["name"];
+                                break;
+                            case "sCommandText":
+                                sCommandText = xmlReader["name"];
+                                break;
+                        }
+                        xmlReader.Read();
+                    }
+                }
+            }
+            xmlReader.Dispose();
+            sFileSteam.Dispose();
+        }
+        private static BaseListCommandMappingColumns instance = new BaseListCommandMappingColumns();
+        public static BaseListCommandMappingColumns getInstance()
+        {
+            return instance;
         }
     }
 }

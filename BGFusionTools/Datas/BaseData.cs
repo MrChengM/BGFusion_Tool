@@ -13,8 +13,9 @@ namespace BGFusionTools.Datas
         private DataTable taglistTable;
         private DataTable singleMappingTable;
         private DataTable commandMappingTable;
-        private string[,] taglistColName;
-        private string[,] basefileColName;
+        private TaglistColumns taglistColumns;
+        private BaseListSignalMappingColumns signalMappingColumns;
+        private BaseListCommandMappingColumns commandMappingColumns;
         private string viewName;
         private int viewNum;
         private string stemp0;
@@ -30,8 +31,9 @@ namespace BGFusionTools.Datas
         public DataTable TaglistTable { get { return taglistTable; } set { taglistTable = value; } }
         public DataTable SingleMappingTable { get { return singleMappingTable; } set { singleMappingTable = value; } }
         public DataTable CommandMappingTable { get { return commandMappingTable; } set { commandMappingTable = value; } }
-        public string[,] TaglistColName { get { return taglistColName; } set { taglistColName = value; } }
-        public string[,] BasefileColName { get { return basefileColName; } set { basefileColName = value; } }
+        public TaglistColumns TaglistColName { get { return taglistColumns; } set { taglistColumns = value; } }
+        public BaseListSignalMappingColumns SignalMappingColName { get { return signalMappingColumns; } set { signalMappingColumns = value; } }
+        public BaseListCommandMappingColumns CommandMappingColName { get { return commandMappingColumns; } set { commandMappingColumns = value; } }
         public string ViewName { get { return viewName; } set { viewName = value; } }
         public int ViewNum { get { return viewNum; } set { viewNum = value; } }
         public string Stemp0 { get { return stemp0; } set { stemp0 = value; } }
@@ -56,20 +58,20 @@ namespace BGFusionTools.Datas
 
         //根据Mapping判断需要的数据地址条数，生成对应的sSignalName数目集合.
         internal List<string> sSignalName(int iByteCounts, string sTemp, string sSystem, string sPlcLink, string sEquipmentLine,
-            string sEquipmentElement)
+            string sEquipmentElement,int iSignalNumber)
         {
             List<string> ssignalName = new List<string>();
             int iCounts;
             if (iByteCounts <= 32)
             {
-                ssignalName.Add(string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, 1));
+                ssignalName.Add(string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, iSignalNumber));
             }
             else
             {
                 iCounts = (int)Math.Ceiling((float)iByteCounts / 32);
                 for (int i = 0; i < iCounts; i++)
                 {
-                    ssignalName.Add(string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i + 1));
+                    ssignalName.Add(string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, iSignalNumber + 1));
                 }
             }
             return ssignalName;
@@ -123,10 +125,10 @@ namespace BGFusionTools.Datas
                     case 0:
                         break;
                     case 1:
-                        sSelectConveyorColName = baseParameter.TaglistColName[1, 15];
+                        sSelectConveyorColName = baseParameter.TaglistColName.sLevel1View;
                         break;
                     case 2:
-                        sSelectConveyorColName = baseParameter.TaglistColName[1, 16];
+                        sSelectConveyorColName = baseParameter.TaglistColName.sLevel2View;
                         break;
                 }
                 sSelectColVal = baseParameter.ViewName;

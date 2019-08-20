@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -11,22 +12,23 @@ namespace BGFusionTools.Datas
     public class OPCData:BaseData
     {
 
-        private bool bSingle;
+        private bool bSignal;
         private bool bCommand;
         private bool bHour;
        
 
         //OPCDataList列名定义，数据类型/读写等级/扫描周期等定义
         DataTable dOPCdataTable = new DataTable("OPCData");
-        private string[] sOPCListColName ={"Tag Name","Address", "Data Type" ,
-            "Respect Data Type" , "Client Access" , "Scan Rate", "Scaling",
-            "Raw Low", "Raw High", "Scaled Low", "Scaled High", "Scaled Data Type",
-            "Clamp Low", "Clamp High", "Eng Units","Description","Negate Value" };
+        OPCColName oPCColName = new OPCColName() { };
+        //private string[] sOPCListColName ={"Tag Name","Address", "Data Type" ,
+        //    "Respect Data Type" , "Client Access" , "Scan Rate", "Scaling",
+        //    "Raw Low", "Raw High", "Scaled Low", "Scaled High", "Scaled Data Type",
+        //    "Clamp Low", "Clamp High", "Eng Units","Description","Negate Value" };
         private const int iReDataType = 1;
-        private string[] sClienAccess = { "RO","R/W" };
+        private const string sReadOnly ="RO";
         private const int iScanRate = 100;
-        private string[] sDataType = {"String","Boolean","Char","Byte","Short","Word"
-                ,"Long","DWord","Float","Double","BCD","LBCD","Date"};
+        //private string[] sDataType = {"String","Boolean","Char","Byte","Short","Word"
+        //        ,"Long","DWord","Float","Double","BCD","LBCD","Date"};
 
         private const int iAdderssIndex = 9;
 
@@ -37,7 +39,7 @@ namespace BGFusionTools.Datas
         {
 
             this.baseParameter = ConverParameter;
-            this.bSingle = bsingle;
+            this.bSignal = bsingle;
             this.bCommand = bcommand;
             this.bHour = bhour;
         }
@@ -48,25 +50,26 @@ namespace BGFusionTools.Datas
 
             try
             {
-                foreach (string sColumName in sOPCListColName)
+                TaglistColumns colName = baseParameter.TaglistColName;
+                foreach (string sColumName in oPCColName)
                     dOPCdataTable.Columns.AddRange(new DataColumn[] { new DataColumn(sColumName) });
                 foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
                 {
-                    if (selectConRow[baseParameter.TaglistColName[1, 0]].ToString() == "")
+                    if (selectConRow[colName.sSystem].ToString() == "")
                         break;
-                    string sSystem = selectConRow[baseParameter.TaglistColName[1, 0]].ToString();
-                    string sPlcLink = selectConRow[baseParameter.TaglistColName[1, 1]].ToString();
-                    string sEquipmentLine = selectConRow[baseParameter.TaglistColName[1, 3]].ToString();
-                    string sEquipmentElement = selectConRow[baseParameter.TaglistColName[1, 4]].ToString();
-                    string sEquipmentElementtype = selectConRow[baseParameter.TaglistColName[1, 5]].ToString();
+                    string sSystem = selectConRow[colName.sSystem].ToString();
+                    string sPlcLink = selectConRow[colName.sPLC].ToString();
+                    string sEquipmentLine = selectConRow[colName.sEquipmentLine].ToString();
+                    string sEquipmentElement = selectConRow[colName.sElementName].ToString();
+                    string sEquipmentElementtype = selectConRow[colName.sElementType].ToString();
                     string sSingleMapping1 = selectConRow[baseParameter.TaglistColName[1, 6]].ToString();
                     string sSignalAddress1 = selectConRow[baseParameter.TaglistColName[1, 7]].ToString();
-                    string sCommandMapping = selectConRow[baseParameter.TaglistColName[1, 8]].ToString();
-                    string sCommandAddress = selectConRow[baseParameter.TaglistColName[1, 9]].ToString();
-                    string sRunningHours = selectConRow[baseParameter.TaglistColName[1, 10]].ToString();
-                    if (bSingle && (sSignalAddress1 != ""))
+                    string sCommandMapping = selectConRow[colName.sCommandMapping].ToString();
+                    string sCommandAddress = selectConRow[colName.sCommandAddress].ToString();
+                    string sRunningHours = selectConRow[colName.sRunningHours].ToString();
+                    if (bSignal && (sSignalAddress1 != ""))
                     {
-                        var SingleCounts = baseParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.BasefileColName[1, 0]) == sSingleMapping1);
+                        var SingleCounts = baseParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.SignalMappingColName.sType) == sSingleMapping1);
                         DataRow[] OPCDataRows = OPCDataRow(SingleCounts,baseParameter.Stemp5, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sSignalAddress1);
                         foreach (DataRow dr in OPCDataRows)
                             dOPCdataTable.Rows.Add(dr);
@@ -116,24 +119,24 @@ namespace BGFusionTools.Datas
                     case 0:
                         break;
                     case 1:
-                        sDaType = sDataType[3];
+                        sDaType = OPCDataType.sByte;
                         break;
                     case 2:
-                        sDaType = sDataType[5];
+                        sDaType = OPCDataType.sWord;
                         break;
                     case 3:
                         break;
                     case 4:
-                        sDaType = sDataType[7];
+                        sDaType = OPCDataType.sDWord;
                         break;
                 }
                 DataRow dr = dOPCdataTable.NewRow();
-                dr[sOPCListColName[0]] = sTagName;
-                dr[sOPCListColName[1]] = sAddress;
-                dr[sOPCListColName[2]] = sDaType;
-                dr[sOPCListColName[3]] = iReDataType;
-                dr[sOPCListColName[4]] = sClienAccess[1];
-                dr[sOPCListColName[5]] = iScanRate;
+                dr[OPCColName.sTagName] = sTagName;
+                dr[OPCColName.sAddress] = sAddress;
+                dr[OPCColName.sDataType] = sDaType;
+                dr[OPCColName.sRespectDataType] = iReDataType;
+                dr[OPCColName.sClientAccess] = sReadOnly;
+                dr[OPCColName.sScanRate] = iScanRate;
                 drs = new DataRow[1];
                 drs[0] = dr;
             }
@@ -144,15 +147,15 @@ namespace BGFusionTools.Datas
                 for (int i = 0; i < iCounts; i++)
                 {
                     sTagName = string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i+1);
-                    sDaType = sDataType[7];
+                    sDaType = OPCDataType.sDWord;
                     drs[i] = dOPCdataTable.NewRow();
-                    drs[i][sOPCListColName[0]] = sTagName;
+                    drs[i][OPCColName.sTagName] = sTagName;
                     string sAddr = soffsetAddress(sAddress, i * 4);
-                    drs[i][sOPCListColName[1]] = sAddr;
-                    drs[i][sOPCListColName[2]] = sDaType;
-                    drs[i][sOPCListColName[3]] = iReDataType;
-                    drs[i][sOPCListColName[4]] = sClienAccess[1];
-                    drs[i][sOPCListColName[5]] = iScanRate;
+                    drs[i][OPCColName.sAddress] = sAddr;
+                    drs[i][OPCColName.sDataType] = sDaType;
+                    drs[i][OPCColName.sRespectDataType] = iReDataType;
+                    drs[i][OPCColName.sClientAccess] = sReadOnly;
+                    drs[i][OPCColName.sScanRate] = iScanRate;
 
                 }
             }
@@ -182,5 +185,72 @@ namespace BGFusionTools.Datas
         {
             throw new NotImplementedException();
         }
+    }
+    /// <summary>
+    /// 实现了迭代的OPC列名
+    /// </summary>
+    public  class OPCColName:IEnumerable<string>
+    {
+        public const string sTagName ="Tag Name";
+        public const string sAddress = "Address";
+        public const string sDataType = "Data Type";
+        public const string sRespectDataType = "Respect Data Type";
+        public const string sClientAccess = "Client Access";
+        public const string sScanRate = "Scan Rate";
+        public const string sScaling = "Scaling";
+        public const string sRawLow = "Raw Low";
+        public const string sRawHigh = "Raw High";
+        public const string sScaledLow = "Scaled Low";
+        public const string sScaledHigh = "Scaled High";
+        public const string sScaledDataType = "Scaled Data Type";
+        public const string sClampLow = "Clamp Low";
+        public const string sClampHigh = "Clamp High";
+        public const string sEngUnits = "Eng Units";
+        public const string sDescription = "Description";
+        public const string sNegateValue = "Negate Value";
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            yield return sTagName;
+            yield return sAddress;
+            yield return sDataType;
+            yield return sRespectDataType;
+            yield return sClientAccess;
+            yield return sScanRate;
+            yield return sScaling;
+            yield return sRawLow;
+            yield return sRawHigh;
+            yield return sScaledLow;
+            yield return sScaledHigh;
+            yield return sScaledDataType;
+            yield return sClampLow;
+            yield return sClampHigh;
+            yield return sEngUnits;
+            yield return sDescription;
+            yield return sNegateValue;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class OPCDataType
+    {
+        private string[] sDataType = {"String","Boolean","Char","Byte","Short","Word"
+                ,"Long","DWord","Float","Double","BCD","LBCD","Date"};
+        public const string sString = "String";
+        public const string sBool = "Boolean";
+        public const string sChar = "Char";
+        public const string sByte = "Byte";
+        public const string sShort = "Short";
+        public const string sWord = "Word";
+        public const string sLong = "Long";
+        public const string sDWord = "DWord";
+        public const string sFloat = "Float";
+        public const string sDouble = "Double";
+        public const string sBCD = "BCD";
+        public const string sLBCD = "LBCD";
+        public const string sDate = "Date";
     }
 }
