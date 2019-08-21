@@ -55,7 +55,7 @@ namespace BGFusionTools.Datas
                     dOPCdataTable.Columns.AddRange(new DataColumn[] { new DataColumn(sColumName) });
                 foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
                 {
-                    var conveyor=new ConeyorRow(baseParameter.TaglistColName,selectConRow);
+                    var conveyor=new ConveyorRow(baseParameter.TaglistColName,selectConRow);
                     int i = 0;
                     int signalIndex = 1;
                     foreach (string signalMapping in conveyor.sSignalMapping)

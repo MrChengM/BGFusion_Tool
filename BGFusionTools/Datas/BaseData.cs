@@ -45,48 +45,64 @@ namespace BGFusionTools.Datas
         public string Stemp6 { get { return stemp6; } set { stemp6 = value; } }
         public string Stemp7 { get { return stemp7; } set { stemp7 = value; } }
     }
-    public delegate List<T> dToList<T>(ConeyorRow ConveyordataRow) where T:new();
+    public delegate List<List<string>> CreateDataRow(ConveyorRow ConveyordataRow) ;
     public abstract class BaseData
     {
         internal BaseParameter baseParameter = new BaseParameter();
         //public abstract string ToString();
         //public abstract int ToInt();
-        public virtual List<T> CreateList<T>(dToList<T> dataMath) where T:new()
+        public virtual List<List<string>> CreateList(CreateDataRow dataMath) 
         {
-            List <T>  lOutPut= new List<T>();
+            List <List<string>>  lOutPut= new List<List<string>>();
             foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
             {
-                var conveyor = new ConeyorRow(baseParameter.TaglistColName, selectConRow);
+                var conveyor = new ConveyorRow(baseParameter.TaglistColName, selectConRow);
                 lOutPut.AddRange( dataMath(conveyor));
             }
             return lOutPut;
         }
 
-        
 
-        ///根据Mapping判断需要的数据地址条数，生成对应的sSignalName数目集合.
-        internal List<string> sSignalName(int iByteCounts, string sTemp, string sSystem, string sPlcLink, string sEquipmentLine,
-            string sEquipmentElement,int iSignalNumber)
+
+
+        /// <summary>
+        ///  根据Mapping判断需要的数据地址条数，生成对应的sSignalName数目集合.
+        /// </summary>
+        /// <param name="iBitCounts">bit数量</param>
+        /// <param name="sTemp"></param>
+        /// <param name="sSystem"></param>
+        /// <param name="sPlcLink"></param>
+        /// <param name="sEquipmentLine"></param>
+        /// <param name="sEquipmentElement"></param>
+        /// <param name="iSignalNumber"></param>
+        /// <returns></returns>
+        internal List<string> sSignalName(int iBitCounts,string sTemp,ConveyorRow conveyorRow,int iSignalNumber)
         {
             List<string> ssignalName = new List<string>();
             int iCounts;
-            if (iByteCounts <= 32)
+            if (iBitCounts <= 32)
             {
-                ssignalName.Add(string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, iSignalNumber));
+                ssignalName.Add(string.Format(sTemp, conveyorRow.sSystem, conveyorRow.sPLC, conveyorRow.sEquipmentLine, conveyorRow.sElementName, iSignalNumber));
             }
             else
             {
-                iCounts = (int)Math.Ceiling((float)iByteCounts / 32);
+                iCounts = (int)Math.Ceiling((float)iBitCounts / 32);
                 for (int i = 0; i < iCounts; i++)
                 {
-                    ssignalName.Add(string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, iSignalNumber + 1));
+                    ssignalName.Add(string.Format(sTemp, conveyorRow.sSystem, conveyorRow.sPLC, conveyorRow.sEquipmentLine, conveyorRow.sElementName, iSignalNumber + 1));
                 }
             }
             return ssignalName;
         }
 
 
-        //计算坐标偏移量
+        /// <summary>
+        /// 计算定位坐标偏移量
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="iColWidth"></param>
+        /// <param name="iRowHight"></param>
         internal void sMarginChange(ref int x, ref int y, int iColWidth, int iRowHight)
         {
             int ViewWidth = 1920;
@@ -157,7 +173,7 @@ namespace BGFusionTools.Datas
     /// <summary>
     /// Taglist表中Conveyor数据行
     /// </summary>
-    public class ConeyorRow
+    public class ConveyorRow
     {
         public string sSystem;
         public string sPLC;
@@ -183,7 +199,7 @@ namespace BGFusionTools.Datas
         public string sLevel1AsLevel2;
         public string sExtendedPropertyAsCamera;
         //创建一个taglist数据行
-        public  ConeyorRow (TaglistColumns columns,DataRow dataRow)
+        public  ConveyorRow (TaglistColumns columns,DataRow dataRow)
         {
             if (dataRow[0].ToString() != "")
             {

@@ -29,7 +29,7 @@ namespace BGFusionTools.Datas
                 foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
                 {
 
-                    var coveyorRow = new ConeyorRow(baseParameter.TaglistColName, selectConRow);
+                    var coveyorRow = new ConveyorRow(baseParameter.TaglistColName, selectConRow);
                     if (coveyorRow.sDrawOnViews == "All" || coveyorRow.sDrawOnViews == "Level2Only")
                         elements.Add(new Element(coveyorRow.sDisplayName, coveyorRow. sLevel1View, coveyorRow.sLevel2View, coveyorRow.sElementName));
                 }

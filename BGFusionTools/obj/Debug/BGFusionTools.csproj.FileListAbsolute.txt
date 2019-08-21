@@ -35,3 +35,12 @@ D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXml4Net.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXmlFormats.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\ICSharpCode.SharpZipLib.xml
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csprojResolveAssemblyReference.cache
+D:\GitHub\BGFusion_Tool\BGFusionTools\bin\Debug\BGFusionTools.exe.config
+D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools.csproj.ResolveComReference.cache
+D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools.exe
+D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools.pdb
+D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools.csprojResolveAssemblyReference.cache
+D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\MainWindow.g.cs
+D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\App.g.cs
+D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.cache
+D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.lref

@@ -11,115 +11,83 @@ using System.Text.RegularExpressions;
 
 namespace BGFusionTools.Datas
 {
-    public class ConfigData :BaseData
+    public class ConfigData : BaseData
     {
 
 
-        private bool bConvAlarms;
-        private bool bOPCInfo;
+       // private bool bConvAlarms;
+       // private bool bOPCInfo;
         //ALarmLinkOPCInfo.xml列名定义
         private List<string> sListColName;
 
-
-
         //初始化函数
-        public ConfigData(BaseParameter ConverParameter,bool bconvAlarms,bool boPCInfo, List<string> slistColName)
+        public ConfigData(BaseParameter ConverParameter, List<string> slistColName)
         {
             baseParameter = ConverParameter;
-            this.bConvAlarms = bconvAlarms;
-            this.bOPCInfo = boPCInfo;
+           // this.bConvAlarms = bconvAlarms;
+            //this.bOPCInfo = boPCInfo;
             this.sListColName = slistColName;
         }
-        
-        
-        //生成DataTable数据
-        public List<T> ToList<T>(dToList<T> D) 
+
+
+        public override List<List<string>> CreateList(CreateDataRow dr)
         {
-            TaglistColumns colName = baseParameter.TaglistColName;
-            List<List<string>> llOutData = new List<List<string>>();
-            try
+            List<List<string>> lOutPut = new List<List<string>>();
+            lOutPut.Add(sListColName);
+            foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
             {
+                var conveyor = new ConveyorRow(baseParameter.TaglistColName, selectConRow);
+                lOutPut.AddRange(dr(conveyor));
+            }
+            return lOutPut;
+        }
 
-                llOutData.Add(sListColName);
-                foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
+       public List<List<string>> CreateOPCInfoRows(ConveyorRow coneyorRow)
+        {
+            List<List<string>> opcInfoRows = new List<List<string>>();
+            List<string> lSignalName = new List<string>();
+            foreach (string sSignalMapping in coneyorRow.sSignalMapping)
+            {
+                if (sSignalMapping != "")
                 {
+                    var SignalCounts = baseParameter.SingleMappingTable.AsEnumerable().Count(p =>
+                    p.Field<string>(baseParameter.SignalMappingColName.sType) == sSignalMapping);
+                    List<string> lSignalName1 = sSignalName(SignalCounts, baseParameter.Stemp5, coneyorRow, lSignalName.Count() + 1);
+                    lSignalName.AddRange(lSignalName1);
+                }
+            }
+            foreach (string ss in lSignalName)
+            {
+                List<string> opcInfoRow = new List<string>();
+                opcInfoRow.Add(ss);
+                opcInfoRow.Add("Subscribe");
+                opcInfoRow.Add(string.Format("S7_{0}", coneyorRow.sPLC));
+                opcInfoRow.Add("Main");
+                opcInfoRow.Add("u32");
+                opcInfoRows.Add(opcInfoRow);
+            }
 
-                    if (selectConRow[colName.sSystem].ToString() == "")
-                        break;
-                    string sSystem = selectConRow[colName.sSystem].ToString();
-                    string sPlcLink = selectConRow[colName.sPLC].ToString();
-                    string sEquipmentLine = selectConRow[colName.sEquipmentLine].ToString();
-                    string sEquipmentElement = selectConRow[colName.sElementName].ToString();
-                    string sEquipmentElementtype = selectConRow[colName.sElementType].ToString();
-
-                    //sSignalMapping获取
-                    List<string> lSignalMapping = new List<string>();
-                    foreach(string sSignalMappingCol in colName.sSignalMapping)
-                    {
-                        if (sSignalMappingCol != null)
-                            lSignalMapping.Add(selectConRow[sSignalMappingCol].ToString());
-                    }
-                   
-                    //sSignalAddress获取
-                    List<string> lSignalAddress=new List<string>();
-
-                    foreach(string sSignalAddressCol in colName.sSignalAddress)
-                    {
-                        if (sSignalAddressCol != null)
-                            lSignalAddress.Add(selectConRow[sSignalAddressCol].ToString());
-                    }
-                    string sCommandMapping = selectConRow[colName.sCommandMapping].ToString();
-                    string sCommandAddress = selectConRow[colName.sCommandAddress].ToString();
-                    string sRunningHours = selectConRow[colName.sRunningHours].ToString();
-                    string sDisplayName = selectConRow[colName.sDisplayName].ToString();
-                    string sAlarmTree = selectConRow[colName.sAlarmTree].ToString();
-                    string sLevel1View = selectConRow[colName.sLevel1View].ToString();
-                    string sLevel2View = selectConRow[colName.sLevel2View].ToString();
-
-                    
+            if (coneyorRow.sCommandMapping != "")
+            {
+                var CommandCounts = baseParameter.CommandMappingTable.AsEnumerable().Count(p =>
+                p.Field<string>(baseParameter.CommandMappingColName.sType) == coneyorRow.sCommandMapping);
+                List<string> lSingName = sSignalName(CommandCounts, baseParameter.Stemp6, coneyorRow, 1);
+                foreach (string ss in lSingName)
+                {
+                    List<string> opcInfoRow = new List<string>();
+                    opcInfoRow.Add(ss);
+                    opcInfoRow.Add("Command");
+                    opcInfoRow.Add(string.Format("S7_{0}", coneyorRow.sPLC));
+                    opcInfoRow.Add("Main");
+                    opcInfoRow.Add("u32");
+                    opcInfoRows.Add(opcInfoRow);
+                }
+            }
+            return opcInfoRows;
+        }            
 
                     //float dCounts = SingleCounts / 32;
-                    if (bOPCInfo)//OPCInformation 数据
-                    {
-                        //生成signalname数据
-                        List<string> lSignalName = new List<string>();
-                        foreach(string sSignalMapping in lSignalMapping)
-                        {
-                            if (sSignalMapping != "")
-                            {
-                                var SignalCounts = baseParameter.SingleMappingTable.AsEnumerable().Count(p =>
-                                p.Field<string>(baseParameter.SignalMappingColName.sType) == sSignalMapping);
-                                List<string> lSignalName1 = sSignalName(SignalCounts, baseParameter.Stemp5, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, lSignalName.Count() + 1);
-                                lSignalName.AddRange(lSignalName1);
-                            }
-                        }
-                        foreach(string ss in lSignalName)
-                        {
-                            List<string> lOutData = new List<string>();
-                            lOutData.Add(ss);
-                            lOutData.Add("Subscribe");
-                            lOutData.Add(string.Format("S7_{0}", sPlcLink));
-                            lOutData.Add("Main");
-                            lOutData.Add("u32");
-                            llOutData.Add(lOutData);
-                        }
-
-                        if (sCommandMapping != "")
-                        {
-                            var CommandCounts = baseParameter.CommandMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.CommandMappingColName.sType) == sCommandMapping);
-                            List<string> lSingName = sSignalName(CommandCounts, baseParameter.Stemp6, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement,1);
-                            foreach (string ss in lSingName)
-                            {
-                                List<string> lOutData = new List<string>();
-                                lOutData.Add(ss);
-                                lOutData.Add("Command");
-                                lOutData.Add(string.Format("S7_{0}", sPlcLink));
-                                lOutData.Add("Main");
-                                lOutData.Add("u32");
-                                llOutData.Add(lOutData);
-                            }
-                        }
-                    }
+                  
                     if (bConvAlarms)
                     {
                         string sSelectColName = baseParameter.SignalMappingColName.sType;
