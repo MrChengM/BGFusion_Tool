@@ -55,36 +55,34 @@ namespace BGFusionTools.Datas
                     dOPCdataTable.Columns.AddRange(new DataColumn[] { new DataColumn(sColumName) });
                 foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
                 {
-                    if (selectConRow[colName.sSystem].ToString() == "")
-                        break;
-                    string sSystem = selectConRow[colName.sSystem].ToString();
-                    string sPlcLink = selectConRow[colName.sPLC].ToString();
-                    string sEquipmentLine = selectConRow[colName.sEquipmentLine].ToString();
-                    string sEquipmentElement = selectConRow[colName.sElementName].ToString();
-                    string sEquipmentElementtype = selectConRow[colName.sElementType].ToString();
-                    string sSingleMapping1 = selectConRow[baseParameter.TaglistColName[1, 6]].ToString();
-                    string sSignalAddress1 = selectConRow[baseParameter.TaglistColName[1, 7]].ToString();
-                    string sCommandMapping = selectConRow[colName.sCommandMapping].ToString();
-                    string sCommandAddress = selectConRow[colName.sCommandAddress].ToString();
-                    string sRunningHours = selectConRow[colName.sRunningHours].ToString();
-                    if (bSignal && (sSignalAddress1 != ""))
+                    var conveyor=new ConeyorRow(baseParameter.TaglistColName,selectConRow);
+                    int i = 0;
+                    int signalIndex = 1;
+                    foreach (string signalMapping in conveyor.sSignalMapping)
                     {
-                        var SingleCounts = baseParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.SignalMappingColName.sType) == sSingleMapping1);
-                        DataRow[] OPCDataRows = OPCDataRow(SingleCounts,baseParameter.Stemp5, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sSignalAddress1);
+                        if (bSignal && (signalMapping != ""))
+                        {
+
+                            var counts = baseParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.SignalMappingColName.sType) == signalMapping);
+                            DataRow[] OPCDataRows = OPCDataRow(counts, baseParameter.Stemp5, conveyor.sSystem, conveyor.sPLC, conveyor.sEquipmentLine, conveyor.sElementName, conveyor.sSignalAddress[i], signalIndex);
+                            signalIndex = signalIndex + OPCDataRows.Count();
+                            foreach (DataRow dr in OPCDataRows)
+                                dOPCdataTable.Rows.Add(dr);
+                        }
+                        i++;
+                    }
+                   
+                    if (bCommand && (conveyor.sCommandAddress != ""))
+                    {
+                        var CommandCounts = baseParameter.CommandMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.CommandMappingColName.sType) == conveyor.sCommandMapping);
+                        DataRow[] OPCDataRows = OPCDataRow(CommandCounts, baseParameter.Stemp6, conveyor.sSystem, conveyor.sPLC, conveyor.sEquipmentLine, conveyor.sElementName, conveyor.sCommandAddress,1);
                         foreach (DataRow dr in OPCDataRows)
                             dOPCdataTable.Rows.Add(dr);
                     }
-                    if (bCommand && (sCommandAddress != ""))
-                    {
-                        var CommandCounts = baseParameter.CommandMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.BasefileColName[2, 0]) == sCommandMapping);
-                        DataRow[] OPCDataRows = OPCDataRow(CommandCounts, baseParameter.Stemp6, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sCommandAddress);
-                        foreach (DataRow dr in OPCDataRows)
-                            dOPCdataTable.Rows.Add(dr);
-                    }
-                    if (bHour && (sRunningHours != ""))
+                    if (bHour && (conveyor.sRunningHours != ""))
                     {
                         int iHourCounts = 32;
-                        DataRow[] OPCDataRows = OPCDataRow(iHourCounts, baseParameter.Stemp7, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, sRunningHours);
+                        DataRow[] OPCDataRows = OPCDataRow(iHourCounts, baseParameter.Stemp7, conveyor.sSystem, conveyor.sPLC, conveyor.sEquipmentLine, conveyor.sElementName, conveyor.sRunningHours,1);
                         foreach (DataRow dr in OPCDataRows)
                             dOPCdataTable.Rows.Add(dr);
                     }
@@ -103,7 +101,7 @@ namespace BGFusionTools.Datas
 
         //生成对应的OPCData行数组
         private DataRow[] OPCDataRow(int iByteCounts,string sTemp, string sSystem,string sPlcLink,string sEquipmentLine,
-            string sEquipmentElement,string sAddress)
+            string sEquipmentElement,string sAddress,int index)
         {
             string sTagName;
             int iCounts;
@@ -112,7 +110,7 @@ namespace BGFusionTools.Datas
             if (iByteCounts <= 32)
             {
 
-                sTagName = string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, 1);
+                sTagName = string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, index);
                 iCounts = (int)Math.Ceiling((float)iByteCounts / 8);
                 switch (iCounts)
                 {
@@ -146,7 +144,7 @@ namespace BGFusionTools.Datas
                 drs = new DataRow[iCounts];
                 for (int i = 0; i < iCounts; i++)
                 {
-                    sTagName = string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i+1);
+                    sTagName = string.Format(sTemp, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i+ index);
                     sDaType = OPCDataType.sDWord;
                     drs[i] = dOPCdataTable.NewRow();
                     drs[i][OPCColName.sTagName] = sTagName;

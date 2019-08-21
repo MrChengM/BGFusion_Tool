@@ -34,3 +34,4 @@ D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OOXML.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXml4Net.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXmlFormats.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\ICSharpCode.SharpZipLib.xml
+D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csprojResolveAssemblyReference.cache

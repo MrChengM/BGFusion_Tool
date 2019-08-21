@@ -31,8 +31,9 @@ namespace BGFusionTools.Datas
             this.sListColName = slistColName;
         }
         
+        
         //生成DataTable数据
-        public override List<List<string>> ToList()
+        public List<T> ToList<T>(dToList<T> D) 
         {
             TaglistColumns colName = baseParameter.TaglistColName;
             List<List<string>> llOutData = new List<List<string>>();
@@ -272,26 +273,6 @@ namespace BGFusionTools.Datas
 
 
         public override string ToString()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int ToInt()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override DataTable ToDataTable()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void OutData()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Dictionary<string, string> ToDictionary()
         {
             throw new NotImplementedException();
         }

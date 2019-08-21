@@ -29,19 +29,9 @@ namespace BGFusionTools.Datas
                 foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
                 {
 
-                    if (selectConRow[baseParameter.TaglistColName[1, 0]].ToString() == "")
-                        break;
-                    string sSystem = selectConRow[baseParameter.TaglistColName[1, 0]].ToString();
-                    string sPlcLink = selectConRow[baseParameter.TaglistColName[1, 1]].ToString();
-                    string sEquipmentLine = selectConRow[baseParameter.TaglistColName[1, 3]].ToString();
-                    string sEquipmentElement = selectConRow[baseParameter.TaglistColName[1, 4]].ToString();
-                    string sElementName = string.Format("{0}_{1}_{2}_{3}", sSystem, sPlcLink, sEquipmentLine, sEquipmentElement);
-                    string sDisplayName = selectConRow[baseParameter.TaglistColName[1, 12]].ToString();
-                    string sLevel1View = selectConRow[baseParameter.TaglistColName[1, 15]].ToString();
-                    string sLevel2View = selectConRow[baseParameter.TaglistColName[1, 16]].ToString();
-                    string sDrawViews = selectConRow[baseParameter.TaglistColName[1, 17]].ToString();
-                    if (sDrawViews == "All" || sDrawViews == "Level2Only")
-                        elements.Add(new Element(sDisplayName, sLevel1View, sLevel2View, sElementName));
+                    var coveyorRow = new ConeyorRow(baseParameter.TaglistColName, selectConRow);
+                    if (coveyorRow.sDrawOnViews == "All" || coveyorRow.sDrawOnViews == "Level2Only")
+                        elements.Add(new Element(coveyorRow.sDisplayName, coveyorRow. sLevel1View, coveyorRow.sLevel2View, coveyorRow.sElementName));
                 }
             }
             catch(Exception e)
@@ -51,31 +41,6 @@ namespace BGFusionTools.Datas
 
             return Functions.DataConvert.ToString(elements);
         }
-        public override void OutData()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override DataTable ToDataTable()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Dictionary<string, string> ToDictionary()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int ToInt()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override List<List<string>> ToList()
-        {
-            throw new NotImplementedException();
-        }
-
         public XmlSchema GetSchema()
         {
             throw new NotImplementedException();
@@ -97,7 +62,6 @@ namespace BGFusionTools.Datas
                 }
             }
         }
-
         public void WriteXml(XmlWriter writer)
         {
             foreach(Element et in elements)

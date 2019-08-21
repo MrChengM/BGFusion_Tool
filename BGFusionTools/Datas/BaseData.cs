@@ -14,8 +14,8 @@ namespace BGFusionTools.Datas
         private DataTable singleMappingTable;
         private DataTable commandMappingTable;
         private TaglistColumns taglistColumns;
-        private BaseListSignalMappingColumns signalMappingColumns;
-        private BaseListCommandMappingColumns commandMappingColumns;
+        private SignalMappingColumns signalMappingColumns;
+        private CommandMappingColumns commandMappingColumns;
         private string viewName;
         private int viewNum;
         private string stemp0;
@@ -32,8 +32,8 @@ namespace BGFusionTools.Datas
         public DataTable SingleMappingTable { get { return singleMappingTable; } set { singleMappingTable = value; } }
         public DataTable CommandMappingTable { get { return commandMappingTable; } set { commandMappingTable = value; } }
         public TaglistColumns TaglistColName { get { return taglistColumns; } set { taglistColumns = value; } }
-        public BaseListSignalMappingColumns SignalMappingColName { get { return signalMappingColumns; } set { signalMappingColumns = value; } }
-        public BaseListCommandMappingColumns CommandMappingColName { get { return commandMappingColumns; } set { commandMappingColumns = value; } }
+        public SignalMappingColumns SignalMappingColName { get { return signalMappingColumns; } set { signalMappingColumns = value; } }
+        public CommandMappingColumns CommandMappingColName { get { return commandMappingColumns; } set { commandMappingColumns = value; } }
         public string ViewName { get { return viewName; } set { viewName = value; } }
         public int ViewNum { get { return viewNum; } set { viewNum = value; } }
         public string Stemp0 { get { return stemp0; } set { stemp0 = value; } }
@@ -45,18 +45,26 @@ namespace BGFusionTools.Datas
         public string Stemp6 { get { return stemp6; } set { stemp6 = value; } }
         public string Stemp7 { get { return stemp7; } set { stemp7 = value; } }
     }
-
+    public delegate List<T> dToList<T>(ConeyorRow ConveyordataRow) where T:new();
     public abstract class BaseData
     {
         internal BaseParameter baseParameter = new BaseParameter();
         //public abstract string ToString();
-        public abstract int ToInt();
-        public abstract List<List<string>> ToList();
-        public abstract DataTable ToDataTable();
-        public abstract void OutData();
-        public abstract Dictionary<string, string> ToDictionary();
+        //public abstract int ToInt();
+        public virtual List<T> CreateList<T>(dToList<T> dataMath) where T:new()
+        {
+            List <T>  lOutPut= new List<T>();
+            foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
+            {
+                var conveyor = new ConeyorRow(baseParameter.TaglistColName, selectConRow);
+                lOutPut.AddRange( dataMath(conveyor));
+            }
+            return lOutPut;
+        }
 
-        //根据Mapping判断需要的数据地址条数，生成对应的sSignalName数目集合.
+        
+
+        ///根据Mapping判断需要的数据地址条数，生成对应的sSignalName数目集合.
         internal List<string> sSignalName(int iByteCounts, string sTemp, string sSystem, string sPlcLink, string sEquipmentLine,
             string sEquipmentElement,int iSignalNumber)
         {
@@ -144,6 +152,77 @@ namespace BGFusionTools.Datas
                 MessageBox.Show("Query the Conveyor Excel error: " + ex.Message);
                 return null;
             }
+        }
+    }
+    /// <summary>
+    /// Taglist表中Conveyor数据行
+    /// </summary>
+    public class ConeyorRow
+    {
+        public string sSystem;
+        public string sPLC;
+        public string sPowerBox;
+        public string sEquipmentLine;
+        public string sElementType;
+        public string sElementName;
+        public string sBehaviorName;
+        public List<string> sSignalMapping;
+        public List<string> sSignalAddress;
+        public string sCommandMapping;
+        public string sCommandAddress;
+        public string sRunningHours;
+        public string sCopyRunningHours;
+        public string sDisplayName;
+        public string sEdgeColor;
+        public string sAlarmTree;
+        public string sLevel1View;
+        public string sLevel2View;
+        public string sDrawOnViews;
+        public string sLeftClick;
+        public string sRightClick;
+        public string sLevel1AsLevel2;
+        public string sExtendedPropertyAsCamera;
+        //创建一个taglist数据行
+        public  ConeyorRow (TaglistColumns columns,DataRow dataRow)
+        {
+            if (dataRow[0].ToString() != "")
+            {
+                sSystem = dataRow[columns.sSystem].ToString();
+                sPLC = dataRow[columns.sPLC].ToString();
+                sPowerBox = dataRow[columns.sPowerBox].ToString();
+                sEquipmentLine = dataRow[columns.sEquipmentLine].ToString();
+                sElementType = dataRow[columns.sElementType].ToString();
+                sElementName = dataRow[columns.sElementName].ToString();
+                sBehaviorName = dataRow[columns.sBehaviorName].ToString();
+                foreach (string signalMapping in columns.sSignalMapping)
+                {
+                    string name = dataRow[signalMapping].ToString();
+                    if (name != "")
+                        sSignalMapping.Add(name);
+                }
+                foreach (string signalAddress in columns.sSignalAddress)
+                {
+                    string address = dataRow[signalAddress].ToString();
+                    if (address != "")
+                        sSignalMapping.Add(address);
+                }
+                sCommandMapping = dataRow[columns.sCommandMapping].ToString();
+                sCommandAddress = dataRow[columns.sCommandAddress].ToString();
+                sRunningHours = dataRow[columns.sRunningHours].ToString();
+                sCopyRunningHours = dataRow[columns.sCopyRunningHours].ToString();
+                sDisplayName = dataRow[columns.sDisplayName].ToString();
+                sEdgeColor = dataRow[columns.sEdgeColor].ToString();
+                sAlarmTree = dataRow[columns.sAlarmTree].ToString();
+                sLevel1View = dataRow[columns.sLevel1View].ToString();
+                sLevel2View = dataRow[columns.sLevel2View].ToString();
+                sDrawOnViews = dataRow[columns.sDrawOnViews].ToString();
+                sLeftClick = dataRow[columns.sLeftClick].ToString();
+                sRightClick = dataRow[columns.sRightClick].ToString();
+                sLevel1AsLevel2 = dataRow[columns.sLevel1AsLevel2].ToString();
+                sExtendedPropertyAsCamera = dataRow[columns.sExtendedPropertyAsCamera].ToString();
+
+            }
+          
         }
     }
 }

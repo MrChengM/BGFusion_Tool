@@ -59,8 +59,8 @@ namespace BGFusionTools
         //BaseList数据表定义
         public string[] sBaseListSheetName;
         public string[,] sBaseListColName;
-        public BaseListSignalMappingColumns signalMappingColumns = BaseListSignalMappingColumns.getInstance();
-        public BaseListCommandMappingColumns commandMappingColumns = BaseListCommandMappingColumns.getInstance();
+        public SignalMappingColumns signalMappingColumns = SignalMappingColumns.getInstance();
+        public CommandMappingColumns commandMappingColumns = CommandMappingColumns.getInstance();
         //输出变量定义
         //public string  sEquipmentElement="";
         //public string  sPLCLink = "";
@@ -1053,7 +1053,7 @@ namespace BGFusionTools
     /// <summary>
     /// SignalMapping表列名获取
     /// </summary>
-    public  class BaseListSignalMappingColumns
+    public  class SignalMappingColumns
     {
         public string sSignalMapping;
         public string sType;
@@ -1071,7 +1071,7 @@ namespace BGFusionTools
         public string sStateSpecialFunction;
         public string sAlarmStatusPriority;
         public string sPriorityFormula;
-        private BaseListSignalMappingColumns()
+        private SignalMappingColumns()
         {
             const string filePath = "../../Configuration.xml";
             Stream sFileSteam = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
@@ -1140,8 +1140,8 @@ namespace BGFusionTools
             xmlReader.Dispose();
             sFileSteam.Dispose();
         }
-        private static BaseListSignalMappingColumns instance = new BaseListSignalMappingColumns();
-        public static BaseListSignalMappingColumns getInstance()
+        private static SignalMappingColumns instance = new SignalMappingColumns();
+        public static SignalMappingColumns getInstance()
         {
             return instance;
         }
@@ -1149,7 +1149,7 @@ namespace BGFusionTools
     /// <summary>
     /// CommandMapping列表名获取
     /// </summary>
-    public class BaseListCommandMappingColumns
+    public class CommandMappingColumns
     {
         public string sCommandMapping;
         public string sType;
@@ -1160,7 +1160,7 @@ namespace BGFusionTools
         public string sPartName;
         public string sCommandPriority;
         public string sCommandText;
-        private BaseListCommandMappingColumns()
+        private CommandMappingColumns()
         {
             const string filePath = "../../Configuration.xml";
             Stream sFileSteam = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
@@ -1208,8 +1208,8 @@ namespace BGFusionTools
             xmlReader.Dispose();
             sFileSteam.Dispose();
         }
-        private static BaseListCommandMappingColumns instance = new BaseListCommandMappingColumns();
-        public static BaseListCommandMappingColumns getInstance()
+        private static CommandMappingColumns instance = new CommandMappingColumns();
+        public static CommandMappingColumns getInstance()
         {
             return instance;
         }
