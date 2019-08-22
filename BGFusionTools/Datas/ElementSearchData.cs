@@ -31,7 +31,7 @@ namespace BGFusionTools.Datas
 
                     var coveyorRow = new ConveyorRow(baseParameter.TaglistColName, selectConRow);
                     if (coveyorRow.sDrawOnViews == "All" || coveyorRow.sDrawOnViews == "Level2Only")
-                        elements.Add(new Element(coveyorRow.sDisplayName, coveyorRow. sLevel1View, coveyorRow.sLevel2View, coveyorRow.sElementName));
+                        elements.Add(new Element(coveyorRow.sDisplayName, coveyorRow.sLevel1View, coveyorRow.sLevel2View, coveyorRow.sElementName));
                 }
             }
             catch(Exception e)

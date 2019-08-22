@@ -124,30 +124,6 @@ namespace BGFusionTools.Datas
             return sOutPutSingleDatas;
         }
 
-        public override int ToInt()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override List<List<string>> ToList()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override DataTable ToDataTable()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void OutData()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Dictionary<string, string> ToDictionary()
-        {
-            throw new NotImplementedException();
-        }
     }
 
 }
