@@ -129,7 +129,7 @@ namespace BGFusionTools.Datas
         {
             BaseData baTableConvert ;
             if (DataClassName == "ConfigData")
-                baTableConvert = new ConfigData(baseParameter, bconvAlarm, boPCIfo, slistColName);
+                baTableConvert = new ConfigData(baseParameter,  slistColName);
             else if(DataClassName == "Level1Data")
                 baTableConvert = new Level1Data(baseParameter, tempTable);
             else if (DataClassName == "OPCData")

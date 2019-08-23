@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Xaml;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -113,13 +116,13 @@ namespace BGFusionTools.Serialization
             }
 
         }
-        public static bool XmlElementSearchDataSerialiaztion(string sFilePath,ElementSearchData elementSearchData)
+        public static bool XmlElementSearchDataSerialiaztion(string sFilePath,ElementSearchXml elementSearchXml)
         {
             try
             {
                 Stream sFileSteam = new FileStream(sFilePath, FileMode.Create, FileAccess.ReadWrite);
-                XmlSerializer xmlserial = new XmlSerializer(typeof(ElementSearchData));
-                xmlserial.Serialize(sFileSteam, elementSearchData);
+                XmlSerializer xmlserial = new XmlSerializer(typeof(ElementSearchXml));
+                xmlserial.Serialize(sFileSteam, elementSearchXml);
                 //string sXml = "\r\n" + "<?mso-application progid=\"Excel.Sheet\"?>";
                 //FileStreamInsert(sFileSteam, sXml, 21);
                 sFileSteam.Flush();
@@ -133,15 +136,15 @@ namespace BGFusionTools.Serialization
                 return false;
             }
         }
-        public static ElementSearchData XmlElementSearchDatDeserialize(string sFilePath)
+        public static ElementSearchXml XmlElementSearchDatDeserialize(string sFilePath)
         {
             try
             {
-                ElementSearchData elementSearchData = new ElementSearchData();
+                ElementSearchXml elementSearchData = new ElementSearchXml();
                 Stream sFileSteam = new FileStream(sFilePath, FileMode.Open, FileAccess.ReadWrite);
                 XmlSerializer xmlserial = new XmlSerializer(typeof(Workbook), "urn:schemas-microsoft-com:office:spreadsheet");
                 sFileSteam.Position = 0;
-                elementSearchData = (ElementSearchData)xmlserial.Deserialize(sFileSteam);
+                elementSearchData = (ElementSearchXml)xmlserial.Deserialize(sFileSteam);
                 sFileSteam.Flush();
                 sFileSteam.Close();
                 return elementSearchData;
@@ -149,7 +152,7 @@ namespace BGFusionTools.Serialization
             catch (Exception ex)
             {
                 MessageBox.Show("XmlDeserialiaztion error： " + ex.Message);
-                return default(ElementSearchData);
+                return default(ElementSearchXml);
             }
         }
 
@@ -550,6 +553,309 @@ namespace BGFusionTools.Serialization
         {
             throw new NotImplementedException();
         }
+    }
+        [XmlRoot("elements")]
+        public class ElementSearchXml : IXmlSerializable, IOperation<ElementSearchXml>
+        {
+            private List<ElementSeacrhStruct> elements = new List<ElementSeacrhStruct>();
+            public List<ElementSeacrhStruct> Elements { get { return elements; } }
+            public ElementSearchXml() { }
+            public XmlSchema GetSchema()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ReadXml(XmlReader reader)
+            {
+                elements.Clear();
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement("element"))
+                    {
+                        ElementSeacrhStruct element = new ElementSeacrhStruct();
+                        element.DisplayName = reader["displayname"];
+                        element.Level1 = reader["level1"];
+                        element.Level2 = reader["level2"];
+                        element.Name = reader["name"];
+                        elements.Add(element);
+                    }
+                }
+            }
+            public void WriteXml(XmlWriter writer)
+            {
+                foreach (ElementSeacrhStruct et in elements)
+                {
+                    writer.WriteStartElement("element");
+                    writer.WriteAttributeString("displayname", et.DisplayName);
+                    writer.WriteAttributeString("level1", et.Level1);
+                    writer.WriteAttributeString("level2", et.Level2);
+                    writer.WriteAttributeString("name", et.Name);
+                    writer.WriteEndElement();
+                }
+            }
+
+            public ElementSearchXml Add(ElementSearchXml T1, ElementSearchXml T2)
+            {
+                T1.elements.AddRange(T2.elements);
+                return T1;
+            }
+
+            public ElementSearchXml Subtract(ElementSearchXml T1, ElementSearchXml T2)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ElementSearchXml Multiply(ElementSearchXml T1, ElementSearchXml T2)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ElementSearchXml Div(ElementSearchXml T1, ElementSearchXml T2)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ElementSearchXml Add(ElementSearchXml T1)
+            {
+                elements.AddRange(T1.elements);
+                return this;
+            }
+
+            public ElementSearchXml Subtract(ElementSearchXml T1)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ElementSearchXml Multiply(ElementSearchXml T1)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ElementSearchXml Div(ElementSearchXml T1)
+            {
+                throw new NotImplementedException();
+            }
+
+        }
+    [XmlRoot("UserControl")]
+    public class ElementXaml : IXmlSerializable, IOperation<ElementSearchXml>
+    {
+        //Viewbox _viewbox;
+        //GridXaml _grid;
+        List<BgElementCommonXaml> _bgElementCommons =new List<BgElementCommonXaml>();
+        List<BgTextBlock> _bgTextBlocks=new List<BgTextBlock>();
+
+        public ElementSearchXml Add(ElementSearchXml T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchXml Add(ElementSearchXml T1, ElementSearchXml T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchXml Div(ElementSearchXml T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchXml Div(ElementSearchXml T1, ElementSearchXml T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public XmlSchema GetSchema()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchXml Multiply(ElementSearchXml T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchXml Multiply(ElementSearchXml T1, ElementSearchXml T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchXml Subtract(ElementSearchXml T1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ElementSearchXml Subtract(ElementSearchXml T1, ElementSearchXml T2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            //Namespace.
+            writer.WriteAttributeString("xmlns", "WIMAP_Controls", null, "clr-namespace:WIMAP.Common.Controls;assembly=WIMAP.Common.SL");
+            writer.WriteAttributeString("xmlns", "", null, "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
+            writer.WriteAttributeString("xmlns", "x", null, "http://schemas.microsoft.com/winfx/2006/xaml");
+            writer.WriteAttributeString("xmlns", "d", null, "http://schemas.microsoft.com/winfx/2006/xaml");
+            writer.WriteAttributeString("xmlns", "mc", null, "http://schemas.openxmlformats.org/markup-compatibility/2006");
+            writer.WriteAttributeString("xmlns", "i", null, "http://schemas.microsoft.com/expression/2010/interactivity");
+            writer.WriteAttributeString("xmlns", "BG_SCADA_Behaviors", null, "clr-namespace:BG_SCADA.Behaviors");
+            writer.WriteAttributeString("xmlns", "BG_SCADA_Controls", null, "clr -namespace:BG_SCADA.Controls");
+            writer.WriteAttributeString("xmlns", "ScadaBase_Controls", "","clr-namespace:ScadaBase.Controls;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "bgElementCommon", "", "clr-namespace:ScadaBase.Controls.BGElement;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "counter", "", "clr-namespace:ScadaBase.Controls.Alarm;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "command", "", "clr-namespace:ScadaBase.Controls.Command;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "display", "", "clr-namespace:ScadaBase.Controls.Display;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "ScadaBase_Controls_Alarm", "", "clr-namespace:ScadaBase.Controls.Alarm;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "BG_SCADA", "", "clr-namespace:ScadaBase.Controls.Alarm;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "ScadaBase_Behaviors", "", "clr-namespace:ScadaBase.Controls.Alarm;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "BG_SCADA_Behaviors_Conveyor", "", "clr-namespace:ScadaBase.Controls.Alarm;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "helper", "", "clr-namespace:ScadaBase.Controls.Alarm;assembly=ScadaBase.SL");
+            writer.WriteAttributeString("xmlns", "Class", "", "BG_SCADA.Views.L2_Arrival_International_Claim_Area_1");
+
+            //Workbook Property Setup
+            //"ViewBox"
+            writer.WriteStartElement("Viewbox");
+            writer.WriteAttributeString("Margin", "0");
+            //写Grid
+            writer.WriteStartElement("Grid");
+            writer.WriteAttributeString("x", "Name",null, "LayoutRoot");
+            writer.WriteAttributeString("Background", "#00000000");
+            writer.WriteAttributeString("Height", "1080");
+            writer.WriteAttributeString("Width", "1920");
+            //写bgElement
+            foreach(BgElementCommonXaml bgElementCommonXaml in _bgElementCommons)
+            {
+                writer.WriteStartElement("bgElementCommon", "BGElementCommon", null);
+                writer.WriteAttributeString("x", "Name", null, bgElementCommonXaml._name);
+                writer.WriteAttributeString("Margin", bgElementCommonXaml._margin);
+                writer.WriteAttributeString("LegendStyleName", bgElementCommonXaml._legendStyleName);
+                writer.WriteAttributeString("Width", bgElementCommonXaml._width);
+                writer.WriteAttributeString("Margin", bgElementCommonXaml._margin);
+                writer.WriteAttributeString("ElementName", bgElementCommonXaml._elementName);
+                writer.WriteAttributeString("DisplayName", bgElementCommonXaml._displayName);
+                writer.WriteAttributeString("Commands", bgElementCommonXaml._commands);
+                writer.WriteAttributeString("ScadaLevel", bgElementCommonXaml._scadaLevel);
+                writer.WriteAttributeString("ControlObject", bgElementCommonXaml._controlObject);
+                writer.WriteAttributeString("PowerBox", bgElementCommonXaml._powerBox);
+                writer.WriteAttributeString("Level3View", bgElementCommonXaml._level3View);
+                writer.WriteAttributeString("ChooseLeftClickMode", bgElementCommonXaml._chooseLeftClickMode);
+                writer.WriteAttributeString("NavigateToView", bgElementCommonXaml._navigateToView);
+                writer.WriteAttributeString("ElementType", bgElementCommonXaml._elementType);
+                writer.WriteAttributeString("PLCName", bgElementCommonXaml._plcName);
+                writer.WriteAttributeString("CommandSignalName", bgElementCommonXaml._commandSignalName);
+                writer.WriteAttributeString("CommandMappingType", bgElementCommonXaml._commandMappingType);
+                writer.WriteAttributeString("TypeDescription", bgElementCommonXaml._typeDescription);
+                writer.WriteAttributeString("HasRightclickMenu", bgElementCommonXaml._hasRightclickMenu);
+                writer.WriteStartElement("bgElementCommon", "BGElementCommon.Signals", null);
+                foreach (ElementXamlSignal signal in bgElementCommonXaml._elementXamlSignal)
+                {
+                    writer.WriteStartElement("helper", "BGSignal", null);
+                    writer.WriteAttributeString("Id", signal._id);
+                    writer.WriteAttributeString("UsePostfix", signal._usePostfix);
+                    writer.WriteAttributeString("Postfix", signal._postfix);
+                    writer.WriteAttributeString("UsePrefix", signal._usePrefix);
+                    writer.WriteAttributeString("Prefix", signal._prefix);
+                    writer.WriteAttributeString("KeepAliveType", signal._keepAliveType);
+                    writer.WriteAttributeString("KeepAliveSignal", signal._keepAliveSignal);
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+
+
+                writer.WriteEndElement();
+            }
+            foreach(BgTextBlock bgTextBlock in _bgTextBlocks)
+            {
+
+            }
+            writer.WriteEndElement();
+            writer.WriteEndElement();
+        }
+    }
+
+    public class ElementSeacrhStruct
+        {
+            private string _displayName;
+            private string _level1;
+            private string _level2;
+            private string _name;
+            public string DisplayName { get { return _displayName; } set { _displayName = value; } }
+            public string Level1 { get { return _level1; } set { _level1 = value; } }
+            public string Level2 { get { return _level2; } set { _level2 = value; } }
+            public string Name { get { return _name; } set { _name = value; } }
+            public ElementSeacrhStruct() { }
+            public ElementSeacrhStruct(string displayname, string level1, string level2, string name)
+            {
+                _displayName = displayname;
+                _level1 = level1;
+                _level2 = level2;
+                _name = name;
+            }
+        }
+   public class GridXaml
+    {
+        private string _name;
+        private string _background;
+        private string _height;
+        private string _width;
+    }
+    public class BgTextBlock
+    {
+        private string _Name;
+        private string _Text;
+    }
+    public class BgElementCommonXaml
+    {
+        public string _name;
+        public string _stlye;
+        public string _margin;
+        public string _legendStyleName;
+        public string _width;
+        public string _height;
+        public string _elementName;
+        public string _displayName;
+        public string _commands;
+        public string _scadaLevel;
+        public string _controlObject;
+        public string _powerBox;
+        public string _level3View;
+        public string _chooseLeftClickMode;
+        public string _navigateToView;
+        public string _elementType;
+        public string _plcName;
+        public string _commandSignalName;
+        public string _commandMappingType;
+        public string _typeDescription;
+        public string _hasRightclickMenu;
+        public List<ElementXamlSignal> _elementXamlSignal = new List<ElementXamlSignal>();
+        public List<ElementXmalBackground> _elementXmalBackground =new List<ElementXmalBackground>();
+        public List<ElementXmalBehavior> _elementXmalBehavior =new List<ElementXmalBehavior>();
+    }
+
+    public class ElementXamlSignal
+    {
+        public string _id;
+        public string _usePostfix;
+        public string _postfix;
+        public string _usePrefix;
+        public string _prefix;
+        public string _keepAliveType;
+        public string _keepAliveSignal;
+
+    }
+    public class ElementXmalBackground
+    {
+        public string _color;
+    }
+    public class ElementXmalBehavior
+    {
+        public string _behaviorName;
     }
     public struct KepWareData
     {

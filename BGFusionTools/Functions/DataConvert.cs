@@ -81,10 +81,10 @@ namespace BGFusionTools.Functions
             }
             return outputstring;
         }
-        public static string ToString(List<Element> elements)
+        public static string ToString(List<ElementSeacrhStruct> elements)
         {
             string outputstring = null;
-            foreach (Element element in elements)
+            foreach (ElementSeacrhStruct element in elements)
             {
                 string sDr = string.Format("< element displayname = \"{0}\" level1 = \"{1}\" level2 = \"{2}\" name = \"{3}\" />",
                     element.DisplayName,element.Level1,element.Level2,element.Name);

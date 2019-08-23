@@ -16,114 +16,83 @@ namespace BGFusionTools.Datas
             this.baseParameter = ConverParameter;
 
         }
-        public override string ToString()
+        public override List<List<string>> CreateList(CreateDataRow<string, List<ConveyorRow>> dataMath)
         {
-            string sOutPutSingleDatas = null;
-            List<string> sOutPutSingleData = new List<string>();
+            List<List<string>> sOutPutSingleData = new List<List<string>>();
+
             string sAtiveSingle = null; //使能信号
-            string sLinesSingle = null;//线信号
-            string sElementSingle = null;//设备信号
             EnumerableRowCollection<DataRow> MainRows = LinqToTable();
-            try
+            var PlcGroups = from p in MainRows
+                            group p by 
+                            new { system = p.Field<string>(baseParameter.TaglistColName.sSystem),
+                                plc = p.Field<string>(baseParameter.TaglistColName.sSystem) }
+                            into pp
+                            select pp;
+            foreach(var plcGroup in PlcGroups)
             {
-                var PlcGroups = from p in MainRows
-                                group p by new { system = p.Field<string>(baseParameter.TaglistColName[1, 0]), plc = p.Field<string>(baseParameter.TaglistColName[1, 1]) } into pp
-                                select pp;
-                switch (baseParameter.ViewNum)
-                {
-                    case 0:
-                        break;
-                    case 1: //Level1数据
-                        foreach (var plcGroup in PlcGroups)
-                        {
-                            string sSystem = plcGroup.Key.system;
-                            string sPlcLink = plcGroup.Key.plc;
-                            sAtiveSingle = string.Format(baseParameter.Stemp0, sSystem, sPlcLink);
-                            sOutPutSingleData.Add(sAtiveSingle);
-                        }
-                        var ELementLineGroups = from p in MainRows
-                                                group p by new { system = p.Field<string>(baseParameter.TaglistColName[1, 0]), plc = p.Field<string>(baseParameter.TaglistColName[1, 1]), line = p.Field<string>(baseParameter.TaglistColName[1, 3]), view = p.Field<string>(baseParameter.TaglistColName[1, 16]) , draw = p.Field<string>(baseParameter.TaglistColName[1, 17])} into pp
-                                                select pp;
-                        foreach (var ELementLineGroup in ELementLineGroups)
-                        {
-                            if (ELementLineGroup.Key.draw == "All")
-                            {
-                                string sSystem = ELementLineGroup.Key.system;
-                                string sPlcLink = ELementLineGroup.Key.plc;
-                                string sEquipmentLine = ELementLineGroup.Key.line;
-                                string sAreaLevel2view = ELementLineGroup.Key.view;
-                                //sAtiveSingle = string.Format(baseParameter.Stemp0, sSystem, sPlcLink);
-                                //sOutPutSingleData.Add(sAtiveSingle);
-                                sLinesSingle = string.Format(baseParameter.Stemp1, sSystem, sPlcLink, sEquipmentLine, sPlcLink, sAreaLevel2view);
-                                sOutPutSingleData.Add(sLinesSingle);
-                                foreach (DataRow selectConRow in ELementLineGroup)
-                                {
-                                    int iCounts;
-                                    string sEquipmentElement = selectConRow[4].ToString();
-                                    string sSingleMapping1 = selectConRow[6].ToString();
-                                    var SingleCounts = baseParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.BasefileColName[1, 0]) == sSingleMapping1);
-                                    //float  dCounts = (float)SingleCounts /32;
-                                    iCounts = (int)Math.Ceiling((float)SingleCounts / 32);
-                                    for (int i = 1; i <= iCounts; i++)
-                                    {
-                                        sElementSingle = string.Format(baseParameter.Stemp2, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i);
-                                        sOutPutSingleData.Add(sElementSingle);
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    case 2://Level2数据
-                        foreach (var plcGroup in PlcGroups)
-                        {
-                            string sSystem = plcGroup.Key.system;
-                            string sPlcLink = plcGroup.Key.plc;
-                            sAtiveSingle = string.Format(baseParameter.Stemp0, sSystem, sPlcLink);
-                            sOutPutSingleData.Add(sAtiveSingle);
-                            foreach (DataRow selectConRow in plcGroup)
-                            {
-                                int iCounts;
-                                //string sPoweBox = selectConRow[2].ToString();
-                                string sEquipmentLine = selectConRow[3].ToString();
-                                string sEquipmentElement = selectConRow[4].ToString();
-                                string sSingleMapping1 = selectConRow[6].ToString();
-                                string sAreaLevel2view = selectConRow[16].ToString();
-                                var SingleCounts = baseParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.BasefileColName[1, 0]) == sSingleMapping1);
-                                //float dCounts = SingleCounts / 32;
-                                iCounts = (int)Math.Ceiling((float)SingleCounts / 32);
-                                for (int i = 1; i <= iCounts; i++)
-                                {
-                                    sElementSingle = string.Format(baseParameter.Stemp2, sSystem, sPlcLink, sEquipmentLine, sEquipmentElement, i);
-                                    sOutPutSingleData.Add(sElementSingle);
-                                }
-                            }
-                        }
-                        break;
-                }
-
-                foreach (string s in sOutPutSingleData)
-                {
-                    if (sOutPutSingleDatas == null)
-                    {
-                        sOutPutSingleDatas = s;
-                    }
-                    else
-                    {
-                        sOutPutSingleDatas = sOutPutSingleDatas + "," + s;
-                    }
-                }
-                if (sOutPutSingleDatas != null)
-                {
-                    sOutPutSingleDatas = string.Format("[{0}]", sOutPutSingleDatas);
-                }
+                List<ConveyorRow> conveyorRows = new List<ConveyorRow>();
+                List<string> SignalGroup = new List<string>();
+                string sSystem = plcGroup.Key.system;
+                string sPlcLink = plcGroup.Key.plc;
+                sAtiveSingle = string.Format(baseParameter.Stemp0, sSystem, sPlcLink);
+                SignalGroup.Add(sAtiveSingle);
+                foreach (DataRow selectRow in plcGroup)
+                    conveyorRows.Add(new ConveyorRow(baseParameter.TaglistColName, selectRow));
+                SignalGroup.AddRange(dataMath(conveyorRows));
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("数据处理错误：" + ex.Message);
-            }
-            return sOutPutSingleDatas;
+            return base.CreateList(dataMath);
         }
+        public List<string> CreateL1Signal(List<ConveyorRow> conveyorRows)
+        {
+            List<string> outSignals = new List<string>();
+            var ELementLineGroups = from p in conveyorRows
+                                    group p by 
+                                    new { system = p.sSystem, plc = p.sPLC,line = p.sEquipmentLine,
+                                        view = p.sLevel2View, draw = p.sDrawOnViews }
+                                    into pp
+                                    select pp;
+            foreach(var ELementLineGroup in ELementLineGroups)
+            {
+                string sSystem = ELementLineGroup.Key.system;
+                string sPlcLink = ELementLineGroup.Key.plc;
+                string sEquipmentLine = ELementLineGroup.Key.line;
+                string sAreaLevel2view = ELementLineGroup.Key.view;
+                string sLinesSingle = string.Format(baseParameter.Stemp1, sSystem, sPlcLink, sEquipmentLine, sPlcLink, sAreaLevel2view);
+                outSignals.Add(sLinesSingle);
+                foreach (ConveyorRow converyor in ELementLineGroup)
+                {
+                    List<string> signals = new List<string>();
+                    foreach (string signalMapping in converyor.sSignalMapping)
+                    {
+                        var Counts = baseParameter.SingleMappingTable.AsEnumerable().Count
+                            (p => p.Field<string>(baseParameter.SignalMappingColName.sType) == signalMapping);
+                        var signal = sSignalName(Counts, baseParameter.Stemp2, converyor, signals.Count + 1);
+                        signals.AddRange(signal);
+                    }
+                    outSignals.AddRange(signals);
+                }
+            }
+           
+            return outSignals;
+        }
+        public List<string> CreateL2Signal(List<ConveyorRow> conveyorRows)
+        {
+            List<string> outSignals = new List<string>();
 
+            foreach(ConveyorRow converyor in conveyorRows)
+            {
+                List<string> signals = new List<string>();
+                foreach (string signalMapping in converyor.sSignalMapping)
+                {
+                    var Counts = baseParameter.SingleMappingTable.AsEnumerable().Count
+                        (p => p.Field<string>(baseParameter.SignalMappingColName.sType) == signalMapping);
+                    var signal = sSignalName(Counts, baseParameter.Stemp2, converyor, signals.Count+1);
+                    signals.AddRange(signal);
+                }
+                outSignals.AddRange(signals);
+            }
+            return outSignals;
+        } 
     }
 
 }

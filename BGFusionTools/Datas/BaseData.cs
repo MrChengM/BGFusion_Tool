@@ -45,7 +45,8 @@ namespace BGFusionTools.Datas
         public string Stemp6 { get { return stemp6; } set { stemp6 = value; } }
         public string Stemp7 { get { return stemp7; } set { stemp7 = value; } }
     }
-    public delegate List<T1> CreateDataRow<T1,T2>(T2 ConveyordataRow);
+    public delegate List<T1> CreateDataRow<T1, T2>(T2 ConveyordataRow);
+    
     //public delegate List<string> CreateDataRows(List<ConveyorRow> ConveyordataRow);
     public abstract class BaseData
     {
@@ -74,7 +75,30 @@ namespace BGFusionTools.Datas
             lOutPut.Add(dataMath(conveyors));
             return lOutPut;
         }
+        public virtual List<List<T1>> CreateList<T1>(CreateDataRow<T1, List<ConveyorRow>> dataMath)
+        {
 
+            List<List<T1>> lOutPut = new List<List<T1>>();
+            List<ConveyorRow> conveyors = new List<ConveyorRow>();
+            foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
+            {
+                var conveyor = new ConveyorRow(baseParameter.TaglistColName, selectConRow);
+                conveyors.Add(conveyor);
+            }
+            lOutPut.Add(dataMath(conveyors));
+            return lOutPut;
+        }
+        public virtual List<T1> CreateList<T1>(CreateDataRow<T1, ConveyorRow> dataMath)
+        {
+            
+            List<T1> lOutPut = new List<T1>();
+            foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
+            {
+                var conveyor = new ConveyorRow(baseParameter.TaglistColName, selectConRow) ;
+                lOutPut.AddRange(dataMath(conveyor));
+            }
+            return lOutPut;
+        }
 
 
 
