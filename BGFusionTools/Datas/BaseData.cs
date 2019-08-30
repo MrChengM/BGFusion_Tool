@@ -217,10 +217,12 @@ namespace BGFusionTools.Datas
         public string sPowerBox;
         public string sEquipmentLine;
         public string sElementType;
+        public string sTypeDescription;
         public string sElementName;
+        public string sStyleIdentifier;
         public string sBehaviorName;
-        public List<string> sSignalMapping;
-        public List<string> sSignalAddress;
+        public List<string> sSignalMapping=new List<string>();
+        public List<string> sSignalAddress=new List<string>();
         public string sCommandMapping;
         public string sCommandAddress;
         public string sRunningHours;
@@ -236,43 +238,123 @@ namespace BGFusionTools.Datas
         public string sLevel1AsLevel2;
         public string sExtendedPropertyAsCamera;
         //创建一个taglist数据行
+        public ConveyorRow()
+        {
+
+        }
         public  ConveyorRow (TaglistColumns columns,DataRow dataRow)
         {
             if (dataRow[0].ToString() != "")
             {
-                sSystem = dataRow[columns.sSystem].ToString();
-                sPLC = dataRow[columns.sPLC].ToString();
-                sPowerBox = dataRow[columns.sPowerBox].ToString();
-                sEquipmentLine = dataRow[columns.sEquipmentLine].ToString();
-                sElementType = dataRow[columns.sElementType].ToString();
-                sElementName = dataRow[columns.sElementName].ToString();
-                sBehaviorName = dataRow[columns.sBehaviorName].ToString();
+                if (columns.sSystem=="")
+                    sSystem = "";
+                else
+                    sSystem = dataRow[columns.sSystem].ToString();
+                if (columns.sPLC=="")
+                    sPLC = "";
+                else
+                    sPLC = dataRow[columns.sPLC].ToString();
+                if (columns.sPowerBox=="")
+                    sPowerBox = "";
+                else
+                    sPowerBox = dataRow[columns.sPowerBox].ToString();
+                if (columns.sEquipmentLine=="")
+                    sEquipmentLine = "";
+                else
+                    sEquipmentLine = dataRow[columns.sEquipmentLine].ToString();
+                if (columns.sElementType=="")
+                    sElementType = "";
+                else
+                    sElementType = dataRow[columns.sElementType].ToString();
+                if (columns.sTypeDescription=="")
+                    sTypeDescription = "";
+                else
+                    sTypeDescription = dataRow[columns.sTypeDescription].ToString();
+                if (columns.sElementName=="")
+                    sElementName = "";
+                else
+                    sElementName = dataRow[columns.sElementName].ToString();
+                if (columns.sStyleIdentifier=="")
+                    sStyleIdentifier = "";
+                else
+                    sStyleIdentifier = dataRow[columns.sStyleIdentifier].ToString();
+                if (columns.sBehaviorName=="")
+                    sBehaviorName = "";
+                else
+                    sBehaviorName = dataRow[columns.sBehaviorName].ToString();
                 foreach (string signalMapping in columns.sSignalMapping)
                 {
-                    string name = dataRow[signalMapping].ToString();
-                    if (name != "")
+                    if (signalMapping!="")
+                    {
+                        string name = dataRow[signalMapping].ToString();
                         sSignalMapping.Add(name);
+                    }
+                      
                 }
                 foreach (string signalAddress in columns.sSignalAddress)
                 {
-                    string address = dataRow[signalAddress].ToString();
-                    if (address != "")
+                    if (signalAddress!="")
+                    {
+                        string address = dataRow[signalAddress].ToString();
                         sSignalMapping.Add(address);
+                    }
                 }
-                sCommandMapping = dataRow[columns.sCommandMapping].ToString();
-                sCommandAddress = dataRow[columns.sCommandAddress].ToString();
-                sRunningHours = dataRow[columns.sRunningHours].ToString();
-                sCopyRunningHours = dataRow[columns.sCopyRunningHours].ToString();
-                sDisplayName = dataRow[columns.sDisplayName].ToString();
-                sEdgeColor = dataRow[columns.sEdgeColor].ToString();
-                sAlarmTree = dataRow[columns.sAlarmTree].ToString();
-                sLevel1View = dataRow[columns.sLevel1View].ToString();
-                sLevel2View = dataRow[columns.sLevel2View].ToString();
-                sDrawOnViews = dataRow[columns.sDrawOnViews].ToString();
-                sLeftClick = dataRow[columns.sLeftClick].ToString();
-                sRightClick = dataRow[columns.sRightClick].ToString();
-                sLevel1AsLevel2 = dataRow[columns.sLevel1AsLevel2].ToString();
-                sExtendedPropertyAsCamera = dataRow[columns.sExtendedPropertyAsCamera].ToString();
+                if (columns.sCommandMapping=="")
+                    sCommandMapping = "";
+                else
+                    sCommandMapping = dataRow[columns.sCommandMapping].ToString();
+                if (columns.sCommandAddress=="")
+                    sCommandAddress = "";
+                else
+                    sCommandAddress = dataRow[columns.sCommandAddress].ToString();
+                if (columns.sRunningHours=="")
+                    sRunningHours = "";
+                else
+                    sRunningHours = dataRow[columns.sRunningHours].ToString();
+                if (columns.sCopyRunningHours=="")
+                    sCopyRunningHours = "";
+                else
+                    sCopyRunningHours = dataRow[columns.sCopyRunningHours].ToString();
+                if(columns.sDisplayName=="")
+                    sDisplayName ="";
+                else
+                    sDisplayName = dataRow[columns.sDisplayName].ToString();
+                if (columns.sEdgeColor=="")
+                    sEdgeColor = "";
+                else
+                    sEdgeColor = dataRow[columns.sEdgeColor].ToString();
+                if (columns.sAlarmTree=="")
+                    sAlarmTree = "";
+                else
+                    sAlarmTree = dataRow[columns.sAlarmTree].ToString();
+                if (columns.sLevel1View=="")
+                    sLevel1View = "";
+                else
+                    sLevel1View = dataRow[columns.sLevel1View].ToString();
+                if (columns.sLevel2View=="")
+                    sLevel2View = "";
+                else
+                    sLevel2View = dataRow[columns.sLevel2View].ToString();
+                if (columns.sDrawOnViews=="")
+                    sDrawOnViews = "";
+                else
+                    sDrawOnViews = dataRow[columns.sDrawOnViews].ToString();
+                if (columns.sLeftClick=="")
+                    sLeftClick = "";
+                else
+                    sLeftClick = dataRow[columns.sLeftClick].ToString();
+                if (columns.sRightClick=="")
+                    sRightClick = "";
+                else
+                    sRightClick = dataRow[columns.sRightClick].ToString();
+                if (columns.sLevel1AsLevel2=="")
+                    sLevel1AsLevel2 = "";
+                else
+                    sLevel1AsLevel2 = dataRow[columns.sLevel1AsLevel2].ToString();
+                if (columns.sExtendedPropertyAsCamera=="")
+                    sExtendedPropertyAsCamera = "";
+                else
+                    sExtendedPropertyAsCamera = dataRow[columns.sExtendedPropertyAsCamera].ToString();
 
             }
           

@@ -514,7 +514,7 @@ namespace BGFusionTools
                     }
                     UIdictionary[UIKey1].MyString= sOutPutLiData;
                     ExcelFunction.ExcelWrite(UIdictionary[UIKey2].MyString, sFilePath, telistDictionary);*/
-                    ListData.OutData();
+                    //ListData.OutData();
                     NpoiExcelFunction.ExcelWrite(sFilePath, (ListData as TestList).ListData);
                     UIdictionary[UIKey1].MyString = "Output Test List successful!";
                 }
@@ -588,8 +588,8 @@ namespace BGFusionTools
             string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = Outputfile(ref sFilePath, sFileStyle);
             UIdictionary[UIKey1].MyString = "";
-            try
-            {
+            //try
+            //{
                 if (bOpenEnable)
                 {
                     BaseFactory factory = new BaseFactory();
@@ -597,18 +597,19 @@ namespace BGFusionTools
                     factory.bSingle = (bool)UIdictionary[UIKey2].Mybool;
                     factory.bCommand = (bool)UIdictionary[UIKey3].Mybool;
                     factory.bHours = (bool)UIdictionary[UIKey4].Mybool;
-                    BaseData OPCData = factory.CreatDataClass("OPCData");
-                    DataTable dt = OPCData.ToDataTable();
+                    OPCData opcData =(OPCData) factory.CreatDataClass("OPCData");
+                    CreateDataRow<List<string>, ConveyorRow> createOPCMath = opcData.CreateOPCRows;
+                    var opcdataList= opcData.CreateList(createOPCMath);
                     UIdictionary[UIKey].MyString = sFilePath;
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
-                    CsvFunction.CsvWirte(sFilePath, dt);
-                    UIdictionary[UIKey1].MyString = DataConvert.ToString(dt);
+                    CsvFunction.CsvWirte(sFilePath, opcdataList);
+                    UIdictionary[UIKey1].MyString = DataConvert.ToString(opcdataList);
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Build OPC Data Error: " + ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+           // {
+            //    MessageBox.Show("Build OPC Data Error: " + ex.Message);
+            //}
             GC.Collect();
 
         }
@@ -631,10 +632,17 @@ namespace BGFusionTools
                     factory.BaseParameter = CreateConvertParameter();
                     factory.bOPCIfo = (bool)UIdictionary[UIKey2].Mybool;
                     factory.bConvAlarm = (bool)UIdictionary[UIKey3].Mybool;
+                    CreateDataRow<List<string>, ConveyorRow> createMath;
+                    ConfigData dConfigData ;
+                    List<List<string>> lls = new List<List<string>>();
+                    //ConfigData dConfigData = (ConfigData)factory.CreatDataClass("ConfigData");
                     if (UIdictionary[UIKey2].Mybool == true)
                     {
                         string[] sListColName = { "Tag Name", "Type", "Channel", "Device", "DataType" };
-                        factory.sListColName = sListColName.ToList<string>();
+                        factory.sListColName = sListColName.ToList();
+                        dConfigData = (ConfigData)factory.CreatDataClass("ConfigData");
+                        createMath = dConfigData.CreateOPCInfoRows;
+                        lls = dConfigData.CreateList(createMath);
                     }
                     if (UIdictionary[UIKey3].Mybool == true)
                     {
@@ -643,16 +651,16 @@ namespace BGFusionTools
                     "Delayed","ConditionName","Priority","GeneralComment","Level1View",
                     "Level2View","Resetable","ResetBit","ALNumber","CCTVRecording",
                     "ElementID","ResetSignal","ExtraTagList","CISData","Technical"};
-                        factory.sListColName = sListColName.ToList<string>();
+                        factory.sListColName = sListColName.ToList();
+                        dConfigData = (ConfigData)factory.CreatDataClass("ConfigData");
+                        createMath = dConfigData.CreateAlarmListRows;
+                        lls = dConfigData.CreateList(createMath);
                     }
-
-                    BaseData dConfigData = factory.CreatDataClass("ConfigData");
-                    List<List<string>> dt = dConfigData.ToList();
                     UIdictionary[UIKey].MyString = sFilePath;
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
                     //XmlFuction xmlFuction = new XmlFuction();
                     //xmlFuction.XmlWrite(sFilePath, dt);
-                    XmlSerialiaztion.XmlSerial(sFilePath, new Workbook(dt));
+                    XmlSerialiaztion.XmlSerial(sFilePath, new Workbook(lls));
                     UIdictionary[UIKey1].MyString = "Build Datas Successful";
                 }
             }
@@ -750,7 +758,7 @@ namespace BGFusionTools
                     }
                     else if (btypeElementSearch == true)
                     {
-                        XmlSerialiaztion.XmlSerial(sFilePath, Merge<ElementSearchData>(sPaths));
+                        XmlSerialiaztion.XmlSerial(sFilePath, Merge<ElementSearchXml>(sPaths));
                     }
                 }
             }
@@ -824,10 +832,14 @@ namespace BGFusionTools
                 if (bOpenEnable)
                 {
                     BaseFactory factory = new BaseFactory(CreateConvertParameter());
-                    BaseData elmentSearchData = factory.CreatDataClass("ElementSearchData");
+                    ElementSearchData elmentSearchData = (ElementSearchData)factory.CreatDataClass("ElementSearchData");
+                    CreateDataRow<ElementSeacrhStruct, ConveyorRow> elmentSearchMath = elmentSearchData.CreateElements;
+                    List<ElementSeacrhStruct> lelmentSearchData = elmentSearchData.CreateList(elmentSearchMath);
+                    ElementSearchXml elementSearchXml = new ElementSearchXml();
+                    elementSearchXml.Elements = lelmentSearchData;
                     UIdictionary[UIKey1].MyString = elmentSearchData.ToString();
                     UIdictionary[UIKey].MyString = sOutFilePath;
-                    XmlSerialiaztion.XmlSerial(sOutFilePath, (ElementSearchData)elmentSearchData);
+                    XmlSerialiaztion.XmlSerial(sOutFilePath, elementSearchXml);
                 }
             }
             catch (Exception ex)
@@ -842,30 +854,32 @@ namespace BGFusionTools
     /// </summary>
     public class TaglistColumns
     {
-        public string sTagName;
-        public string sSystem;
-        public string sPLC;
-        public string sPowerBox;
-        public string sEquipmentLine;
-        public string sElementType;
-        public string sElementName;
-        public string sBehaviorName;
-        public List<string> sSignalMapping;
-        public List<string> sSignalAddress;
-        public string sCommandMapping;
-        public string sCommandAddress;
-        public string sRunningHours;
-        public string sCopyRunningHours;
-        public string sDisplayName;
-        public string sEdgeColor;
-        public string sAlarmTree;
-        public string sLevel1View;
-        public string sLevel2View;
-        public string sDrawOnViews;
-        public string sLeftClick;
-        public string sRightClick;
-        public string sLevel1AsLevel2;
-        public string sExtendedPropertyAsCamera;
+        public string sTagName="";
+        public string sSystem="";
+        public string sPLC="";
+        public string sPowerBox="";
+        public string sEquipmentLine="";
+        public string sElementType="";
+        public string sTypeDescription="";
+        public string sElementName="";
+        public string sBehaviorName="";
+        public string sStyleIdentifier="";
+        public List<string> sSignalMapping =new List<string>();
+        public List<string> sSignalAddress=new List<string>();
+        public string sCommandMapping="";
+        public string sCommandAddress="";
+        public string sRunningHours="";
+        public string sCopyRunningHours="";
+        public string sDisplayName="";
+        public string sEdgeColor="";
+        public string sAlarmTree="";
+        public string sLevel1View="";
+        public string sLevel2View="";
+        public string sDrawOnViews="";
+        public string sLeftClick="";
+        public string sRightClick="";
+        public string sLevel1AsLevel2="";
+        public string sExtendedPropertyAsCamera="";
         private TaglistColumns()
         {
             const string filePath = "../../Configuration.xml";
@@ -886,6 +900,9 @@ namespace BGFusionTools
                             case "sTagName":
                                 sTagName = xmlReader["value"];
                                 break;
+                            case "sSystem":
+                                sSystem = xmlReader["value"];
+                                break;
                             case "sPLC":
                                 sPLC = xmlReader["value"];
                                 break;
@@ -898,11 +915,17 @@ namespace BGFusionTools
                             case "sElementType":
                                 sElementType = xmlReader["value"];
                                 break;
+                            case "sTypeDescription":
+                                sTypeDescription = xmlReader["value"];
+                                break;
                             case "sElementName":
                                 sElementName = xmlReader["value"];
                                 break;
                             case "sBehaviorName":
                                 sBehaviorName = xmlReader["value"];
+                                break;
+                            case "sStyleIdentifier":
+                                sStyleIdentifier = xmlReader["value"];
                                 break;
                             case "sSignalMapping1":
                                 if (xmlReader["enable"] != "false")
@@ -1055,22 +1078,22 @@ namespace BGFusionTools
     /// </summary>
     public  class SignalMappingColumns
     {
-        public string sSignalMapping;
-        public string sType;
-        public string sWord;
-        public string sBit;
-        public string sAnalogValue;
-        public string sAlarmStatusNumber;
-        public string sPartName;
-        public string sShowOnSCADA;
-        public string sStateRef;
-        public string sFunctionalText;
-        public string sStateText;
-        public string sStatespriority;
-        public string sStateColor;
-        public string sStateSpecialFunction;
-        public string sAlarmStatusPriority;
-        public string sPriorityFormula;
+        public string sSignalMapping="";
+        public string sType="";
+        public string sWord="";
+        public string sBit="";
+        public string sAnalogValue="";
+        public string sAlarmStatusNumber="";
+        public string sPartName="";
+        public string sShowOnSCADA="";
+        public string sStateRef="";
+        public string sFunctionalText="";
+        public string sStateText="";
+        public string sStatespriority="";
+        public string sStateColor="";
+        public string sStateSpecialFunction="";
+        public string sAlarmStatusPriority="";
+        public string sPriorityFormula="";
         private SignalMappingColumns()
         {
             const string filePath = "../../Configuration.xml";
@@ -1088,49 +1111,49 @@ namespace BGFusionTools
                         switch (xmlReader["name"])
                         {
                             case "sType":
-                                sType = xmlReader["name"];
+                                sType = xmlReader["value"];
                                 break;
                             case "sWord":
-                                sWord = xmlReader["name"];
+                                sWord = xmlReader["value"];
                                 break;
                             case "sBit":
-                                sBit = xmlReader["name"];
+                                sBit = xmlReader["value"];
                                 break;
                             case "sAnalogValue":
-                                sAnalogValue = xmlReader["name"];
+                                sAnalogValue = xmlReader["value"];
                                 break;
                             case "sAlarmStatusNumber":
-                                sAlarmStatusNumber = xmlReader["name"];
+                                sAlarmStatusNumber = xmlReader["value"];
                                 break;
                             case "sPartName":
-                                sPartName = xmlReader["name"];
+                                sPartName = xmlReader["value"];
                                 break;
                             case "sShowOnSCADA":
-                                sShowOnSCADA = xmlReader["name"];
+                                sShowOnSCADA = xmlReader["value"];
                                 break;
                             case "sStateRef":
-                                sStateRef = xmlReader["name"];
+                                sStateRef = xmlReader["value"];
                                 break;
                             case "sFunctionalText":
-                                sFunctionalText = xmlReader["name"];
+                                sFunctionalText = xmlReader["value"];
                                 break;
                             case "sStateText":
-                                sStateText = xmlReader["name"];
+                                sStateText = xmlReader["value"];
                                 break;
                             case "sStatespriority":
-                                sStatespriority = xmlReader["name"];
+                                sStatespriority = xmlReader["value"];
                                 break;
                             case "sStateColor":
-                                sStateColor = xmlReader["name"];
+                                sStateColor = xmlReader["value"];
                                 break;
                             case "sStateSpecialFunction":
-                                sStateSpecialFunction = xmlReader["name"];
+                                sStateSpecialFunction = xmlReader["value"];
                                 break;
                             case "sAlarmStatusPriority":
-                                sAlarmStatusPriority = xmlReader["name"];
+                                sAlarmStatusPriority = xmlReader["value"];
                                 break;
                             case "sPriorityFormula":
-                                sPriorityFormula = xmlReader["name"];
+                                sPriorityFormula = xmlReader["value"];
                                 break;
                         }
                         xmlReader.Read();
@@ -1151,15 +1174,15 @@ namespace BGFusionTools
     /// </summary>
     public class CommandMappingColumns
     {
-        public string sCommandMapping;
-        public string sType;
-        public string sElementLink;
-        public string sBit;
-        public string sAnalogValue;
-        public string sCommandNumber;
-        public string sPartName;
-        public string sCommandPriority;
-        public string sCommandText;
+        public string sCommandMapping="";
+        public string sType="";
+        public string sElementLink="";
+        public string sBit="";
+        public string sAnalogValue="";
+        public string sCommandNumber="";
+        public string sPartName="";
+        public string sCommandPriority="";
+        public string sCommandText="";
         private CommandMappingColumns()
         {
             const string filePath = "../../Configuration.xml";

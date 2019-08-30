@@ -1,4 +1,5 @@
 ﻿using BGFusionTools.Datas;
+using BGFusionTools.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;

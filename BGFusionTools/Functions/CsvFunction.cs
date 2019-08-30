@@ -66,5 +66,39 @@ namespace BGFusionTools.Functions
                 sw.Dispose();
             }
         }
+        public static void CsvWirte(string sfilePath, List<List<string>> lls)
+        {
+            string sfilename = @sfilePath;
+            if (File.Exists(sfilename))
+            {
+                File.Delete(sfilename);
+            }
+            // File.Create(sfilename);
+            FileStream fs = new FileStream(sfilename, FileMode.Create, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(fs, Encoding.UTF8);
+
+            try
+            {
+                foreach(List<string> ls in lls)
+                {
+                    string sWirteLine = "";
+                    foreach (string s in ls)
+                    {
+                        if (sWirteLine != "")
+                            sWirteLine += ",";
+                        sWirteLine += s;
+                    }
+                    sw.WriteLine(sWirteLine);
+                }
+                sw.Close();
+                sw.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Write to CSV Error： " + ex.Message);
+                sw.Close();
+                sw.Dispose();
+            }
+        }
     }
 }

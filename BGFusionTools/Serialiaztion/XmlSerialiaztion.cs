@@ -558,7 +558,7 @@ namespace BGFusionTools.Serialization
         public class ElementSearchXml : IXmlSerializable, IOperation<ElementSearchXml>
         {
             private List<ElementSeacrhStruct> elements = new List<ElementSeacrhStruct>();
-            public List<ElementSeacrhStruct> Elements { get { return elements; } }
+            public List<ElementSeacrhStruct> Elements { get { return elements; }set { elements = value; } }
             public ElementSearchXml() { }
             public XmlSchema GetSchema()
             {
@@ -638,63 +638,83 @@ namespace BGFusionTools.Serialization
 
         }
     [XmlRoot("UserControl")]
-    public class ElementXaml : IXmlSerializable, IOperation<ElementSearchXml>
+    public class ElementXaml : IXmlSerializable, IOperation<ElementXaml>
     {
         //Viewbox _viewbox;
         //GridXaml _grid;
-        List<BgElementCommonXaml> _bgElementCommons =new List<BgElementCommonXaml>();
-        List<BgTextBlock> _bgTextBlocks=new List<BgTextBlock>();
+        public List<BgElementCommonXaml> _bgElementCommons =new List<BgElementCommonXaml>();
+        public List<BgTextBlock> _bgTextBlocks=new List<BgTextBlock>();
 
-        public ElementSearchXml Add(ElementSearchXml T1)
+        public ElementXaml Add(ElementXaml T1)
+        {
+            Margin _margin = new Margin();
+            BgTextBlock bgtextblock = _bgTextBlocks.Last();
+            _margin = _margin.MarginChange(bgtextblock._margin, bgtextblock._iColWidth, bgtextblock._iColHight);
+            foreach (BgElementCommonXaml bgCommonXaml in T1._bgElementCommons)
+                bgCommonXaml._margin.Add(_margin);
+            foreach (BgTextBlock bgText in T1._bgTextBlocks)
+                bgText._margin.Add(_margin);
+            this._bgElementCommons.AddRange(T1._bgElementCommons);
+            this._bgTextBlocks.AddRange(T1._bgTextBlocks);
+            return this;
+
+        }
+
+        public ElementXaml Add(ElementXaml T1, ElementXaml T2)
+        {
+            Margin _margin = new Margin();
+            BgTextBlock bgtextblock = T1._bgTextBlocks.Last();
+            _margin = _margin.MarginChange(bgtextblock._margin, bgtextblock._iColWidth, bgtextblock._iColHight);
+            foreach (BgElementCommonXaml bgCommonXaml in T2._bgElementCommons)
+                bgCommonXaml._margin.Add(_margin);
+            foreach (BgTextBlock bgText in T2._bgTextBlocks)
+                bgText._margin.Add(_margin);
+            this._bgElementCommons.AddRange(T2._bgElementCommons);
+            this._bgTextBlocks.AddRange(T2._bgTextBlocks);
+            return T1;
+        }
+
+
+        public ElementXaml Div(ElementXaml T1)
         {
             throw new NotImplementedException();
         }
-
-        public ElementSearchXml Add(ElementSearchXml T1, ElementSearchXml T2)
+        public ElementXaml Div(ElementXaml T1, ElementXaml T2)
         {
             throw new NotImplementedException();
         }
-
-        public ElementSearchXml Div(ElementSearchXml T1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ElementSearchXml Div(ElementSearchXml T1, ElementSearchXml T2)
-        {
-            throw new NotImplementedException();
-        }
-
         public XmlSchema GetSchema()
         {
             throw new NotImplementedException();
         }
 
-        public ElementSearchXml Multiply(ElementSearchXml T1)
+        public ElementXaml Multiply(ElementXaml T1)
         {
             throw new NotImplementedException();
         }
-
-        public ElementSearchXml Multiply(ElementSearchXml T1, ElementSearchXml T2)
+        public ElementXaml Multiply(ElementXaml T1, ElementXaml T2)
         {
             throw new NotImplementedException();
         }
-
         public void ReadXml(XmlReader reader)
         {
             throw new NotImplementedException();
         }
 
-        public ElementSearchXml Subtract(ElementSearchXml T1)
+        public ElementXaml Subtract(ElementXaml T1)
         {
             throw new NotImplementedException();
         }
 
-        public ElementSearchXml Subtract(ElementSearchXml T1, ElementSearchXml T2)
+        public ElementXaml Subtract(ElementSearchXml T1)
         {
             throw new NotImplementedException();
         }
 
+        public ElementXaml Subtract(ElementXaml T1, ElementXaml T2)
+        {
+            throw new NotImplementedException();
+        }
         public void WriteXml(XmlWriter writer)
         {
             //Namespace.
@@ -733,10 +753,10 @@ namespace BGFusionTools.Serialization
             {
                 writer.WriteStartElement("bgElementCommon", "BGElementCommon", null);
                 writer.WriteAttributeString("x", "Name", null, bgElementCommonXaml._name);
-                writer.WriteAttributeString("Margin", bgElementCommonXaml._margin);
+                writer.WriteAttributeString("Margin", bgElementCommonXaml._margin.ToString());
                 writer.WriteAttributeString("LegendStyleName", bgElementCommonXaml._legendStyleName);
                 writer.WriteAttributeString("Width", bgElementCommonXaml._width);
-                writer.WriteAttributeString("Margin", bgElementCommonXaml._margin);
+                writer.WriteAttributeString("Height", bgElementCommonXaml._height);
                 writer.WriteAttributeString("ElementName", bgElementCommonXaml._elementName);
                 writer.WriteAttributeString("DisplayName", bgElementCommonXaml._displayName);
                 writer.WriteAttributeString("Commands", bgElementCommonXaml._commands);
@@ -752,6 +772,8 @@ namespace BGFusionTools.Serialization
                 writer.WriteAttributeString("CommandMappingType", bgElementCommonXaml._commandMappingType);
                 writer.WriteAttributeString("TypeDescription", bgElementCommonXaml._typeDescription);
                 writer.WriteAttributeString("HasRightclickMenu", bgElementCommonXaml._hasRightclickMenu);
+
+                //写Signal属性
                 writer.WriteStartElement("bgElementCommon", "BGElementCommon.Signals", null);
                 foreach (ElementXamlSignal signal in bgElementCommonXaml._elementXamlSignal)
                 {
@@ -767,12 +789,31 @@ namespace BGFusionTools.Serialization
                 }
                 writer.WriteEndElement();
 
+                //写Background属性
+                writer.WriteStartElement("bgElementCommon", "BGElementCommon.Background", null);
+                writer.WriteStartElement("SolidColorBrush");
+                writer.WriteAttributeString("Color", bgElementCommonXaml._elementXmalBackground._color);
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+
+                //写Behavior属性
+                writer.WriteStartElement("i", "Interaction.Behaviors", null);
+                writer.WriteStartElement("BG_SCADA_Behaviors_Conveyor", bgElementCommonXaml._elementXmalBehavior._behaviorName);
+                writer.WriteEndElement();
+                writer.WriteEndElement();
 
                 writer.WriteEndElement();
             }
             foreach(BgTextBlock bgTextBlock in _bgTextBlocks)
             {
-
+                writer.WriteStartElement("TextBlock");
+                writer.WriteAttributeString("x","Name", bgTextBlock._name);
+                writer.WriteAttributeString("Text", bgTextBlock._text);
+                writer.WriteAttributeString("Height", bgTextBlock._height);
+                writer.WriteAttributeString("FontSize", bgTextBlock._fontSize);
+                writer.WriteAttributeString("Width", bgTextBlock._width);
+                writer.WriteAttributeString("Margin", bgTextBlock._margin.ToString());
+                writer.WriteEndElement();
             }
             writer.WriteEndElement();
             writer.WriteEndElement();
@@ -805,26 +846,71 @@ namespace BGFusionTools.Serialization
         private string _height;
         private string _width;
     }
-    public class BgTextBlock
-    {
-        private string _Name;
-        private string _Text;
-    }
-    public class BgElementCommonXaml
+    public class BgXamlBase
     {
         public string _name;
-        public string _stlye;
-        public string _margin;
-        public string _legendStyleName;
-        public string _width;
-        public string _height;
+        public string _width = "20";
+        public string _height="20";
+        public Margin _margin;
+        public  int _iColWidth = 70;
+        public  int _iColHight = 70;
+    }
+    public struct Margin
+    {
+        public int a;
+        public int b;
+        public int c;
+        public int d;
+        private string _margin;
+
+        public override string ToString()
+        {
+            _margin = string.Format("{0},{1},{2},{3}", a, b, c, d);
+            return _margin;
+        }
+        public Margin Add(Margin T1)
+        {
+            this.a = this.a + T1.a;
+            this.b = this.a + T1.b;
+            this.c = this.a + T1.c;
+            this.d = this.a + T1.d;
+            return this;
+        }
+        public Margin MarginChange(Margin margin, int iColWidth, int iRowHight)
+        {
+            const int viewWidth = 1920;
+            //int iColWidth = 70;
+            //int iRowHight = 70;
+            if (margin.a + iColWidth > viewWidth)
+            {
+                margin.a = 0;
+                margin.b = margin.b + iRowHight;
+            }
+            else
+            {
+                margin.b = margin.b + iColWidth;
+            }
+            return margin;
+        }
+    }
+    public class BgTextBlock:BgXamlBase
+    {
+        public string _text;
+
+        public string _fontSize;
+    }
+    public class BgElementCommonXaml:BgXamlBase
+    {
+        private ConveyorRow _conveyor;
+        public string _stlye = "BG_DefaultSymbol";
+        public string _legendStyleName= "BG_DefaultSymbol";
         public string _elementName;
         public string _displayName;
         public string _commands;
-        public string _scadaLevel;
+        public string _scadaLevel="Level2";
         public string _controlObject;
         public string _powerBox;
-        public string _level3View;
+        public string _level3View= "Level3ViewConv_47";
         public string _chooseLeftClickMode;
         public string _navigateToView;
         public string _elementType;
@@ -834,8 +920,62 @@ namespace BGFusionTools.Serialization
         public string _typeDescription;
         public string _hasRightclickMenu;
         public List<ElementXamlSignal> _elementXamlSignal = new List<ElementXamlSignal>();
-        public List<ElementXmalBackground> _elementXmalBackground =new List<ElementXmalBackground>();
-        public List<ElementXmalBehavior> _elementXmalBehavior =new List<ElementXmalBehavior>();
+        public ElementXamlBackground _elementXmalBackground ;
+        public ElementXamlBehavior _elementXmalBehavior ;
+        public BgElementCommonXaml()
+        {
+
+        }
+        public BgElementCommonXaml(ConveyorRow conveyor,BaseParameter baseParameter)
+        {
+            _conveyor = conveyor;
+            _name = string.Format("{0}_{1}_{2}_{3}", conveyor.sSystem, conveyor.sPLC, conveyor.sEquipmentLine, conveyor.sElementName);
+            _height = "20";
+            _margin = new Margin();
+            _stlye = string.Format("{StaticResource {0}}", "Conveyor_Straight_L2");
+            _scadaLevel = "Level2";
+            _navigateToView = "";
+            _elementName = string.Format("{0}_{1}_{2}_{3}", conveyor.sSystem, conveyor.sPLC, conveyor.sEquipmentLine, conveyor.sElementName);
+            _chooseLeftClickMode = conveyor.sLeftClick;
+            _legendStyleName = "BG_DefaultSymbol";
+            _displayName = conveyor.sDisplayName;
+            _commands = _elementName + "_CM";
+            _controlObject = conveyor.sBehaviorName;
+            _powerBox = conveyor.sPowerBox;
+            _level3View = "Level3ViewConv_47";
+            _elementType = conveyor.sElementType;
+            _plcName = conveyor.sPLC;
+            _commandSignalName = _elementName + "_CM";
+            _commandMappingType = conveyor.sCommandMapping;
+            _typeDescription = conveyor.sTypeDescription;
+            _hasRightclickMenu = "True";
+
+            int signalCounts = 0;
+            foreach (string signalMapping in conveyor.sSignalMapping)
+            {
+                var bitCounts = baseParameter.SingleMappingTable.AsEnumerable().Count(p => p.Field<string>(baseParameter.SignalMappingColName.sType) == signalMapping);
+                if (bitCounts != 0)
+                    signalCounts = bitCounts / 32 + 1;
+            }
+            for (int i = 1; i <= signalCounts; i++)
+            {
+                ElementXamlSignal signalGroup = new ElementXamlSignal();
+                signalGroup._id = string.Format("Signal{0}", i);
+                signalGroup._usePostfix = "True";
+                signalGroup._postfix = string.Format("_SIGNAL_{0}",i);
+                signalGroup._usePrefix = "False";
+                signalGroup._prefix = "";
+                signalGroup._keepAliveType = "Constant";
+                signalGroup._keepAliveSignal = string.Format("{0}_{1}_KAL_MAIN_KAL_MAIN_ACTIVE", conveyor.sSystem, conveyor.sPLC);
+                _elementXamlSignal.Add(signalGroup);
+            }
+            ElementXamlBackground _elementXmalBackground = new ElementXamlBackground();
+            _elementXmalBackground._color = string.Format("{StaticResource BG_COLOR_EDGE_{0}}", conveyor.sEdgeColor);
+
+            ElementXamlBehavior _elementXmalBehavior = new ElementXamlBehavior();
+            _elementXmalBehavior._behaviorName = string.Format("{0}Behavior", conveyor.sBehaviorName);
+        }
+     
     }
 
     public class ElementXamlSignal
@@ -849,11 +989,11 @@ namespace BGFusionTools.Serialization
         public string _keepAliveSignal;
 
     }
-    public class ElementXmalBackground
+    public class ElementXamlBackground
     {
         public string _color;
     }
-    public class ElementXmalBehavior
+    public class ElementXamlBehavior
     {
         public string _behaviorName;
     }

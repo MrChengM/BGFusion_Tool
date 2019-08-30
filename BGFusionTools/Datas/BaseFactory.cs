@@ -137,7 +137,7 @@ namespace BGFusionTools.Datas
             else if (DataClassName == "TestData")
                 baTableConvert = new TestData(baseParameter);
             else if(DataClassName == "XamlData")
-                baTableConvert = new XamlData(baseParameter, ixmlType);
+                baTableConvert = new XamlData(baseParameter );
             else if (DataClassName == "TestList")
                 baTableConvert = new TestList(baseParameter);
             else if(DataClassName == "ElementSearchData")

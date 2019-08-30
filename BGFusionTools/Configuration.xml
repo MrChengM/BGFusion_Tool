@@ -9,7 +9,7 @@
         <Column  name="sEquipmentLine" value="Equipment Line" />
         <Column  name="sElementType" value="Equipment Elementtype" />
         <Column  name="sElementName" value="Equipment Element" />
-        <Column  name="sBehaviorName" value="MultiMapping BehaviorName"/>       
+        <!--Column  name="sBehaviorName" value="MultiMapping BehaviorName"/>-->       
         <Column  name="sSignalMapping1" value="Signal Mapping 1" enable="ture"/>
         <Column  name="sSignalMapping2" value="Signal Mapping 2" enable="false"/>
         <Column  name="sSignalMapping3" value="Signal Mapping 3" enable="false"/>
