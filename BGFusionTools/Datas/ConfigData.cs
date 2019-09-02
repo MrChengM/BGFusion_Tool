@@ -28,7 +28,7 @@ namespace BGFusionTools.Datas
             //this.bOPCInfo = boPCInfo;
             this.sListColName = slistColName;
         }
-        public override List<List<string>> CreateList(CreateDataRow<List<string>,ConveyorRow> dr)
+        public override List<List<string>> CreateList(CreateDataMath<List<string>,ConveyorRow> dr)
         {
             List<List<string>> lOutPut = new List<List<string>>();
             lOutPut.Add(sListColName);
@@ -42,28 +42,27 @@ namespace BGFusionTools.Datas
        public List<List<string>> CreateOPCInfoRows(ConveyorRow coneyorRow)
         {
             List<List<string>> opcInfoRows = new List<List<string>>();
-            List<string> lSignalName = new List<string>();
+            int signalCount = 0;
             foreach (string sSignalMapping in coneyorRow.sSignalMapping)
             {
                 if (sSignalMapping != "")
                 {
                     var SignalCounts = baseParameter.SingleMappingTable.AsEnumerable().Count(p =>
                     p.Field<string>(baseParameter.SignalMappingColName.sType) == sSignalMapping);
-                    List<string> lSignalName1 = sSignalName(SignalCounts, baseParameter.Stemp5, coneyorRow, lSignalName.Count() + 1);
-                    lSignalName.AddRange(lSignalName1);
+                    List<string> lSignalName = sSignalName(SignalCounts, baseParameter.Stemp5, coneyorRow, signalCount + 1);
+                    signalCount += lSignalName.Count;
+                    foreach (string ss in lSignalName)
+                    {
+                        List<string> opcInfoRow = new List<string>();
+                        opcInfoRow.Add(ss);
+                        opcInfoRow.Add("Subscribe");
+                        opcInfoRow.Add(string.Format("S7_{0}", coneyorRow.sPLC));
+                        opcInfoRow.Add("Main");
+                        opcInfoRow.Add("u32");
+                        opcInfoRows.Add(opcInfoRow);
+                    }
                 }
             }
-            foreach (string ss in lSignalName)
-            {
-                List<string> opcInfoRow = new List<string>();
-                opcInfoRow.Add(ss);
-                opcInfoRow.Add("Subscribe");
-                opcInfoRow.Add(string.Format("S7_{0}", coneyorRow.sPLC));
-                opcInfoRow.Add("Main");
-                opcInfoRow.Add("u32");
-                opcInfoRows.Add(opcInfoRow);
-            }
-
             if (coneyorRow.sCommandMapping != "")
             {
                 var CommandCounts = baseParameter.CommandMappingTable.AsEnumerable().Count(p =>
