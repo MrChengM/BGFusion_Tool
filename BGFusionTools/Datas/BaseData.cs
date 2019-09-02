@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Windows;
-using BGFusionTools.Helper;
 
 namespace BGFusionTools.Datas
 {
@@ -46,7 +45,7 @@ namespace BGFusionTools.Datas
         public string Stemp6 { get { return stemp6; } set { stemp6 = value; } }
         public string Stemp7 { get { return stemp7; } set { stemp7 = value; } }
     }
-    public delegate List<T1> CreateDataMath<T1, T2>(T2 ConveyordataRow);
+    public delegate List<T1> CreateDataRow<T1, T2>(T2 ConveyordataRow);
     
     //public delegate List<string> CreateDataRows(List<ConveyorRow> ConveyordataRow);
     public abstract class BaseData
@@ -54,7 +53,7 @@ namespace BGFusionTools.Datas
         internal BaseParameter baseParameter = new BaseParameter();
         //public abstract string ToString();
         //public abstract int ToInt();
-        public virtual List<List<string>> CreateList(CreateDataMath<List<string>,ConveyorRow> dataMath) 
+        public virtual List<List<string>> CreateList(CreateDataRow<List<string>,ConveyorRow> dataMath) 
         {
             List <List<string>>  lOutPut= new List<List<string>>();
             foreach (DataRow selectConRow in baseParameter.TaglistTable.Rows)
@@ -64,7 +63,7 @@ namespace BGFusionTools.Datas
             }
             return lOutPut;
         }
-        public virtual List<List<string>> CreateList(CreateDataMath<string, List<ConveyorRow>>  dataMath)
+        public virtual List<List<string>> CreateList(CreateDataRow<string, List<ConveyorRow>>  dataMath)
         {
             List<List<string>> lOutPut = new List<List<string>>();
             List<ConveyorRow> conveyors = new List<ConveyorRow>();
@@ -76,7 +75,7 @@ namespace BGFusionTools.Datas
             lOutPut.Add(dataMath(conveyors));
             return lOutPut;
         }
-        public virtual List<List<T1>> CreateList<T1>(CreateDataMath<T1, List<ConveyorRow>> dataMath)
+        public virtual List<List<T1>> CreateList<T1>(CreateDataRow<T1, List<ConveyorRow>> dataMath)
         {
 
             List<List<T1>> lOutPut = new List<List<T1>>();
@@ -89,7 +88,7 @@ namespace BGFusionTools.Datas
             lOutPut.Add(dataMath(conveyors));
             return lOutPut;
         }
-        public virtual List<T1> CreateList<T1>(CreateDataMath<T1, ConveyorRow> dataMath)
+        public virtual List<T1> CreateList<T1>(CreateDataRow<T1, ConveyorRow> dataMath)
         {
             
             List<T1> lOutPut = new List<T1>();
@@ -127,7 +126,7 @@ namespace BGFusionTools.Datas
                 iCounts = (int)Math.Ceiling((float)iBitCounts / 32);
                 for (int i = 0; i < iCounts; i++)
                 {
-                    ssignalName.Add(string.Format(sTemp, conveyorRow.sSystem, conveyorRow.sPLC, conveyorRow.sEquipmentLine, conveyorRow.sElementName, iSignalNumber + i));
+                    ssignalName.Add(string.Format(sTemp, conveyorRow.sSystem, conveyorRow.sPLC, conveyorRow.sEquipmentLine, conveyorRow.sElementName, iSignalNumber + 1));
                 }
             }
             return ssignalName;
@@ -195,7 +194,7 @@ namespace BGFusionTools.Datas
                 }
                 sSelectColVal = baseParameter.ViewName;
                 var ConveyorRows = from p in baseParameter.TaglistTable.AsEnumerable()
-                                   where (p.Field<string>(sSelectConveyorColName) == sSelectColVal)
+                                   where p.Field<string>(sSelectConveyorColName) == sSelectColVal
                                    select p;
 
                 return ConveyorRows;
@@ -297,7 +296,7 @@ namespace BGFusionTools.Datas
                     if (signalAddress!="")
                     {
                         string address = dataRow[signalAddress].ToString();
-                        sSignalAddress.Add(address);
+                        sSignalMapping.Add(address);
                     }
                 }
                 if (columns.sCommandMapping=="")

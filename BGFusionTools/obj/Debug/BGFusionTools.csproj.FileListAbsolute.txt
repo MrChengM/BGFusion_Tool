@@ -44,5 +44,3 @@ D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\MainWindow.g.cs
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\App.g.cs
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.cache
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.lref
-D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\Views\SortView.g.cs
-D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\Views\SortView.baml

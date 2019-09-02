@@ -16,7 +16,7 @@ namespace BGFusionTools.Datas
             this.baseParameter = ConverParameter;
 
         }
-        public override List<List<string>> CreateList(CreateDataMath<string, List<ConveyorRow>> dataMath)
+        public override List<List<string>> CreateList(CreateDataRow<string, List<ConveyorRow>> dataMath)
         {
             List<List<string>> sOutPutSingleData = new List<List<string>>();
 
@@ -25,7 +25,7 @@ namespace BGFusionTools.Datas
             var PlcGroups = from p in MainRows
                             group p by 
                             new { system = p.Field<string>(baseParameter.TaglistColName.sSystem),
-                                plc = p.Field<string>(baseParameter.TaglistColName.sPLC) }
+                                plc = p.Field<string>(baseParameter.TaglistColName.sSystem) }
                             into pp
                             select pp;
             foreach(var plcGroup in PlcGroups)
@@ -39,9 +39,8 @@ namespace BGFusionTools.Datas
                 foreach (DataRow selectRow in plcGroup)
                     conveyorRows.Add(new ConveyorRow(baseParameter.TaglistColName, selectRow));
                 SignalGroup.AddRange(dataMath(conveyorRows));
-                sOutPutSingleData.Add(SignalGroup);
             }
-            return sOutPutSingleData;
+            return base.CreateList(dataMath);
         }
         public List<string> CreateL1Signal(List<ConveyorRow> conveyorRows)
         {

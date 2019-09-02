@@ -37,7 +37,7 @@ namespace BGFusionTools.Datas
         }
 
         //生成DataTable数据
-        public override List<List<string>> CreateList(CreateDataMath<List<string>,ConveyorRow> dataMath)
+        public override List<List<string>> CreateList(CreateDataRow<List<string>,ConveyorRow> dataMath)
         {
             List<List<string>> lOutPut = new List<List<string>>();
             List<string> opcColunms = new List<string>();
@@ -154,9 +154,10 @@ namespace BGFusionTools.Datas
             string sTagName;
             int iCounts;
             string sDaType = default(string);
+            List<string> opcDataRow = new List<string>();
             if (iBits <= 32)
             {
-                List<string> opcDataRow = new List<string>();
+
                 sTagName = string.Format(sTemp, conveyor.sSystem, conveyor.sPLC, conveyor.sEquipmentLine, conveyor.sElementName, index);
                 iCounts = (int)Math.Ceiling((float)iBits / 8);
                 switch (iCounts)
@@ -189,7 +190,6 @@ namespace BGFusionTools.Datas
                 iCounts = (int)Math.Ceiling((float)iBits / 32);
                 for (int i = 0; i < iCounts; i++)
                 {
-                    List<string> opcDataRow = new List<string>();
                     sTagName = string.Format(sTemp, conveyor.sSystem, conveyor.sPLC, conveyor.sEquipmentLine, conveyor.sElementName, i + index);
                     sDaType = OPCDataType.sDWord;
                     opcRow.sTagName = sTagName;
@@ -279,7 +279,7 @@ namespace BGFusionTools.Datas
             public string sAddress = "";
             public string sDataType = "";
             public string sRespectDataType = "1";
-            public string sClientAccess = "R/W";
+            public string sClientAccess = "RO";
             public string sScanRate = "100";
             public string sScaling = "";
             public string sRawLow = "";

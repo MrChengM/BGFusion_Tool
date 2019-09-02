@@ -20,7 +20,7 @@ namespace BGFusionTools.Datas
         {
             base.baseParameter = ConvParameter;
         }
-        public override List<T1> CreateList<T1>(CreateDataMath<T1, ConveyorRow> dataMath)
+        public override List<T1> CreateList<T1>(CreateDataRow<T1, ConveyorRow> dataMath)
         {
             return base.CreateList<T1>(dataMath);
         }

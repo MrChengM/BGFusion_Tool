@@ -106,16 +106,12 @@
     <Compile Include="Functions\ExcelFunction.cs" />
     <Compile Include="Functions\DataConvert.cs" />
     <Compile Include="Functions\NpoiExcelFunction.cs" />
-    <Compile Include="Helper\Columns.cs" />
     <Compile Include="Helper\IOperation.cs" />
     <Compile Include="Serialiaztion\XmlSerialiaztion.cs" />
     <Compile Include="Datas\XmlElementCode.cs" />
     <Compile Include="Serialiaztion\XmlExcelSerialiaztion.cs" />
     <Compile Include="Functions\XmlFuction.cs" />
     <Compile Include="Datas\XmlTestBlockCode.cs" />
-    <Compile Include="Views\SortView.xaml.cs">
-      <DependentUpon>SortView.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -132,10 +128,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\SortView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -218,7 +210,9 @@
   <ItemGroup>
     <Resource Include="favicon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Configuration.xml" />
   </ItemGroup>
