@@ -451,6 +451,8 @@ namespace BGFusionTools
             string sFileStyle = "SIG File(.signaltester) | *.signaltester";
             string UIKey = "TestdataOutPutFilePathteBox";
             string UIKey1 = "OutPutDatasteBox";
+            string UIKey3= "L1raButton";
+            string UIKey4 = "L2raButton";
             string sFilePath = UIdictionary[UIKey].MyString;
             try
             {
@@ -460,9 +462,20 @@ namespace BGFusionTools
                 {
                     BaseFactory factory = new BaseFactory();
                     factory.BaseParameter = CreateConvertParameter();
-                    BaseData TestData = factory.CreatDataClass("TestData");
+                    TestData TestData = (TestData)factory.CreatDataClass("TestData");
+                    List<List<string>> TestDataList =new List<List<string>>();
+                    if (UIdictionary[UIKey3].Mybool == true)
+                    {
+                        CreateDataMath<string, List<ConveyorRow>> dataMath = TestData.CreateL1Signal;
+                        TestDataList = TestData.CreateList(dataMath);
+                    }
+                    if (UIdictionary[UIKey4].Mybool == true)
+                    {
+                        CreateDataMath<string, List<ConveyorRow>> dataMath = TestData.CreateL2Signal;
+                        TestDataList = TestData.CreateList(dataMath);
+                    }
                     UIdictionary[UIKey].MyString = sFilePath;
-                    UIdictionary[UIKey1].MyString = TestData.ToString();
+                    UIdictionary[UIKey1].MyString = DataConvert.ToString(TestDataList);
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
             }
@@ -548,7 +561,7 @@ namespace BGFusionTools
 
         private void Level1DataOutputbutton_Click(object sender, RoutedEventArgs e)
         {
-            string sFileStyle = "Text documents (.txt)|*.txt";
+            string sFileStyle = "Text documents (.vsignal)|*.vsignal";
             string UIKey = "Level1DataOutPutFilePathteBox";
             string UIKey1 = "OutPutDatasteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
@@ -561,9 +574,11 @@ namespace BGFusionTools
                     BaseFactory factory = new BaseFactory();
                     factory.BaseParameter = CreateConvertParameter();
                     factory.TempTable = Level1DataExcelData;
-                    BaseData Level1Data = factory.CreatDataClass("Level1Data");
+                    Level1Data level1Data = (Level1Data) factory.CreatDataClass("Level1Data");
+                    CreateDataMath<string, List<ConveyorRow>> dataMath = level1Data.CreateLineSignal;
+                    var level1DataList = level1Data.CreateList(dataMath);
                     UIdictionary[UIKey].MyString = sFilePath;
-                    UIdictionary[UIKey1].MyString = Level1Data.ToString();
+                    UIdictionary[UIKey1].MyString = DataConvert.ToString(level1DataList);
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
             }
@@ -598,7 +613,7 @@ namespace BGFusionTools
                     factory.bCommand = (bool)UIdictionary[UIKey3].Mybool;
                     factory.bHours = (bool)UIdictionary[UIKey4].Mybool;
                     OPCData opcData =(OPCData) factory.CreatDataClass("OPCData");
-                    CreateDataRow<List<string>, ConveyorRow> createOPCMath = opcData.CreateOPCRows;
+                    CreateDataMath<List<string>, ConveyorRow> createOPCMath = opcData.CreateOPCRows;
                     var opcdataList= opcData.CreateList(createOPCMath);
                     UIdictionary[UIKey].MyString = sFilePath;
                     //ExcelFunction.ExcelWrite(sFilePath, dt);
@@ -632,7 +647,7 @@ namespace BGFusionTools
                     factory.BaseParameter = CreateConvertParameter();
                     factory.bOPCIfo = (bool)UIdictionary[UIKey2].Mybool;
                     factory.bConvAlarm = (bool)UIdictionary[UIKey3].Mybool;
-                    CreateDataRow<List<string>, ConveyorRow> createMath;
+                    CreateDataMath<List<string>, ConveyorRow> createMath;
                     ConfigData dConfigData ;
                     List<List<string>> lls = new List<List<string>>();
                     //ConfigData dConfigData = (ConfigData)factory.CreatDataClass("ConfigData");
@@ -833,7 +848,7 @@ namespace BGFusionTools
                 {
                     BaseFactory factory = new BaseFactory(CreateConvertParameter());
                     ElementSearchData elmentSearchData = (ElementSearchData)factory.CreatDataClass("ElementSearchData");
-                    CreateDataRow<ElementSeacrhStruct, ConveyorRow> elmentSearchMath = elmentSearchData.CreateElements;
+                    CreateDataMath<ElementSeacrhStruct, ConveyorRow> elmentSearchMath = elmentSearchData.CreateElements;
                     List<ElementSeacrhStruct> lelmentSearchData = elmentSearchData.CreateList(elmentSearchMath);
                     ElementSearchXml elementSearchXml = new ElementSearchXml();
                     elementSearchXml.Elements = lelmentSearchData;
@@ -849,392 +864,5 @@ namespace BGFusionTools
             GC.Collect();
         }
     }
-    /// <summary>
-    /// 输送机taglist表列名获取
-    /// </summary>
-    public class TaglistColumns
-    {
-        public string sTagName="";
-        public string sSystem="";
-        public string sPLC="";
-        public string sPowerBox="";
-        public string sEquipmentLine="";
-        public string sElementType="";
-        public string sTypeDescription="";
-        public string sElementName="";
-        public string sBehaviorName="";
-        public string sStyleIdentifier="";
-        public List<string> sSignalMapping =new List<string>();
-        public List<string> sSignalAddress=new List<string>();
-        public string sCommandMapping="";
-        public string sCommandAddress="";
-        public string sRunningHours="";
-        public string sCopyRunningHours="";
-        public string sDisplayName="";
-        public string sEdgeColor="";
-        public string sAlarmTree="";
-        public string sLevel1View="";
-        public string sLevel2View="";
-        public string sDrawOnViews="";
-        public string sLeftClick="";
-        public string sRightClick="";
-        public string sLevel1AsLevel2="";
-        public string sExtendedPropertyAsCamera="";
-        private TaglistColumns()
-        {
-            const string filePath = "../../Configuration.xml";
-            Stream sFileSteam = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
-            XmlReader xmlReader = XmlReader.Create(sFileSteam);
-            while (xmlReader.Read())
-            {
-                xmlReader.MoveToContent();
-                if (xmlReader.IsStartElement("DataSet") && xmlReader["name"] == "sTagName")
-                {
-                    sTagName = xmlReader["value"];
-                    xmlReader.Read();
-                    //遍历configuration文件，加载配置
-                    while (xmlReader.IsStartElement("Column"))
-                    {
-                        switch (xmlReader["name"])
-                        {
-                            case "sTagName":
-                                sTagName = xmlReader["value"];
-                                break;
-                            case "sSystem":
-                                sSystem = xmlReader["value"];
-                                break;
-                            case "sPLC":
-                                sPLC = xmlReader["value"];
-                                break;
-                            case "sPowerBox":
-                                sPowerBox = xmlReader["value"];
-                                break;
-                            case "sEquipmentLine":
-                                sEquipmentLine = xmlReader["value"];
-                                break;
-                            case "sElementType":
-                                sElementType = xmlReader["value"];
-                                break;
-                            case "sTypeDescription":
-                                sTypeDescription = xmlReader["value"];
-                                break;
-                            case "sElementName":
-                                sElementName = xmlReader["value"];
-                                break;
-                            case "sBehaviorName":
-                                sBehaviorName = xmlReader["value"];
-                                break;
-                            case "sStyleIdentifier":
-                                sStyleIdentifier = xmlReader["value"];
-                                break;
-                            case "sSignalMapping1":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping2":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping3":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping4":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping5":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping6":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping7":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping8":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping9":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping10":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalMapping11":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalMapping.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress1":
-                                if (xmlReader["enable"] != "false")
-                                        sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress2":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress3":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress4":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress5":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress6":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress7":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress8":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress9":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress10":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sSignalAddress11":
-                                if (xmlReader["enable"] != "false")
-                                    sSignalAddress.Add(xmlReader["value"]);
-                                break;
-                            case "sCommandMapping":
-                                sCommandMapping =xmlReader["value"];
-                                break;
-                            case "sCommandAddress":
-                                sCommandAddress= xmlReader["value"];
-                                break;
-                            case "sRunningHours":
-                                sRunningHours = xmlReader["value"];
-                                break;
-                            case "sCopyRunningHours":
-                                sCopyRunningHours = xmlReader["value"];
-                                break;
-                            case "sDisplayName":
-                                sDisplayName = xmlReader["value"];
-                                break;
-                            case "sEdgeColor":
-                                sEdgeColor = xmlReader["value"];
-                                break;
-                            case "sAlarmTree":
-                                sAlarmTree = xmlReader["value"];
-                                break;
-                            case "sLevel1View":
-                                sLevel1View = xmlReader["value"];
-                                break;
-                            case "sLevel2View":
-                                sLevel2View = xmlReader["value"];
-                                break;
-                            case "sDrawOnViews":
-                                sDrawOnViews = xmlReader["value"];
-                                break;
-                            case "sLeftClick":
-                                sLeftClick = xmlReader["value"];
-                                break;
-                            case "sRightClick":
-                                sRightClick = xmlReader["value"];
-                                break;
-                            case "sLevel1AsLevel2":
-                                sLevel1AsLevel2 = xmlReader["value"];
-                                break;
-                            case "sExtendedPropertyAsCamera":
-                                sExtendedPropertyAsCamera = xmlReader["value"];
-                                break;
-                        }
-                        xmlReader.Read();
-                    }
-                }
-            }
-            xmlReader.Dispose();
-            sFileSteam.Dispose();
-        }
-
-        private static TaglistColumns instance = new TaglistColumns();
-        public static TaglistColumns getInstance()
-        {
-            return instance;
-        }
-
-    }
-    /// <summary>
-    /// SignalMapping表列名获取
-    /// </summary>
-    public  class SignalMappingColumns
-    {
-        public string sSignalMapping="";
-        public string sType="";
-        public string sWord="";
-        public string sBit="";
-        public string sAnalogValue="";
-        public string sAlarmStatusNumber="";
-        public string sPartName="";
-        public string sShowOnSCADA="";
-        public string sStateRef="";
-        public string sFunctionalText="";
-        public string sStateText="";
-        public string sStatespriority="";
-        public string sStateColor="";
-        public string sStateSpecialFunction="";
-        public string sAlarmStatusPriority="";
-        public string sPriorityFormula="";
-        private SignalMappingColumns()
-        {
-            const string filePath = "../../Configuration.xml";
-            Stream sFileSteam = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
-            XmlReader xmlReader = XmlReader.Create(sFileSteam);
-            while (xmlReader.Read())
-            {
-                xmlReader.MoveToContent();
-                if (xmlReader.IsStartElement("DataSet") && xmlReader["name"] == "sSignalMapping")
-                {
-                    sSignalMapping = xmlReader["value"];
-                    xmlReader.Read();
-                    while (xmlReader.IsStartElement("Column"))
-                    {
-                        switch (xmlReader["name"])
-                        {
-                            case "sType":
-                                sType = xmlReader["value"];
-                                break;
-                            case "sWord":
-                                sWord = xmlReader["value"];
-                                break;
-                            case "sBit":
-                                sBit = xmlReader["value"];
-                                break;
-                            case "sAnalogValue":
-                                sAnalogValue = xmlReader["value"];
-                                break;
-                            case "sAlarmStatusNumber":
-                                sAlarmStatusNumber = xmlReader["value"];
-                                break;
-                            case "sPartName":
-                                sPartName = xmlReader["value"];
-                                break;
-                            case "sShowOnSCADA":
-                                sShowOnSCADA = xmlReader["value"];
-                                break;
-                            case "sStateRef":
-                                sStateRef = xmlReader["value"];
-                                break;
-                            case "sFunctionalText":
-                                sFunctionalText = xmlReader["value"];
-                                break;
-                            case "sStateText":
-                                sStateText = xmlReader["value"];
-                                break;
-                            case "sStatespriority":
-                                sStatespriority = xmlReader["value"];
-                                break;
-                            case "sStateColor":
-                                sStateColor = xmlReader["value"];
-                                break;
-                            case "sStateSpecialFunction":
-                                sStateSpecialFunction = xmlReader["value"];
-                                break;
-                            case "sAlarmStatusPriority":
-                                sAlarmStatusPriority = xmlReader["value"];
-                                break;
-                            case "sPriorityFormula":
-                                sPriorityFormula = xmlReader["value"];
-                                break;
-                        }
-                        xmlReader.Read();
-                    }
-                }
-            }
-            xmlReader.Dispose();
-            sFileSteam.Dispose();
-        }
-        private static SignalMappingColumns instance = new SignalMappingColumns();
-        public static SignalMappingColumns getInstance()
-        {
-            return instance;
-        }
-    }
-    /// <summary>
-    /// CommandMapping列表名获取
-    /// </summary>
-    public class CommandMappingColumns
-    {
-        public string sCommandMapping="";
-        public string sType="";
-        public string sElementLink="";
-        public string sBit="";
-        public string sAnalogValue="";
-        public string sCommandNumber="";
-        public string sPartName="";
-        public string sCommandPriority="";
-        public string sCommandText="";
-        private CommandMappingColumns()
-        {
-            const string filePath = "../../Configuration.xml";
-            Stream sFileSteam = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
-            XmlReader xmlReader = XmlReader.Create(sFileSteam);
-            while (xmlReader.Read())
-            {
-                xmlReader.MoveToContent();
-                if (xmlReader.IsStartElement("DataSet") && xmlReader["name"] == "sCommandMapping")
-                {
-                    sCommandMapping = xmlReader["value"];
-                    xmlReader.Read();
-                    while (xmlReader.IsStartElement("Column"))
-                    {
-                        switch (xmlReader["name"])
-                        {
-                            case "sType":
-                                sType = xmlReader["name"];
-                                break;
-                            case "sElementLink":
-                                sElementLink = xmlReader["name"];
-                                break;
-                            case "sBit":
-                                sBit = xmlReader["name"];
-                                break;
-                            case "sAnalogValue":
-                                sAnalogValue = xmlReader["name"];
-                                break;
-                            case "sCommandNumber":
-                                sCommandNumber = xmlReader["name"];
-                                break;
-                            case "sPartName":
-                                sPartName = xmlReader["name"];
-                                break;
-                            case "sCommandPriority":
-                                sCommandPriority = xmlReader["name"];
-                                break;
-                            case "sCommandText":
-                                sCommandText = xmlReader["name"];
-                                break;
-                        }
-                        xmlReader.Read();
-                    }
-                }
-            }
-            xmlReader.Dispose();
-            sFileSteam.Dispose();
-        }
-        private static CommandMappingColumns instance = new CommandMappingColumns();
-        public static CommandMappingColumns getInstance()
-        {
-            return instance;
-        }
-    }
+   
 }

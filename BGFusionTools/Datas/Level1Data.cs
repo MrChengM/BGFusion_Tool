@@ -17,7 +17,7 @@ namespace BGFusionTools.Datas
             baseParameter = ConverParameter;
             this.TemplatTable = templateTable;
         }
-        public override List<List<string>> CreateList(CreateDataRow<string,List<ConveyorRow>> dataMath)
+        public override List<List<string>> CreateList(CreateDataMath<string,List<ConveyorRow>> dataMath)
         {
             EnumerableRowCollection<DataRow> MainRows = LinqToTable();
             List<List<string>> lOutPut = new List<List<string>>();
