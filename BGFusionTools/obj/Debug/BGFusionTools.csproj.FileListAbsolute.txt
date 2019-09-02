@@ -28,7 +28,6 @@ D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.exe
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.pdb
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\MainWindow.g.cs
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\MainWindow.baml
-<<<<<<< HEAD
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\ICSharpCode.SharpZipLib.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OOXML.dll
@@ -45,5 +44,29 @@ D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\MainWindow.g.cs
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\App.g.cs
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.cache
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.lref
-=======
->>>>>>> parent of 24775a4... V2.03
+D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\Views\SortView.g.cs
+D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\Views\SortView.baml
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\bin\Debug\BGFusionTools.exe.config
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\Interop.Office.dll
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csproj.ResolveComReference.cache
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.exe
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.pdb
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\bin\Debug\BGFusionTools.exe
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\bin\Debug\BGFusionTools.pdb
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\bin\Debug\NPOI.dll
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OOXML.dll
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXml4Net.dll
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXmlFormats.dll
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\bin\Debug\ICSharpCode.SharpZipLib.xml
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csprojResolveAssemblyReference.cache
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\MainWindow.g.cs
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\Views\SortView.g.cs
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\App.g.cs
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.cache
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.lref
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\MainWindow.baml
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\Views\SortView.baml
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.g.resources
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.Properties.Resources.resources
+C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csproj.GenerateResource.Cache
