@@ -28,6 +28,7 @@ D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.exe
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.pdb
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\MainWindow.g.cs
 D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\MainWindow.baml
+<<<<<<< HEAD
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\ICSharpCode.SharpZipLib.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OOXML.dll
@@ -44,3 +45,5 @@ D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\MainWindow.g.cs
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\App.g.cs
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.cache
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools_MarkupCompile.lref
+=======
+>>>>>>> parent of 24775a4... V2.03

@@ -197,11 +197,9 @@ namespace BGFusionTools
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             MergeOutputFilePathBox.DataContext = UIdictionary[UIKey];
             UIKey = "WorkraButton";
-            bBool = true;
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             WorkraButton.DataContext = UIdictionary[UIKey];
             UIKey = "ElementSearchraButton";
-            bBool = false;
             UIdictionary.Add(UIKey, new DataString(sString, bBool));
             ElementSearchraButton.DataContext = UIdictionary[UIKey];
 
@@ -265,6 +263,7 @@ namespace BGFusionTools
 
             }
         }
+
         /// <summary>
         /// DataTable提取例表名及数据二维数组
         /// </summary>
@@ -382,8 +381,8 @@ namespace BGFusionTools
             ConveyorExcelData = dDataLoad(ref sFilePath);
             UIdictionary[UIKey].MyString = sFilePath;
             //if (ConveyorExcelData != null)  SelectConRows = LinqToTable(); 
-            GC.Collect();
-        }
+      
+         }
         /// <summary>
         /// BaseList表格输入（PVG_CrisBeltBase_V016_9）
         /// </summary>
@@ -395,7 +394,6 @@ namespace BGFusionTools
             string sFilePath = UIdictionary[UIKey].MyString;
             BaseListExceLData = dDataLoad(ref sFilePath);
             UIdictionary[UIKey].MyString = sFilePath;
-            GC.Collect();
         }
         /// <summary>
         /// WPF XML数据输出
@@ -483,7 +481,6 @@ namespace BGFusionTools
             string sFileStyle = "Excel(.xlsx) | *.xlsx|Excel(.xls) | *.xls";
             string UIKey = "TestListOutPutFilePathteBox";
             string UIKey1 = "OutPutDatasteBox";
-            string UIKey2 = "TestListTemplateteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
             UIdictionary[UIKey1].MyString = "";
             try
@@ -498,8 +495,7 @@ namespace BGFusionTools
 
                     BaseData ListData = factory.CreatDataClass("TestList");
                     UIdictionary[UIKey].MyString = sFilePath;
-                    /*string sOutPutLiData = null;
-                    
+                    string sOutPutLiData = null;
                     Dictionary<string, string> telistDictionary = ListData.ToDictionary();
                     foreach ( KeyValuePair<string,string> listdata in telistDictionary)
                     {
@@ -513,10 +509,14 @@ namespace BGFusionTools
                         }
                     }
                     UIdictionary[UIKey1].MyString= sOutPutLiData;
+<<<<<<< HEAD
                     ExcelFunction.ExcelWrite(UIdictionary[UIKey2].MyString, sFilePath, telistDictionary);*/
                     //ListData.OutData();
                     NpoiExcelFunction.ExcelWrite(sFilePath, (ListData as TestList).ListData);
                     UIdictionary[UIKey1].MyString = "Output Test List successful!";
+=======
+                    ExcelFunction.ExcelWrite(UIdictionary[UIKey1].MyString, sFilePath, telistDictionary);
+>>>>>>> parent of 24775a4... V2.03
                 }
             }
             catch (Exception ex)
@@ -535,7 +535,7 @@ namespace BGFusionTools
         {
             string UIKey = "TestListTemplateteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
-            Inputfile(ref sFilePath, "Excel Worksheets | *.xls;*.xlsx");
+            TemlateExcelData = dDataLoad(ref sFilePath);
             UIdictionary[UIKey].MyString = sFilePath;
         }
 
@@ -742,7 +742,11 @@ namespace BGFusionTools
             string UIKey3 = "ElementSearchraButton";
             string sFilePath = UIdictionary[UIKey].MyString;
             bool? btypeWorkbook = UIdictionary[UIKey2].Mybool;
+<<<<<<< HEAD
             bool? btypeElementSearch = UIdictionary[UIKey3].Mybool;
+=======
+            bool? btypeElementSearch =UIdictionary[UIKey1].Mybool;
+>>>>>>> parent of 24775a4... V2.03
             bool bOpenEnable = Outputfile(ref sFilePath, sFileStyle);
             UIdictionary[UIKey1].MyString = "";
             try
@@ -754,11 +758,41 @@ namespace BGFusionTools
                     UIdictionary[UIKey].MyString = sFilePath;
                     if (btypeWorkbook == true)
                     {
+<<<<<<< HEAD
                         XmlSerialiaztion.XmlSerial(sFilePath, Merge<Workbook>(sPaths));
                     }
                     else if (btypeElementSearch == true)
                     {
                         XmlSerialiaztion.XmlSerial(sFilePath, Merge<ElementSearchXml>(sPaths));
+=======
+                        int i = 0;
+                        var files = new Workbook();
+                        foreach (string s in sPaths)
+                        {
+                            var flie = XmlSerialiaztion.XmlDeserial<Workbook>(s);
+                            if (i == 0)
+                                files = flie;
+                            else
+                                files += flie;
+                            i++;
+                        }
+                        XmlSerialiaztion.XmlSerial(sFilePath, files);
+                    }
+                    else if (btypeElementSearch == true)
+                    {
+                        int i = 0;
+                        var files = new ElementSearchData();
+                        foreach (string s in sPaths)
+                        {
+                            var flie = XmlSerialiaztion.XmlDeserial<ElementSearchData>(s);
+                            if (i == 0)
+                                files = flie;
+                            else
+                                files += flie;
+                            i++;
+                        }
+                        XmlSerialiaztion.XmlSerial(sFilePath, files);
+>>>>>>> parent of 24775a4... V2.03
                     }
                 }
             }
@@ -767,6 +801,7 @@ namespace BGFusionTools
                 MessageBox.Show("Merge files Error: " + ex.Message);
             }
         }
+<<<<<<< HEAD
         private T Merge<T>(string[] spaths) where T : IOperation<T>, new()
         {
             int i = 0;
@@ -779,6 +814,8 @@ namespace BGFusionTools
             }
             return files;
         }
+=======
+>>>>>>> parent of 24775a4... V2.03
         private void SorteIOOutputFilePathbutton_Click(object sender, RoutedEventArgs e)
         {
             string sFileStyle = "Excel(.csv) | *.csv";
