@@ -34,7 +34,6 @@ D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OOXML.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXml4Net.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\NPOI.OpenXmlFormats.dll
 D:\C#Projects\BGFusionTools\BGFusionTools\bin\Debug\ICSharpCode.SharpZipLib.xml
-D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csprojResolveAssemblyReference.cache
 D:\GitHub\BGFusion_Tool\BGFusionTools\bin\Debug\BGFusionTools.exe.config
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools.csproj.ResolveComReference.cache
 D:\GitHub\BGFusion_Tool\BGFusionTools\obj\Debug\BGFusionTools.exe
@@ -70,3 +69,4 @@ C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\Views\SortView.bam
 C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.g.resources
 C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.Properties.Resources.resources
 C:\Users\705475\Desktop\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csproj.GenerateResource.Cache
+D:\C#Projects\BGFusionTools\BGFusionTools\obj\Debug\BGFusionTools.csprojResolveAssemblyReference.cache

@@ -100,9 +100,6 @@ namespace BGFusionTools.Datas
             }
             return lOutPut;
         }
-
-
-
         /// <summary>
         ///  根据Mapping判断需要的数据地址条数，生成对应的sSignalName数目集合.
         /// </summary>

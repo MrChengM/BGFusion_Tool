@@ -44,7 +44,7 @@ namespace BGFusionTools.Functions
                     else
                     {
                         //outputstring = outputstring + "\r"+ lString;
-                        str = str + "," + ss;
+                        str = str + " ," + ss;
 
                     }
                 }
@@ -54,6 +54,33 @@ namespace BGFusionTools.Functions
                     outputstring = outputstring + "\r\n"+ str;
             }
   
+            return outputstring;
+        }
+        public static string ToString1(List<List<string>> lStrings)
+        {
+            string outputstring = null;
+            foreach (List<string> ls in lStrings)
+            {
+                string str = null;
+                foreach (string ss in ls)
+                {
+                    if (str == null)
+                    {
+                        str = ss;
+                    }
+                    else
+                    {
+                        //outputstring = outputstring + "\r"+ lString;
+                        str = str + " \r\n" + ss;
+
+                    }
+                }
+                if (outputstring == null)
+                    outputstring = str;
+                else
+                    outputstring = outputstring + "\r\n" + str;
+            }
+
             return outputstring;
         }
         public static string ToString(DataTable dt)
@@ -99,6 +126,25 @@ namespace BGFusionTools.Functions
                     outputstring += "\n";
                     outputstring += sDr;
                 }
+            }
+            return outputstring;
+        }
+        public static string ToString(ElementXaml elementXamls)
+        {
+            string outputstring = null;
+            foreach (BgElementCommonXaml element in elementXamls.BgElementCommons)
+            {
+                if (outputstring == null)
+                    outputstring += element.ToString();
+                else
+                    outputstring += "\n" + element.ToString();
+            }
+            foreach(BgTextBlock element in elementXamls.BgTextBlocks)
+            {
+                if (outputstring == null)
+                    outputstring += element.ToString();
+                else
+                    outputstring += "\n" + element.ToString();
             }
             return outputstring;
         }

@@ -108,11 +108,13 @@
     <Compile Include="Functions\NpoiExcelFunction.cs" />
     <Compile Include="Helper\Columns.cs" />
     <Compile Include="Helper\IOperation.cs" />
-    <Compile Include="Serialiaztion\XmlSerialiaztion.cs" />
-    <Compile Include="Datas\XmlElementCode.cs" />
-    <Compile Include="Serialiaztion\XmlExcelSerialiaztion.cs" />
+    <Compile Include="Serialization\XamlElement.cs" />
+    <Compile Include="Serialization\XmlElementSearch.cs" />
+    <Compile Include="Serialization\XmlMonitor.cs" />
+    <Compile Include="Serialization\XmlSerialiaztion.cs" />
+    <Compile Include="Serialization\XmlExcelSerialiaztion.cs" />
     <Compile Include="Functions\XmlFuction.cs" />
-    <Compile Include="Datas\XmlTestBlockCode.cs" />
+    <Compile Include="Serialization\XmlWorkbook.cs" />
     <Compile Include="Views\SortView.xaml.cs">
       <DependentUpon>SortView.xaml</DependentUpon>
     </Compile>

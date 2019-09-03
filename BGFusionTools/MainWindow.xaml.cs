@@ -398,46 +398,66 @@ namespace BGFusionTools
             GC.Collect();
         }
         /// <summary>
-        /// WPF XML数据输出
+        /// WPF XAML数据输出
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void XMLOutputbutton_Click(object sender, RoutedEventArgs e)
         {
-            string sFileStyle = "Text documents (.txt)|*.txt";
-
+            string sFileStyle = "WPF (.Xaml)|*.Xaml";
             string UIKey = "XMLOutPutFilePathteBox";
             string UIKey1 = "OutPutDatasteBox";
+            string UIKey2 = "L1raButton";
+            string UIKey3 = "L2raButton";
             string UIKey4 = "TeBlackraButton";
             string UIKey5 = "ElementradioButton";
+            string UIKey6 = "ViewNameteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
             UIdictionary[UIKey1].MyString = "";
-            try
-            {
+            //try
+            //{
                 bool bOpenEnable = Outputfile(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
 
                     BaseFactory factory = new BaseFactory();
                     factory.BaseParameter = CreateConvertParameter();
-                    if (UIdictionary[UIKey4].Mybool == true)
+                    XamlData Data =(XamlData) factory.CreatDataClass("XamlData");
+                    CreateDataMath<BgElementCommonXaml, ConveyorRow> bgXmalMath;
+                    CreateDataMath<BgTextBlock, ConveyorRow> blockTextMath;
+
+                    List<BgElementCommonXaml> bgXamlGroup = new List<BgElementCommonXaml>();
+                    List<BgTextBlock> textBlockGroup = new List<BgTextBlock>();
+
+                    if (UIdictionary[UIKey2].Mybool == true)
                     {
-                        factory.iXmlType = 1;
+                        bgXmalMath = Data.CreatL1CommonXaml12307;
+                        bgXamlGroup = Data.CreateList(bgXmalMath);
                     }
-                    else if (UIdictionary[UIKey5].Mybool == true)
+                    else if(UIdictionary[UIKey3].Mybool == true)
                     {
-                        factory.iXmlType = 2;
+                        if (UIdictionary[UIKey5].Mybool == true)
+                            {
+                            bgXmalMath = Data.CreatL2CommonXaml;
+                            bgXamlGroup = Data.CreateList(bgXmalMath);
+                        }
+                        else if(UIdictionary[UIKey4].Mybool == true)
+                        {
+                            blockTextMath = Data.CreatTextBlock;
+                            textBlockGroup = Data.CreateList(blockTextMath);
+                        }
                     }
-                    BaseData Data = factory.CreatDataClass("XamlData");
+                    ElementXaml elementXaml = new ElementXaml(bgXamlGroup, textBlockGroup, UIdictionary[UIKey6].MyString);
+                    XmlSerialiaztion.XmlSerial(@sFilePath, elementXaml);
                     UIdictionary[UIKey].MyString = sFilePath;
-                    UIdictionary[UIKey1].MyString = Data.ToString();
-                    System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
+                    UIdictionary[UIKey1].MyString = DataConvert.ToString(elementXaml);
+                    //System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Build XML Data Error: " + ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+           // {
+            //    MessageBox.Show("Build XML Data Error: " + ex.Message);
+           // }
             GC.Collect();
 
         }
@@ -578,7 +598,7 @@ namespace BGFusionTools
                     CreateDataMath<string, List<ConveyorRow>> dataMath = level1Data.CreateLineSignal;
                     var level1DataList = level1Data.CreateList(dataMath);
                     UIdictionary[UIKey].MyString = sFilePath;
-                    UIdictionary[UIKey1].MyString = DataConvert.ToString(level1DataList);
+                    UIdictionary[UIKey1].MyString = DataConvert.ToString1(level1DataList);
                     System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
             }
@@ -852,7 +872,7 @@ namespace BGFusionTools
                     List<ElementSeacrhStruct> lelmentSearchData = elmentSearchData.CreateList(elmentSearchMath);
                     ElementSearchXml elementSearchXml = new ElementSearchXml();
                     elementSearchXml.Elements = lelmentSearchData;
-                    UIdictionary[UIKey1].MyString = elmentSearchData.ToString();
+                    UIdictionary[UIKey1].MyString = DataConvert.ToString(lelmentSearchData);
                     UIdictionary[UIKey].MyString = sOutFilePath;
                     XmlSerialiaztion.XmlSerial(sOutFilePath, elementSearchXml);
                 }

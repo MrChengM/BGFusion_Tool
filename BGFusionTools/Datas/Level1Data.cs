@@ -63,9 +63,9 @@ namespace BGFusionTools.Datas
         public List<string> CreateLineSignal(List<ConveyorRow> conveyorRows)
         {
             List<string> sOutPutSingleData = new List<string>();
-            string sLinesSingle = null;//线信号name
-            string sLinesSingleValue = null;//Line single 值
+            string sLinesSingleValue = null;//Line signal 值
             string sLinesSingleGroup = null;
+            string sLinesSingle = null;
             string sElementSingle = null;//设备信号name
             string sElementSingleBit = null;//设备信号bit
 
@@ -75,7 +75,11 @@ namespace BGFusionTools.Datas
 
             foreach (ConveyorRow conveyorRow in conveyorRows) //遍历相同PLC.Line.view的数据集合每一行
             {
-
+                sLinesSingle = string.Format("{0}_{1}_{2}_{3}_{4}_Line_AC", conveyorRow.sSystem, conveyorRow.sPLC, conveyorRow.sEquipmentLine, conveyorRow.sPLC, conveyorRow.sLevel2View);//线信号name
+                for (int i = 0; i <= 31; i++)
+                {
+                    sLinesSingleBit[i] = string.Format("{0}_{1}_{2}_{3}_{4}_Sigl_Bit_{5}", conveyorRow.sSystem, conveyorRow.sPLC, conveyorRow.sEquipmentLine, conveyorRow.sPLC, conveyorRow.sLevel2View, i.ToString().PadLeft(2, '0'));
+                }
                 string sEquipmentElement = conveyorRow.sElementName;
                 List<string> sSignalMappings = conveyorRow.sSignalMapping;
                 List<string> signalNames = new List<string>();
@@ -85,6 +89,7 @@ namespace BGFusionTools.Datas
                     var signalName = sSignalName(Counts, baseParameter.Stemp5, conveyorRow, signalNames.Count + 1);
                     for (int i = 1; i <= signalName.Count; i++)
                     {
+                        sElementSingle = string.Format("{0}_{1}_{2}_{3}_SIGNAL_{4}", conveyorRow.sSystem, conveyorRow.sPLC, conveyorRow.sEquipmentLine, conveyorRow.sElementName, i);
                         string sColumName = string.Format("{0}_SIGNAL{1}", sSignalMapping, i);
                         for (int j = 0; j < TemplatTable.Rows.Count; j++) //遍历模板行数
                         {
