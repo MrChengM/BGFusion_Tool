@@ -58,7 +58,7 @@
         <Column  name="sFunctionalText" value="Functional Text" />
         <Column  name="sStateText" value="State Text" />
         <Column  name="sStatespriority" value="States priority " />
-        <Column  name="sStateColor" value="State Color" />
+        <Column  name="sStateColor" value=" State Color" />
         <Column  name="sStateSpecialFunction" value="State Special Function" />
         <Column  name="sAlarmStatusPriority" value="Alarm/Status Priority" />
         <Column  name="sPriorityFormula" value="States priority formula" />

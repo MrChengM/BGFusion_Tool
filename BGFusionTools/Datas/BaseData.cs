@@ -130,7 +130,6 @@ namespace BGFusionTools.Datas
             return ssignalName;
         }
 
-
         /// <summary>
         /// 计算定位坐标偏移量
         /// </summary>
@@ -154,26 +153,46 @@ namespace BGFusionTools.Datas
             }
         }
 
-        //计算DB Adderss偏移量
-        internal string soffsetAddress(string sAddress, int bOffset)
+
+        /// <summary>
+        /// 创建DB地址
+        /// </summary>
+        /// <param name="sAddress">原始地址</param>
+        /// <param name="bOffset">偏移量</param>
+        /// <param name="iDBXBit">DBX位</param>
+        /// <param name="bDBXSwitch">是否创建成DBX地址</param>
+        /// <returns></returns>
+        internal string creatDBAddress(string sAddress, int bOffset, int iDBXBit = 0,bool bDBXSwitch=false)
         {
-            int iEndAddress;
-            int iposition = sAddress.IndexOf("DBD") != -1 ?
-                sAddress.IndexOf("DBD") : sAddress.IndexOf("DBB") != -1 ?
-                sAddress.IndexOf("DBB") : sAddress.IndexOf("DBW") != -1 ?
-                sAddress.IndexOf("DBW") : -1;
-            string sUpAddress = sAddress.Substring(0, iposition + 3);
-            bool res = Int32.TryParse(sAddress.Substring(iposition + 3), out iEndAddress);
+            string sHeadAddress = "";
+            int iEndAddress = -1;
+            string sNewAddr;
+            string[] addressGroup = sAddress.Split(Convert.ToChar("."));
+
+            for (int i = 0; i < addressGroup[1].Length; i++)
+            {
+                bool res = Int32.TryParse(addressGroup[1].Substring(i), out iEndAddress);
+                if (res)
+                {
+                    sHeadAddress = addressGroup[1].Substring(0, i);
+                    break;
+                }
+            }
             iEndAddress = iEndAddress + bOffset;
-            string sNewAddr = sUpAddress + iEndAddress;
+            if (bDBXSwitch)
+            {
+                sHeadAddress = "DBX";
+                sNewAddr = addressGroup[0] + "." + sHeadAddress + iEndAddress+"."+ iDBXBit;
+            }
+            else
+            {
+                sNewAddr = addressGroup[0] + "." + sHeadAddress + iEndAddress;
+            }
             return sNewAddr;
         }
-
         internal EnumerableRowCollection<DataRow> LinqToTable()
         {
-
             //ConveyorRow筛选
-
             try
             {
 
@@ -194,9 +213,7 @@ namespace BGFusionTools.Datas
                 var ConveyorRows = from p in baseParameter.TaglistTable.AsEnumerable()
                                    where (p.Field<string>(sSelectConveyorColName) == sSelectColVal)
                                    select p;
-
                 return ConveyorRows;
-
             }
             catch (Exception ex)
             {
@@ -235,6 +252,7 @@ namespace BGFusionTools.Datas
         public string sRightClick;
         public string sLevel1AsLevel2;
         public string sExtendedPropertyAsCamera;
+        public Dictionary<string, string> sSignalMapping_Adderss = new Dictionary<string, string>();
         //创建一个taglist数据行
         public ConveyorRow()
         {
@@ -355,7 +373,13 @@ namespace BGFusionTools.Datas
                     sExtendedPropertyAsCamera = dataRow[columns.sExtendedPropertyAsCamera].ToString();
 
             }
-          
+
+            //生成SignalMapping与Adderss的键值对
+            for (int i = 0; i < sSignalMapping.Count; i++)
+            {
+                sSignalMapping_Adderss.Add(sSignalMapping[i], sSignalAddress[i]);
+            }
+
         }
     }
 }

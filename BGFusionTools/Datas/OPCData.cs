@@ -135,7 +135,7 @@ namespace BGFusionTools.Datas
                     sDaType = OPCDataType.sDWord;
                     drs[i] = dOPCdataTable.NewRow();
                     drs[i][OPCColName.sTagName] = sTagName;
-                    string sAddr = soffsetAddress(sAddress, i * 4);
+                    string sAddr = creatDBAddress(sAddress, i * 4);
                     drs[i][OPCColName.sAddress] = sAddr;
                     drs[i][OPCColName.sDataType] = sDaType;
                     drs[i][OPCColName.sRespectDataType] = iReDataType;
@@ -193,8 +193,8 @@ namespace BGFusionTools.Datas
                     sTagName = string.Format(sTemp, conveyor.sSystem, conveyor.sPLC, conveyor.sEquipmentLine, conveyor.sElementName, i + index);
                     sDaType = OPCDataType.sDWord;
                     opcRow.sTagName = sTagName;
-                    string sAddr = soffsetAddress(sAddress, i * 4);
-                    opcRow.sAddress = sAddress;
+                    string sAddr = creatDBAddress(sAddress, i * 4);
+                    opcRow.sAddress = sAddr;
                     opcRow.sDataType = sDaType;
                     foreach (string s in opcRow)
                     {

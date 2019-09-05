@@ -13,7 +13,7 @@ using BGFusionTools.Datas;
 
 namespace BGFusionTools.Functions
 {
-    public class NpoiExcelFunction
+    public static class NpoiExcelFunction
     {
         public static DataSet ExcelRead(string filePath)
         {
@@ -26,7 +26,7 @@ namespace BGFusionTools.Functions
                 if (File.Exists(filePath))
                 {
                     FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                    string fileType = System.IO.Path.GetExtension(filePath);
+                    string fileType = Path.GetExtension(filePath);
                     if (fileType == ".xls")
                         workbook = new HSSFWorkbook(file);
                     else if (fileType == ".xlsx")
@@ -128,149 +128,222 @@ namespace BGFusionTools.Functions
             //释放内存
 
         }
-        public static void ExcelWrite(string outfilename, List<TestListStruct> listDatas)
+        public static void ExcelWrite(string filename,string sheetName, List<List<TestSheetRow>> listDatas)
         {
             IWorkbook workbook = null;
             IRow row = null;
             ICell cell = null;
             ICellStyle tittlestyle = null;
             ICellStyle columnstyle = null;
-            ICellStyle signalMappingstyle = null;
-            ICellStyle displaystyle = null;
             IFont tittlefont = null;
             IFont columnfont = null;
-            IFont signalMappingfont = null;
-            IFont displayfont = null;
-            try
+            int rowIndex = 0;
+            int columnIndex = 0;
+            string fileType = Path.GetExtension(filename);
+
+            //判断是否存在当前文件，存在就读取
+            if (File.Exists(filename))
             {
-                FileStream file = new FileStream(outfilename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-                string fileType = System.IO.Path.GetExtension(outfilename);
+                FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read);
                 if (fileType == ".xls")
-                    workbook = new HSSFWorkbook();
-                else if (fileType == ".xlsx")
-                    workbook = new XSSFWorkbook();
-                ISheet sheet = workbook.CreateSheet();
-                int i = 0;
-
-                //标题格式
-                tittlefont = workbook.CreateFont();
-                tittlefont.Color = IndexedColors.Red.Index;
-                tittlefont.FontHeightInPoints = 14;
-
-                tittlestyle = workbook.CreateCellStyle();
-                tittlestyle.BorderBottom = BorderStyle.Thin;
-                tittlestyle.BottomBorderColor = IndexedColors.Black.Index;
-                tittlestyle.BorderLeft = BorderStyle.Thin;
-                tittlestyle.LeftBorderColor = IndexedColors.Black.Index;
-                tittlestyle.BorderRight = BorderStyle.Thin;
-                tittlestyle.RightBorderColor = IndexedColors.Black.Index;
-                tittlestyle.BorderTop = BorderStyle.Thin;
-                tittlestyle.TopBorderColor = IndexedColors.Black.Index;
-                tittlestyle.Alignment = HorizontalAlignment.Center;
-                tittlestyle.FillPattern = FillPattern.SolidForeground;
-                tittlestyle.FillForegroundColor = IndexedColors.Grey25Percent.Index;
-                tittlestyle.SetFont(tittlefont);
-
-
-                //列格式
-                columnfont = workbook.CreateFont();
-                columnfont.Color= IndexedColors.White.Index;
-                columnfont.FontHeightInPoints = 12;
-
-                columnstyle = workbook.CreateCellStyle();
-                columnstyle.BorderBottom = BorderStyle.Thin;
-                columnstyle.BottomBorderColor = IndexedColors.Black.Index;
-                columnstyle.BorderLeft = BorderStyle.Thin;
-                columnstyle.LeftBorderColor = IndexedColors.Black.Index;
-                columnstyle.BorderRight = BorderStyle.Thin;
-                columnstyle.RightBorderColor = IndexedColors.Black.Index;
-                columnstyle.BorderTop = BorderStyle.Thin;
-                columnstyle.TopBorderColor = IndexedColors.Black.Index;
-                columnstyle.Alignment = HorizontalAlignment.Center;
-                columnstyle.FillPattern = FillPattern.SolidForeground;
-                columnstyle.FillForegroundColor = IndexedColors.Blue.Index;
-                columnstyle.SetFont(columnfont);
-
-                //signalmapping内容格式
-                signalMappingstyle = workbook.CreateCellStyle();
-                signalMappingstyle.BorderBottom = BorderStyle.Thin;
-                signalMappingstyle.BottomBorderColor = IndexedColors.Black.Index;
-                signalMappingstyle.BorderLeft = BorderStyle.Thin;
-                signalMappingstyle.LeftBorderColor = IndexedColors.Black.Index;
-                signalMappingstyle.BorderRight = BorderStyle.Thin;
-                signalMappingstyle.RightBorderColor = IndexedColors.Black.Index;
-                signalMappingstyle.BorderTop = BorderStyle.Thin;
-                signalMappingstyle.TopBorderColor = IndexedColors.Black.Index;
-                signalMappingstyle.Alignment = HorizontalAlignment.Center;
-                signalMappingstyle.FillPattern = FillPattern.SolidForeground;
-                signalMappingstyle.FillForegroundColor = IndexedColors.Green.Index;
-
-                //测试单元内容格式
-                displaystyle = workbook.CreateCellStyle();
-                displaystyle.BorderBottom = BorderStyle.Thin;
-                displaystyle.BottomBorderColor = IndexedColors.Black.Index;
-                displaystyle.BorderLeft = BorderStyle.Thin;
-                displaystyle.LeftBorderColor = IndexedColors.Black.Index;
-                displaystyle.BorderRight = BorderStyle.Thin;
-                displaystyle.RightBorderColor = IndexedColors.Black.Index;
-                displaystyle.BorderTop = BorderStyle.Thin;
-                displaystyle.TopBorderColor = IndexedColors.Black.Index;
-                displaystyle.Alignment = HorizontalAlignment.Center;
-                displaystyle.FillPattern = FillPattern.SolidForeground;
-                displaystyle.FillForegroundColor = IndexedColors.Yellow.Index;
-
-                foreach (var data in listDatas)
                 {
-                    var signalMapping = data.SignalMappingTable;
-                    var displayNames = data.ElementList;
-                    var signalCol = data.SignalColumn;
-                    row = sheet.CreateRow(i);
-                    cell = row.CreateCell(0);
-                    cell.SetCellValue("SignalMapping");
-                    sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(i, i, 0, signalMapping.First().ItemArray.Length - 1));
-                    cell.CellStyle = tittlestyle;
-                    i++;
-                    row = sheet.CreateRow(i);
-                    i++;
-                    for (int j = 0; j < signalCol.Count; j++)
-                    {
-                        cell = row.CreateCell(j);
-                        cell.SetCellValue(signalCol[j].ColumnName);
-                        cell.CellStyle = columnstyle;
-                    }
-                    foreach (var s in displayNames)
-                    {
-                        cell = row.CreateCell(row.LastCellNum);
-                        cell.SetCellValue(s);
-                        cell.CellStyle = displaystyle;
-
-                    }
-                    //bool firstRow = true;
-                    foreach (var elements in signalMapping)
-                    {
-                        row = sheet.CreateRow(i);
-                        i++;
-                        for (int j = 0; j < elements.ItemArray.Length; j++)
-                        {
-                            cell = row.CreateCell(j);
-                            if (elements.IsNull(j) != true)
-                                cell.SetCellValue(elements[j].ToString());
-                            cell.CellStyle = signalMappingstyle;
-                        }
-                    }
+                    workbook = new HSSFWorkbook(infile);
                 }
-                workbook.Write(file);
-                file.Close();
+                else if (fileType == ".xlsx")
+                {
+                    workbook = new XSSFWorkbook(infile);
+                }
+                infile.Close();
             }
-            catch (Exception ex)
+            else
             {
-                workbook = null;
-                //file.Close();
+                if (fileType == ".xls")
+                {
+                    workbook = new HSSFWorkbook();
+                }
+                else if (fileType == ".xlsx")
+                {
+                    workbook = new XSSFWorkbook();
+                }
             }
-            finally
+            //判断是否存在当前sheet
+            for (int i = 0; i < workbook.NumberOfSheets; i++)
             {
-                workbook = null;
+                if (sheetName == workbook.GetSheetName(i))
+                {
+                    workbook.RemoveSheetAt(i);
+                    break;
+                }
             }
+            ISheet sheet = workbook.CreateSheet(sheetName);
+
+            //标题格式
+            tittlefont = workbook.CreateFont();
+            tittlefont.Color = IndexedColors.Red.Index;
+            tittlefont.FontHeightInPoints = 14;
+            tittlestyle = workbook.CreateCellStyle();
+            tittlestyle.BorderBottom = BorderStyle.Thin;
+            tittlestyle.BottomBorderColor = IndexedColors.Black.Index;
+            tittlestyle.BorderLeft = BorderStyle.Thin;
+            tittlestyle.LeftBorderColor = IndexedColors.Black.Index;
+            tittlestyle.BorderRight = BorderStyle.Thin;
+            tittlestyle.RightBorderColor = IndexedColors.Black.Index;
+            tittlestyle.BorderTop = BorderStyle.Thin;
+            tittlestyle.TopBorderColor = IndexedColors.Black.Index;
+            tittlestyle.Alignment = HorizontalAlignment.Center;
+            tittlestyle.FillPattern = FillPattern.SolidForeground;
+            tittlestyle.FillForegroundColor = IndexedColors.Grey25Percent.Index;
+            tittlestyle.SetFont(tittlefont);
+
+
+            //列格式
+            columnfont = workbook.CreateFont();
+            //columnfont.Color = IndexedColors.White.Index;
+            columnfont.FontHeightInPoints = 12;
+            columnstyle = workbook.CreateCellStyle();
+            /*columnstyle.BorderBottom = BorderStyle.Thin;
+            columnstyle.BottomBorderColor = IndexedColors.Black.Index;
+            columnstyle.BorderLeft = BorderStyle.Thin;
+            columnstyle.LeftBorderColor = IndexedColors.Black.Index;
+            columnstyle.BorderRight = BorderStyle.Thin;
+            columnstyle.RightBorderColor = IndexedColors.Black.Index;
+            columnstyle.BorderTop = BorderStyle.Thin;
+            columnstyle.TopBorderColor = IndexedColors.Black.Index;
+            columnstyle.Alignment = HorizontalAlignment.Center;*/
+            //columnstyle.FillPattern = FillPattern.SolidForeground;
+            //columnstyle.FillForegroundColor = IndexedColors.Blue.Index;
+            columnstyle.SetFont(columnfont);
+
+            //写标题
+            sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(rowIndex, rowIndex, 0, TestColumns.Count() - 1));
+
+            row = sheet.CreateRow(rowIndex);
+            cell = row.CreateCell(columnIndex);
+            cell.SetCellValue("FAT TEST LIST");
+            cell.CellStyle = tittlestyle;
+            rowIndex++;
+            //写columns
+            row = sheet.CreateRow(rowIndex);
+            foreach (string s in TestColumns.GetEnumerable())
+            {
+                cell = row.CreateCell(columnIndex);
+                cell.SetCellValue(s);
+                cell.CellStyle = columnstyle;
+                columnIndex++;
+            }
+            rowIndex++;
+            //写数据
+            foreach (List<TestSheetRow> testSheetRows in listDatas)
+            {
+                foreach (TestSheetRow testSheetRow in testSheetRows)
+                {
+                    columnIndex = 0;
+                    row = sheet.CreateRow(rowIndex);
+                    foreach (string s in testSheetRow)
+                    {
+                        cell = row.CreateCell(columnIndex);
+                        cell.SetCellValue(s);
+                        columnIndex++;
+                    }
+                    rowIndex++;
+                }
+                rowIndex++;
+            }
+            FileStream outfiles = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            workbook.Write(outfiles);
+            workbook.Close();
+            outfiles.Close();
+        }
+        public static void ExcelWrite(string filename, string sheetName, List<List<string>> listDatas)
+        {
+            IWorkbook workbook = null;
+            IRow row = null;
+            ICell cell = null;
+            ICellStyle tittlestyle = null;
+            IFont tittlefont = null;
+            int rowIndex = 0;
+            int columnIndex = 0;
+            string fileType = Path.GetExtension(filename);
+
+            if (File.Exists(filename))
+            {
+                FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read);
+                if (fileType == ".xls")
+                {
+                        workbook = new HSSFWorkbook(infile);
+                }
+                else if (fileType == ".xlsx")
+                {
+                        workbook = new XSSFWorkbook(infile);
+                }
+                infile.Close();
+
+            }
+            else
+            {
+                if (fileType == ".xls")
+                {
+                        workbook = new HSSFWorkbook();
+                }
+                else if (fileType == ".xlsx")
+                {
+                        workbook = new XSSFWorkbook();
+                }
+            }
+            
+            for(int i=0;i< workbook.NumberOfSheets; i++)
+            {
+                if (sheetName == workbook.GetSheetName(i))
+                {
+                    workbook.RemoveSheetAt(i);
+                    break;
+                }
+            }
+            ISheet sheet = workbook.CreateSheet(sheetName);
+            //标题格式
+            tittlefont = workbook.CreateFont();
+            tittlefont.Color = IndexedColors.Red.Index;
+            tittlefont.FontHeightInPoints = 14;
+            tittlestyle = workbook.CreateCellStyle();
+            tittlestyle.BorderBottom = BorderStyle.Thin;
+            tittlestyle.BottomBorderColor = IndexedColors.Black.Index;
+            tittlestyle.BorderLeft = BorderStyle.Thin;
+            tittlestyle.LeftBorderColor = IndexedColors.Black.Index;
+            tittlestyle.BorderRight = BorderStyle.Thin;
+            tittlestyle.RightBorderColor = IndexedColors.Black.Index;
+            tittlestyle.BorderTop = BorderStyle.Thin;
+            tittlestyle.TopBorderColor = IndexedColors.Black.Index;
+            tittlestyle.Alignment = HorizontalAlignment.Center;
+            tittlestyle.FillPattern = FillPattern.SolidForeground;
+            tittlestyle.FillForegroundColor = IndexedColors.Grey25Percent.Index;
+            tittlestyle.SetFont(tittlefont);
+
+            //写标题
+            sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(rowIndex, rowIndex, 0, TestColumns.Count() - 1));
+            row = sheet.CreateRow(rowIndex);
+            cell = row.CreateCell(columnIndex);
+            cell.SetCellValue("COPY TO PLC");
+            cell.CellStyle = tittlestyle;
+            rowIndex++;
+            //写数据
+            foreach (List<string> ls in listDatas)
+            {
+                foreach (string s in ls)
+                {
+                    columnIndex = 0;
+                    row = sheet.CreateRow(rowIndex);
+                    cell = row.CreateCell(columnIndex);
+                    cell.SetCellValue(s);
+                    rowIndex++;
+                }
+                rowIndex++;
+            }
+            FileStream outfile = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            workbook.Write(outfile);
+            workbook.Close();
+            outfile.Close();
+
+
         }
 
     }

@@ -55,7 +55,7 @@ namespace BGFusionTools
         //Conveyor数据表定义
         //public string[] sConveyorSheetName;
         //public string[,] sConveyorColName;
-        public TaglistColumns taglistColumns= TaglistColumns.getInstance();
+        public TaglistColumns taglistColumns = TaglistColumns.getInstance();
         //BaseList数据表定义
         public string[] sBaseListSheetName;
         public string[,] sBaseListColName;
@@ -414,15 +414,15 @@ namespace BGFusionTools
             string UIKey6 = "ViewNameteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
             UIdictionary[UIKey1].MyString = "";
-            //try
-            //{
+            try
+            {
                 bool bOpenEnable = Outputfile(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
                 {
 
                     BaseFactory factory = new BaseFactory();
                     factory.BaseParameter = CreateConvertParameter();
-                    XamlData Data =(XamlData) factory.CreatDataClass("XamlData");
+                    XamlData Data = (XamlData)factory.CreatDataClass("XamlData");
                     CreateDataMath<BgElementCommonXaml, ConveyorRow> bgXmalMath;
                     CreateDataMath<BgTextBlock, ConveyorRow> blockTextMath;
 
@@ -434,14 +434,14 @@ namespace BGFusionTools
                         bgXmalMath = Data.CreatL1CommonXaml12307;
                         bgXamlGroup = Data.CreateList(bgXmalMath);
                     }
-                    else if(UIdictionary[UIKey3].Mybool == true)
+                    else if (UIdictionary[UIKey3].Mybool == true)
                     {
                         if (UIdictionary[UIKey5].Mybool == true)
-                            {
+                        {
                             bgXmalMath = Data.CreatL2CommonXaml;
                             bgXamlGroup = Data.CreateList(bgXmalMath);
                         }
-                        else if(UIdictionary[UIKey4].Mybool == true)
+                        else if (UIdictionary[UIKey4].Mybool == true)
                         {
                             blockTextMath = Data.CreatTextBlock;
                             textBlockGroup = Data.CreateList(blockTextMath);
@@ -450,14 +450,14 @@ namespace BGFusionTools
                     ElementXaml elementXaml = new ElementXaml(bgXamlGroup, textBlockGroup, UIdictionary[UIKey6].MyString);
                     XmlSerialiaztion.XmlSerial(@sFilePath, elementXaml);
                     UIdictionary[UIKey].MyString = sFilePath;
-                    UIdictionary[UIKey1].MyString = DataConvert.ToString(elementXaml);
+                    UIdictionary[UIKey1].MyString = "Build Xaml Successful!";
                     //System.IO.File.WriteAllText(@sFilePath, UIdictionary[UIKey1].MyString, Encoding.UTF8);
                 }
-            //}
-            //catch (Exception ex)
-           // {
-            //    MessageBox.Show("Build XML Data Error: " + ex.Message);
-           // }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Build XML Data Error: " + ex.Message);
+            }
             GC.Collect();
 
         }
@@ -471,7 +471,7 @@ namespace BGFusionTools
             string sFileStyle = "SIG File(.signaltester) | *.signaltester";
             string UIKey = "TestdataOutPutFilePathteBox";
             string UIKey1 = "OutPutDatasteBox";
-            string UIKey3= "L1raButton";
+            string UIKey3 = "L1raButton";
             string UIKey4 = "L2raButton";
             string sFilePath = UIdictionary[UIKey].MyString;
             try
@@ -483,7 +483,7 @@ namespace BGFusionTools
                     BaseFactory factory = new BaseFactory();
                     factory.BaseParameter = CreateConvertParameter();
                     TestData TestData = (TestData)factory.CreatDataClass("TestData");
-                    List<List<string>> TestDataList =new List<List<string>>();
+                    List<List<string>> TestDataList = new List<List<string>>();
                     if (UIdictionary[UIKey3].Mybool == true)
                     {
                         CreateDataMath<string, List<ConveyorRow>> dataMath = TestData.CreateL1Signal;
@@ -529,26 +529,16 @@ namespace BGFusionTools
                     factory.BaseParameter = CreateConvertParameter();
 
 
-                    BaseData ListData = factory.CreatDataClass("TestList");
+                    TestList listData = (TestList)factory.CreatDataClass("TestList");
+                    CreateDataMath<List<TestSheetRow>, ConveyorRow> testdataMath = listData.CreateTestRows;
+                    CreateDataMath<List<string>, ConveyorRow> cmcdataMath = listData.CreateCMCRows;
+                    List<List<TestSheetRow>> testDataRows = listData.CreateList(testdataMath);
+                    List<List<string>> cmcDataRows = listData.CreateList(cmcdataMath);
+                    NpoiExcelFunction.ExcelWrite(sFilePath, "CMC", cmcDataRows);
+                    NpoiExcelFunction.ExcelWrite(sFilePath, "Test", testDataRows);
                     UIdictionary[UIKey].MyString = sFilePath;
-                    /*string sOutPutLiData = null;
-                    
-                    Dictionary<string, string> telistDictionary = ListData.ToDictionary();
-                    foreach ( KeyValuePair<string,string> listdata in telistDictionary)
-                    {
-                        if (sOutPutLiData == null)
-                        {
-                            sOutPutLiData = listdata.Key + " " + listdata.Value;
-                        }
-                        else
-                        {
-                            sOutPutLiData = sOutPutLiData + "\r" + listdata.Key + " " + listdata.Value;
-                        }
-                    }
-                    UIdictionary[UIKey1].MyString= sOutPutLiData;
-                    ExcelFunction.ExcelWrite(UIdictionary[UIKey2].MyString, sFilePath, telistDictionary);*/
-                    //ListData.OutData();
-                    NpoiExcelFunction.ExcelWrite(sFilePath, (ListData as TestList).ListData);
+
+                    //NpoiExcelFunction.ExcelWrite(sFilePath, (ListData as TestList).ListData);
                     UIdictionary[UIKey1].MyString = "Output Test List successful!";
                 }
             }
@@ -623,8 +613,8 @@ namespace BGFusionTools
             string sFilePath = UIdictionary[UIKey].MyString;
             bool bOpenEnable = Outputfile(ref sFilePath, sFileStyle);
             UIdictionary[UIKey1].MyString = "";
-            //try
-            //{
+            try
+            {
                 if (bOpenEnable)
                 {
                     BaseFactory factory = new BaseFactory();
@@ -640,11 +630,11 @@ namespace BGFusionTools
                     CsvFunction.CsvWirte(sFilePath, opcdataList);
                     UIdictionary[UIKey1].MyString = DataConvert.ToString(opcdataList);
                 }
-            //}
-            //catch (Exception ex)
-           // {
-            //    MessageBox.Show("Build OPC Data Error: " + ex.Message);
-            //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Build OPC Data Error: " + ex.Message);
+            }
             GC.Collect();
 
         }
