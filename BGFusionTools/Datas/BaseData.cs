@@ -167,11 +167,11 @@ namespace BGFusionTools.Datas
             string sHeadAddress = "";
             int iEndAddress = -1;
             string sNewAddr;
-            string[] addressGroup = sAddress.Split(Convert.ToChar("."));
+            string[] addressGroup = sAddress.Split(new char[] { ',','.' });
 
             for (int i = 0; i < addressGroup[1].Length; i++)
             {
-                bool res = Int32.TryParse(addressGroup[1].Substring(i), out iEndAddress);
+                bool res = int.TryParse(addressGroup[1].Substring(i), out iEndAddress);
                 if (res)
                 {
                     sHeadAddress = addressGroup[1].Substring(0, i);
@@ -182,11 +182,22 @@ namespace BGFusionTools.Datas
             if (bDBXSwitch)
             {
                 sHeadAddress = "DBX";
-                sNewAddr = addressGroup[0] + "." + sHeadAddress + iEndAddress+"."+ iDBXBit;
+                if (addressGroup.Length == 3)
+                {
+                    sNewAddr = addressGroup[0] + "." + sHeadAddress + iEndAddress + "." + addressGroup[2];
+                }
+                else
+                {
+                    sNewAddr = addressGroup[0] + "." + sHeadAddress + iEndAddress + "." + iDBXBit;
+                }
             }
             else
             {
-                sNewAddr = addressGroup[0] + "." + sHeadAddress + iEndAddress;
+                if (addressGroup.Length == 3)
+                    sNewAddr = addressGroup[0] + "." + sHeadAddress + iEndAddress + "." + addressGroup[2];
+                else
+                    sNewAddr = addressGroup[0] + "." + sHeadAddress + iEndAddress;
+
             }
             return sNewAddr;
         }
@@ -377,6 +388,7 @@ namespace BGFusionTools.Datas
             //生成SignalMapping与Adderss的键值对
             for (int i = 0; i < sSignalMapping.Count; i++)
             {
+                if(sSignalMapping[i] !="" && !sSignalMapping_Adderss.ContainsKey(sSignalMapping[i]))
                 sSignalMapping_Adderss.Add(sSignalMapping[i], sSignalAddress[i]);
             }
 

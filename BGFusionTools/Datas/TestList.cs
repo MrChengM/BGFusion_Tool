@@ -50,11 +50,15 @@ namespace BGFusionTools.Datas
                     var bit = Convert.ToInt32(dataRow[col.sBit]);
                     int offset = (word - 1) * 4 + bit / 8;
                     int dBxbit =bit % 8;
-                    datas.PLCAddress = creatDBAddress(signalMapping_Adderss.Value, offset, dBxbit, true);
+                    if (signalMapping_Adderss.Value != "" && signalMapping_Adderss.Value != null)
+                        datas.PLCAddress = creatDBAddress(signalMapping_Adderss.Value, offset, dBxbit, true);
+                    else
+                        datas.PLCAddress = "";
                     datas.Function = dataRow[col.sAlarmStatusNumber].ToString();
                     datas.State = dataRow[col.sStateRef].ToString();
                     datas.FunctionText = dataRow[col.sFunctionalText].ToString();
                     datas.StateText = dataRow[col.sStateText].ToString();
+                    if(col.sStateColor!=""&& col.sStateColor != null)
                     datas.Color = dataRow[col.sStateColor].ToString();
                     datas.Level1view = conveyor.sLevel1View;
                     datas.Level2view = conveyor.sLevel2View;
@@ -76,26 +80,58 @@ namespace BGFusionTools.Datas
 
             var SignalName = string.Format("//{0}_{1}_{2}_{3}", conveyor.sSystem, conveyor.sPLC, conveyor.sEquipmentLine, conveyor.sElementName);
             _CMCRows.Add(SignalName);
-            foreach(var signalMapping_Adderss in conveyor.sSignalMapping_Adderss)
+            if (SignalName.Contains("ENERGYSAVE"))
             {
-                _CMCRows.Add("//"+signalMapping_Adderss.Key);
-                _CMCRows.Add("//" + signalMapping_Adderss.Value);
-                var dataRows = from p in baseParameter.SingleMappingTable.AsEnumerable()
-                               where p.Field<string>(baseParameter.SignalMappingColName.sType) == signalMapping_Adderss.Key
-                               &&
-                               p.Field<string>(baseParameter.SignalMappingColName.sAlarmStatusNumber).ToLower() != "spare"
-                               select p;
-                foreach(var dataRow in dataRows)
+
+                _CMCRows.Add("//" + conveyor.sCommandMapping);
+                _CMCRows.Add("//" + conveyor.sCommandAddress);
+                string PLCAddress = creatDBAddress(conveyor.sCommandAddress,0);
+                _CMCRows.Add(PLCAddress);
+            }
+            else
+            {
+                foreach (var signalMapping_Adderss in conveyor.sSignalMapping_Adderss)
                 {
-                    var col = baseParameter.SignalMappingColName;
-                    var word =Convert.ToInt32(dataRow[col.sWord]);
-                    var bit = Convert.ToInt32(dataRow[col.sBit]);
-                    int offset = (word - 1) * 4 + bit / 8;
-                    int dBxbit = bit % 8;
-                    string PLCAddress = creatDBAddress(signalMapping_Adderss.Value, offset, dBxbit, true);
-                    _CMCRows.Add(PLCAddress);
+                    _CMCRows.Add("//" + signalMapping_Adderss.Key);
+                    _CMCRows.Add("//" + signalMapping_Adderss.Value);
+                    var dataRows = from p in baseParameter.SingleMappingTable.AsEnumerable()
+                                   where p.Field<string>(baseParameter.SignalMappingColName.sType) == signalMapping_Adderss.Key
+                                   &&
+                                   p.Field<string>(baseParameter.SignalMappingColName.sAlarmStatusNumber).ToLower() != "spare"
+                                   select p;
+                    foreach (var dataRow in dataRows)
+                    {
+                        var col = baseParameter.SignalMappingColName;
+                        var word = Convert.ToInt32(dataRow[col.sWord]);
+                        var bit = Convert.ToInt32(dataRow[col.sBit]);
+                        int offset = (word - 1) * 4 + bit / 8;
+                        int dBxbit = bit % 8;
+                        string PLCAddress = creatDBAddress(signalMapping_Adderss.Value, offset, dBxbit, true);
+                        _CMCRows.Add(PLCAddress);
+                    }
+                }
+                if (conveyor.sCommandMapping != "" && conveyor.sCommandAddress != "" && conveyor.sCommandAddress.ToLower() != "no_signal")
+                {
+                    _CMCRows.Add("//" + conveyor.sCommandMapping);
+                    _CMCRows.Add("//" + conveyor.sCommandAddress);
+                    var dataRows = from p in baseParameter.CommandMappingTable.AsEnumerable()
+                                   where p.Field<string>(baseParameter.CommandMappingColName.sType) == conveyor.sCommandMapping
+                                   &&
+                                   p.Field<string>(baseParameter.CommandMappingColName.sCommandText).ToLower() != "spare"
+                                   select p;
+                    foreach (var dataRow in dataRows)
+                    {
+                        var col = baseParameter.CommandMappingColName;
+                        var word = Convert.ToInt32(dataRow[col.sElementLink]);
+                        var bit = Convert.ToInt32(dataRow[col.sBit]);
+                        int offset = (word - 1) * 4 + bit / 8;
+                        int dBxbit = bit % 8;
+                        string PLCAddress = creatDBAddress(conveyor.sCommandAddress, offset, dBxbit, true);
+                        _CMCRows.Add(PLCAddress);
+                    }
                 }
             }
+           
             llCMCRows.Add(_CMCRows);
             return llCMCRows;
         }

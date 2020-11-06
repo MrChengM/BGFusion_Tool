@@ -7,40 +7,40 @@
         <Column  name="sPLC" value="PLC/Link" />
         <Column  name="sPowerBox" value="Power Box" />
         <Column  name="sEquipmentLine" value="Equipment Line" />
-        <Column  name="sElementType" value="Equipment Elementtype" />
+        <Column  name="sElementType" value="Elementtype" />
         <Column  name="sElementName" value="Equipment Element" />
-        <!--Column  name="sBehaviorName" value="MultiMapping BehaviorName"/>-->       
-        <Column  name="sSignalMapping1" value="Signal Mapping 1" enable="ture"/>
-        <Column  name="sSignalMapping2" value="Signal Mapping 2" enable="false"/>
-        <Column  name="sSignalMapping3" value="Signal Mapping 3" enable="false"/>
-        <Column  name="sSignalMapping4" value="Signal Mapping 4" enable="false"/>
-        <Column  name="sSignalMapping5" value="Signal Mapping 5" enable="false"/>
-        <Column  name="sSignalMapping6" value="Signal Mapping 6" enable="false"/>
-        <Column  name="sSignalMapping7" value="Signal Mapping 7" enable="false"/>
-        <Column  name="sSignalMapping8" value="Signal Mapping 8" enable="false"/>
-        <Column  name="sSignalMapping9" value="Signal Mapping 9" enable="false"/>
-        <Column  name="sSignalMapping10" value="Signal Mapping 10" enable="false"/>
-        <Column  name="sSignalMapping11" value="Signal Mapping 11" enable="false"/>
-        <Column  name="sSignalAddress1" value="Signal Address 1" enable="ture"/>
-        <Column  name="sSignalAddress2" value="Signal Address 2" enable="false"/>
-        <Column  name="sSignalAddress3" value="Signal Address 3" enable="false"/>
-        <Column  name="sSignalAddress4" value="Signal Address 4" enable="false"/>
-        <Column  name="sSignalAddress5" value="Signal Address 5" enable="false"/>
-        <Column  name="sSignalAddress6" value="Signal Address 6" enable="false"/>
-        <Column  name="sSignalAddress7" value="Signal Address 7" enable="false"/>
-        <Column  name="sSignalAddress8" value="Signal Address 8" enable="false"/>
-        <Column  name="sSignalAddress9" value="Signal Address 9" enable="false"/>
-        <Column  name="sSignalAddress10" value="Signal Address 10" enable="false"/>
-        <Column  name="sSignalAddress11" value="Signal Address 11" enable="false"/>
+        <Column  name="sBehaviorName" value="MultiMapping BehaviorName"/>
+        <Column  name="sSignalMapping1" value="SignalMapping as 1" enable="ture"/>
+        <Column  name="sSignalMapping2" value="SignalMapping as 2" enable="ture"/>
+        <Column  name="sSignalMapping3" value="SignalMapping as 3" enable="ture"/>
+        <Column  name="sSignalMapping4" value="SignalMapping as 4" enable="ture"/>
+        <Column  name="sSignalMapping5" value="SignalMapping as 5" enable="ture"/>
+        <Column  name="sSignalMapping6" value="SignalMapping as 6" enable="ture"/>
+        <Column  name="sSignalMapping7" value="SignalMapping as 7" enable="ture"/>
+        <Column  name="sSignalMapping8" value="SignalMapping as 8" enable="ture"/>
+        <Column  name="sSignalMapping9" value="SignalMapping as 9" enable="ture"/>
+        <Column  name="sSignalMapping10" value="SignalMapping as 10" enable="false"/>
+        <Column  name="sSignalMapping11" value="SignalMapping as 11" enable="false"/>
+        <Column  name="sSignalAddress1" value="SignalAddress as 1" enable="ture"/>
+        <Column  name="sSignalAddress2" value="SignalAddress as 2" enable="ture"/>
+        <Column  name="sSignalAddress3" value="SignalAddress as 3" enable="ture"/>
+        <Column  name="sSignalAddress4" value="SignalAddress as 4" enable="ture"/>
+        <Column  name="sSignalAddress5" value="SignalAddress as 5" enable="ture"/>
+        <Column  name="sSignalAddress6" value="SignalAddress as 6" enable="ture"/>
+        <Column  name="sSignalAddress7" value="SignalAddress as 7" enable="ture"/>
+        <Column  name="sSignalAddress8" value="SignalAddress as 8" enable="ture"/>
+        <Column  name="sSignalAddress9" value="SignalAddress as 9" enable="ture"/>
+        <Column  name="sSignalAddress10" value="SignalAddress as 10" enable="false"/>
+        <Column  name="sSignalAddress11" value="SignalAddress as 11" enable="false"/>
         <Column  name="sCommandMapping" value="Command Mapping" />
         <Column  name="sCommandAddress" value="Command Address" />
-        <Column  name="sRunningHours" value="Running Hours/Activations" />
-        <Column  name="sCopyRunningHours" value="Copy of Running Hours/Activations" />
+        <!--<Column  name="sRunningHours" value="Running Hours/Activations" />
+        <Column  name="sCopyRunningHours" value="Copy of Running Hours/Activations" />-->
         <Column  name="sDisplayName" value="Display Name" />
         <Column  name="sEdgeColor" value="Edge Color" />
-        <Column  name="sAlarmTree" value="Alarm Tree" />
-        <Column  name="sLevel1View" value="Area / Level 1 view" />
-        <Column  name="sLevel2View" value="Area / Level 2 view" />
+        <Column  name="sAlarmTree" value="Alarm Filter Tree" />
+        <Column  name="sLevel1View" value="Level 1 view" />
+        <Column  name="sLevel2View" value="Level 2 view" />
         <Column  name="sDrawOnViews" value="Draw on Views" />
         <Column  name="sLeftClick" value="LeftClick" />
       </DataSet>
@@ -55,13 +55,13 @@
         <Column  name="sPartName" value="Part Name" />
         <Column  name="sShowOnSCADA" value="Show on SCADA" />
         <Column  name="sStateRef" value="State Ref" />
-        <Column  name="sFunctionalText" value="Functional Text" />
-        <Column  name="sStateText" value="State Text" />
+        <Column  name="sFunctionalText" value="State Ref text" />
+        <Column  name="sStateText" value="State Ref text" />
         <Column  name="sStatespriority" value="States priority " />
-        <Column  name="sStateColor" value=" State Color" />
+        <!--<Column  name="sStateColor" value=" State Color" />--><!--
         <Column  name="sStateSpecialFunction" value="State Special Function" />
         <Column  name="sAlarmStatusPriority" value="Alarm/Status Priority" />
-        <Column  name="sPriorityFormula" value="States priority formula" />
+        <Column  name="sPriorityFormula" value="States priority formula" />-->
       </DataSet>
       <DataSet  name="sCommandMapping" value="Command_Mapping$">
         <Column  name="sType" value="Type" />
@@ -70,8 +70,8 @@
         <Column  name="sAnalogValue" value="Analog Value" />
         <Column  name="sCommandNumber" value="Command Number" />
         <Column  name="sPartName" value="Part Name" />
-        <Column  name="sCommandPriority" value="Command Priority" />
-        <Column  name="sCommandText" value="Command Text" />      
+        <!--<Column  name="sCommandPriority" value="Command Priority" />-->
+        <Column  name="sCommandText" value="Reference to command mapping" />      
       </DataSet>
     </DataTable>
   </DataTables>

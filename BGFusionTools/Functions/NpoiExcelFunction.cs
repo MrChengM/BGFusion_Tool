@@ -45,7 +45,7 @@ namespace BGFusionTools.Functions
                             DataColumn col = new DataColumn(cell.StringCellValue);
                             dt.Columns.Add(col);
                         }
-                        for (int i = 1; i < sheet.LastRowNum; i++)
+                        for (int i = 1; i <= sheet.LastRowNum; i++)
                         {
                             row = sheet.GetRow(i);
                             DataRow dtrow = dt.NewRow();

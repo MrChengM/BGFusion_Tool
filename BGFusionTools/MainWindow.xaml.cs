@@ -228,7 +228,7 @@ namespace BGFusionTools
                 DataSet dConfigTable = new DataSet();
                 string sConFilePath = ConfigurationSettings.AppSettings["Config.FilePath"];
                 //ConveyorSheetName初始化
-                dConfigTable = ExcelFunction.ExcelRead(sConFilePath);
+                dConfigTable = NpoiExcelFunction.ExcelRead(sConFilePath);
                 /*//Conveyor Sheet Name & Conveyor Column Name初始化
                 sTableName = ConfigurationSettings.AppSettings["ConveyorTaName"];
                 sTableToStringArrary(dConfigTable.Tables[sTableName], out sConveyorSheetName, out sConveyorColName);
@@ -319,7 +319,7 @@ namespace BGFusionTools
             }
             if (sPath != null)
             {
-                dExcelDataSet = ExcelFunction.ExcelRead(sPath);
+                dExcelDataSet = NpoiExcelFunction.ExcelRead(sPath);
                 //DataTableToOutPutList();
             }
             return dExcelDataSet;
@@ -519,8 +519,8 @@ namespace BGFusionTools
             string UIKey2 = "TestListTemplateteBox";
             string sFilePath = UIdictionary[UIKey].MyString;
             UIdictionary[UIKey1].MyString = "";
-            try
-            {
+            //try
+            //{
 
                 bool bOpenEnable = Outputfile(ref sFilePath, sFileStyle);
                 if (bOpenEnable == true)
@@ -541,11 +541,11 @@ namespace BGFusionTools
                     //NpoiExcelFunction.ExcelWrite(sFilePath, (ListData as TestList).ListData);
                     UIdictionary[UIKey1].MyString = "Output Test List successful!";
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Build Test List Error： " + ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Build Test List Error： " + ex.Message);
+            //}
             GC.Collect();
 
         }
